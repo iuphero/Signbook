@@ -1,16 +1,9 @@
-<!doctype html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>upload or history</title>
-        <link href="../css/lib.css" rel="stylesheet" />
-        <link href="../css/style.css" rel="stylesheet" />
-    </head>
-    <body>
         <header>
             <div class="logo text-center"><img src="../img/logo.png" ></div>
             <h1 class="title text-center">有米考勤签到分析神器</h1>
         </header>
+
+
         <div class="sb-container">
             <form id="lookupHistory" class="text-center upload-form">
                 <div class="sb-form-group">
@@ -42,17 +35,12 @@
                 <span>没有该月的考勤记录，请先上传!</span>
             </div>
         </div>
-        <!--通用js-->
-        <script src="../js/lib/jquery.js"></script>
-        <script src="../js/lib/bootstrap.js"></script>
-        <script src="../js/lib/bootstrap-datetimepicker.js"></script>
-        <script src="../js/lib/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8" type="text/javascript"></script>
-        <script src="../js/signbook.js"></script>
 
-        <!--页面js-->
-        <script src="../js/upload.js" charset="UTF-8" type="text/javascript"></script>
-        <script>
+<?php echo $this->Html->scriptStart(array('block' => 'script')); ?>
+    document.ready(
+        function() {
             signbook.upload.init();
-        </script>
-    </body>
-</html>
+        }
+    );
+    
+<?php echo $this->Html->scriptEnd(); ?>

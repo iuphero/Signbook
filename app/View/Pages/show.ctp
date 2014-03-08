@@ -1,12 +1,3 @@
-<!doctype html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>display</title>
-        <link href="../css/lib.css" rel="stylesheet" />
-        <link href="../css/style.css" rel="stylesheet" />
-    </head>
-    <body>
         <header>
             <div class="logo text-center"><img src="../img/logo.png" ></div>
             <h1 class="title text-center">有米考勤签到分析神器</h1>
@@ -186,18 +177,3 @@
             </table>
             </div>
         </div>
-        <!--通用js-->
-        <script src="../js/lib/jquery.js"></script>
-        <script src="../js/lib/bootstrap.js"></script>
-        <script src="../js/lib/bootstrap-datetimepicker.js"></script>
-        <script src="../js/lib/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8" type="text/javascript"></script>
-        <script src="../js/signbook.js"></script>
-
-        <!--页面js-->
-        <script src="../js/display.js" charset="UTF-8" type="text/javascript"></script>
-        <script>
-           signbook.display.init();
-
-        </script>
-    </body>
-</html>

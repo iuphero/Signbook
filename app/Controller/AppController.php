@@ -34,5 +34,10 @@ class AppController extends Controller {
 
     public $components = array('DebugKit.Toolbar');
 
-    public $uses = array('Department', 'Employee', 'SignRule', 'SignRecord'); 
+    public $uses = array('Department', 'Employee', 'SignRule', 'SignRecord');
+
+    public $helpers = array('Html');
+
+    public $layout = 'basic';
+
 }
