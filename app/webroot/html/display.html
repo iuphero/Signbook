@@ -8,23 +8,26 @@
     </head>
     <body>
         <header>
-            <div class="logo text-center"><img src="../img/logo.png" ></div>
+          <div class="logo text-center"><a href="index.html"><img src="../img/logo.png" ></a></div>
             <h1 class="title text-center">有米考勤签到分析神器</h1>
         </header>
         <div class="container">
             <div class="text-center mgb-20">
-                <input class="form-control sb-inline-form-control" placeholder="请选择月份" type="text" />
+                <input id="monthSelector" class="form-control sb-inline-form-control" placeholder="请选择月份" type="text" />
                 <a href="#" class="btn btn-green">查看其他数据</a>
+
+            </div>
+            <hr />
+            <div class="text-center mgb-20">
                 <select class="form-control type-selector">
-                    <option>全部</option>
-                    <option>技术研发中心</option>
-                    <option>行政部</option>
-                    <option>人事部</option>
-                    <option>商务部</option>
+                    <option value="all">全部</option>
+                    <option value="tech">技术研发中心</option>
+                    <option value="action">行政部</option>
+                    <option value="hr">人事部</option>
+                    <option value="business">商务部</option>
                 </select>
                 <a href="#" class="btn btn-blue">导出该月记录</a>
             </div>
-            <hr class="mgb-40"/>
         </div>
         <div>
             <div class="table-wrap">
@@ -37,7 +40,7 @@
               <li><span class="iconfont">异常 &#xf00b3;</li>
             </ul>
             <table class="sb-table table table-bordered table-hover">
-                <caption class="sb-caption">2014-05考勤统计</caption>
+                <caption class="sb-caption">2014-05技术研发中心考勤统计</caption>
                 <thead>
                     <tr>
                     <th>姓名</th>
