@@ -1,0 +1,222 @@
+@charset "UTF-8";
+/*
+ *  signbook 全局scss
+ *
+ *  生成一个style.css
+ */
+/*
+ *  signbook 自定义变量
+ *
+ *
+ */
+@font-face {
+  font-family: 'iconfont';
+  src: url("../font/iconfont.ttf") format("truetype");
+}
+
+/* line 12, ../sass/style.scss */
+.iconfont {
+  font-family: "iconfont";
+  font-size: 16px;
+  font-style: normal;
+}
+
+/* line 19, ../sass/style.scss */
+.mgb-20 {
+  margin-bottom: 20px;
+}
+
+/* line 22, ../sass/style.scss */
+.mgb-40 {
+  margin-bottom: 40px;
+}
+
+/* line 25, ../sass/style.scss */
+.btn {
+  color: white;
+  min-width: 120px;
+  border-radius: 8px;
+}
+/* line 29, ../sass/style.scss */
+.btn:hover {
+  color: white;
+}
+
+/* line 33, ../sass/style.scss */
+.btn-blue {
+  background-color: #5c7cc4;
+}
+
+/* line 36, ../sass/style.scss */
+.btn-green {
+  background-color: #45a152;
+}
+
+/* line 39, ../sass/style.scss */
+hr {
+  width: 100%;
+  border-top: 1px solid #c4c4c4;
+  border-bottom: 1px solid #e1e1e1;
+  margin: 20px auto;
+}
+
+/* line 47, ../sass/style.scss */
+body {
+  background: url("../img/colorfill.png") left top repeat-x, url("../img/bg.png") repeat;
+}
+
+/* line 50, ../sass/style.scss */
+header {
+  padding: 120px 0 60px 0;
+  margin: 10px 0 40px 0;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+/* line 54, ../sass/style.scss */
+header .logo {
+  margin-bottom: 10px;
+}
+/* line 56, ../sass/style.scss */
+header .logo img {
+  width: 420px;
+  height: 120px;
+}
+/* line 61, ../sass/style.scss */
+header .title {
+  font-size: 36px;
+  margin: 0;
+  color: #2f1249;
+}
+
+/* line 67, ../sass/style.scss */
+.sb-container {
+  margin: 0 auto;
+  width: 300px;
+}
+
+/* line 73, ../sass/style.scss */
+.sub-title {
+  font-size: 14px;
+  padding: 20px;
+  color: #2f1249;
+}
+
+/* line 80, ../sass/style.scss */
+.upload-form {
+  margin-top: 20px;
+}
+
+/* line 83, ../sass/style.scss */
+.sb-inline-form-control {
+  display: inline-block;
+  width: 140px;
+}
+
+/* line 87, ../sass/style.scss */
+.sb-form-group {
+  width: 300px;
+  text-align: center;
+  margin: 0 auto 20px auto;
+}
+/* line 92, ../sass/style.scss */
+.sb-form-group .sb-help-block {
+  margin: 0;
+  padding: 10px 0 0 10px;
+  text-align: left;
+  color: #777;
+  font-size: 13px;
+}
+/* line 100, ../sass/style.scss */
+.sb-form-group .sb-help-block-warning {
+  color: #a94442;
+}
+/* line 103, ../sass/style.scss */
+.sb-form-group .sb-help-block-success {
+  color: #3c763d;
+}
+
+/* line 107, ../sass/style.scss */
+.uploaded-div {
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  padding: 10px 0;
+  margin-bottom: 10px;
+  display: none;
+}
+/* line 116, ../sass/style.scss */
+.uploaded-div .uploaded-file .file-name {
+  display: inline-block;
+  text-align: left;
+  font-size: 14px;
+  line-height: 45px;
+  height: 45px;
+  width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* line 128, ../sass/style.scss */
+.uploaded-div .uploaded-file .file-icon {
+  display: inline-block;
+  width: 51px;
+  height: 45px;
+  background-image: url(../img/file.png);
+  background-repeat: no-repeat;
+  background-size: 51px 45px;
+  margin-right: 6px;
+}
+
+/* line 141, ../sass/style.scss */
+.type-selector {
+  display: inline-block;
+  width: 140px;
+}
+
+/* line 145, ../sass/style.scss */
+.table-wrap {
+  max-width: 1600px;
+  border-radius: 8px;
+  margin: 0 auto 40px auto;
+  padding: 20px;
+  background-color: white;
+}
+/* line 152, ../sass/style.scss */
+.table-wrap .sb-caption {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* line 158, ../sass/style.scss */
+.table-tag {
+  list-style: none;
+  padding-right: 20px;
+  text-align: right;
+}
+/* line 163, ../sass/style.scss */
+.table-tag li {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+/* line 169, ../sass/style.scss */
+.sb-table th {
+  background-color: whitesmoke;
+}
+
+/* line 173, ../sass/style.scss */
+.sb-table td {
+  text-align: center;
+}
+/* line 176, ../sass/style.scss */
+.sb-table td.td-warning {
+  color: red;
+}
+/* line 179, ../sass/style.scss */
+.sb-table td.td-chidao {
+  color: red;
+}
+/* line 182, ../sass/style.scss */
+.sb-table td.td-chidao {
+  color: red;
+}

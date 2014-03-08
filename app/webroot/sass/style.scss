@@ -1,0 +1,185 @@
+/*
+ *  signbook 全局scss
+ *
+ *  生成一个style.css
+ */
+
+@import "variables.scss";
+@font-face {
+  font-family: 'iconfont';
+  src: url('../font/iconfont.ttf') format('truetype');
+}
+.iconfont {
+    font-family:"iconfont";
+    font-size:16px;
+    font-style:normal;
+}
+
+//=通用class
+.mgb-20 {
+    margin-bottom:20px;
+}
+.mgb-40 {
+    margin-bottom:40px;
+}
+.btn {
+    color:white;
+    min-width:120px;
+    border-radius:8px;
+    &:hover {
+        color:white;
+    }
+}
+.btn-blue {
+    background-color:#5c7cc4;
+}
+.btn-green {
+    background-color:#45a152;
+}
+hr {
+    width:100%;
+    border-top:1px solid #c4c4c4;
+    border-bottom:1px solid #e1e1e1;
+    margin:20px auto;
+}
+
+//=signbook布局
+body {
+    background:url('../img/colorfill.png') left top repeat-x, url('../img/bg.png') repeat;
+}
+header {
+    padding:120px 0 60px 0;
+    margin:10px 0 40px 0;
+    background-color:rgba(0,0,0,.1);
+        .logo {
+            margin-bottom:10px;
+            img {
+                width:420px;
+                height:120px;
+            }
+        }
+        .title {
+            font-size:36px;
+            margin:0;
+            color:$color-one;
+        }
+}
+.sb-container {
+    margin:0 auto;
+    width:300px;
+}
+
+//=index
+.sub-title {
+    font-size:14px;
+    padding:20px;
+    color:$color-one;
+}
+
+//=upload
+.upload-form {
+    margin-top:20px;
+}
+.sb-inline-form-control {
+    display:inline-block;
+    width:140px;
+}
+.sb-form-group {
+    width:300px;
+    text-align:center;
+    margin:0 auto 20px auto;
+
+    .sb-help-block {
+        margin:0;
+        padding:10px 0 0 10px;
+        text-align:left;
+        color:#777;
+        font-size:13px;
+    }
+
+    .sb-help-block-warning {
+        color:#a94442;
+    }
+    .sb-help-block-success {
+        color:#3c763d;
+    }
+}
+.uploaded-div {
+    background-color:rgba(255,255,255,.6);
+    border-radius:8px;
+    border:1px solid #ddd;
+    padding:10px 0;
+    margin-bottom:10px;
+    display:none;
+
+    .uploaded-file {
+        .file-name {
+            display:inline-block;
+            text-align:left;
+            font-size:14px;
+            line-height:45px;
+            height:45px;
+            width:200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .file-icon {
+            display:inline-block;
+            width:51px;
+            height:45px;
+            background-image:url(../img/file.png);
+            background-repeat:no-repeat;
+            background-size:51px 45px;
+            margin-right:6px;
+        }
+    }
+}
+
+//=display
+.type-selector {
+    display:inline-block;
+    width:140px;
+}
+.table-wrap {
+    max-width:1600px;
+    border-radius:8px;
+    margin:0 auto 40px auto;
+    padding:20px;
+    background-color:rgba(255,255,255,1);
+
+    .sb-caption {
+        font-size:20px;
+        font-weight:bold;
+        margin-bottom:20px;
+    }
+}
+.table-tag {
+    list-style:none;
+    padding-right:20px;
+    text-align:right;
+
+    li {
+        display:inline-block;
+        margin-right:15px;
+    }
+}
+.sb-table {
+    th {
+        background-color:whitesmoke;
+    }
+}
+.sb-table td{
+    text-align:center;
+
+    &.td-warning {
+        color:red;
+    }
+    &.td-chidao {
+        color:red;
+    }
+    &.td-chidao {
+        color:red;
+    }
+}
