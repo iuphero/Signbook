@@ -183,40 +183,42 @@ header .title {
 /* line 152, ../sass/style.scss */
 .table-wrap .sb-caption {
   font-size: 20px;
+  height: 34px;
+  line-height: 34px;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 
-/* line 158, ../sass/style.scss */
+/* line 160, ../sass/style.scss */
 .table-tag {
   list-style: none;
   padding-right: 20px;
   text-align: right;
 }
-/* line 163, ../sass/style.scss */
+/* line 165, ../sass/style.scss */
 .table-tag li {
   display: inline-block;
   margin-right: 15px;
 }
 
-/* line 169, ../sass/style.scss */
+/* line 171, ../sass/style.scss */
 .sb-table th {
   background-color: whitesmoke;
 }
 
-/* line 173, ../sass/style.scss */
+/* line 175, ../sass/style.scss */
 .sb-table td {
   text-align: center;
 }
-/* line 176, ../sass/style.scss */
+/* line 178, ../sass/style.scss */
 .sb-table td.td-warning {
   color: red;
 }
-/* line 179, ../sass/style.scss */
+/* line 181, ../sass/style.scss */
 .sb-table td.td-chidao {
   color: red;
 }
-/* line 182, ../sass/style.scss */
+/* line 184, ../sass/style.scss */
 .sb-table td.td-chidao {
   color: red;
 }

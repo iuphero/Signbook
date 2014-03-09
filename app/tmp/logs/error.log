@@ -1,0 +1,30 @@
+2014-03-08 20:10:45 Error: [MissingViewException] View file "/usr/share/nginx/html/signbook/app/View/Pages/index.ctp" is missing.
+Exception Attributes: array (
+  'file' => '/usr/share/nginx/html/signbook/app/View/Pages/index.ctp',
+)
+Request URL: /pages/index
+Stack Trace:
+#0 /usr/share/nginx/html/signbook/lib/Cake/View/View.php(457): View->_getViewFileName('index')
+#1 /usr/share/nginx/html/signbook/lib/Cake/Controller/Controller.php(952): View->render('index', NULL)
+#2 /usr/share/nginx/html/signbook/app/Controller/PagesController.php(68): Controller->render('index')
+#3 [internal function]: PagesController->display('index')
+#4 /usr/share/nginx/html/signbook/lib/Cake/Controller/Controller.php(490): ReflectionMethod->invokeArgs(Object(PagesController), Array)
+#5 /usr/share/nginx/html/signbook/lib/Cake/Routing/Dispatcher.php(185): Controller->invokeAction(Object(CakeRequest))
+#6 /usr/share/nginx/html/signbook/lib/Cake/Routing/Dispatcher.php(160): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest), Object(CakeResponse))
+#7 /usr/share/nginx/html/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#8 {main}
+2014-03-08 20:11:06 Error: [MissingViewException] View file "/usr/share/nginx/html/signbook/app/View/Pages/index.ctp" is missing.
+Exception Attributes: array (
+  'file' => '/usr/share/nginx/html/signbook/app/View/Pages/index.ctp',
+)
+Request URL: /pages/index
+Stack Trace:
+#0 /usr/share/nginx/html/signbook/lib/Cake/View/View.php(457): View->_getViewFileName('index')
+#1 /usr/share/nginx/html/signbook/lib/Cake/Controller/Controller.php(952): View->render('index', NULL)
+#2 /usr/share/nginx/html/signbook/app/Controller/PagesController.php(68): Controller->render('index')
+#3 [internal function]: PagesController->display('index')
+#4 /usr/share/nginx/html/signbook/lib/Cake/Controller/Controller.php(490): ReflectionMethod->invokeArgs(Object(PagesController), Array)
+#5 /usr/share/nginx/html/signbook/lib/Cake/Routing/Dispatcher.php(185): Controller->invokeAction(Object(CakeRequest))
+#6 /usr/share/nginx/html/signbook/lib/Cake/Routing/Dispatcher.php(160): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest), Object(CakeResponse))
+#7 /usr/share/nginx/html/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#8 {main}
