@@ -11,11 +11,11 @@
  */
 @font-face {
   font-family: 'iconfont';
-  src: url("../font/iconfont.ttf") format("truetype");
+  src: url("/font/iconfont.ttf") format("truetype");
 }
 
 /* line 12, ../sass/style.scss */
-.iconfont {
+.icondat {
   font-family: "iconfont";
   font-size: 16px;
   font-style: normal;
@@ -77,47 +77,46 @@ header .logo {
 }
 /* line 56, ../sass/style.scss */
 header .logo img {
-  width: 420px;
-  height: 120px;
+  width: 360px;
 }
-/* line 61, ../sass/style.scss */
+/* line 60, ../sass/style.scss */
 header .title {
-  font-size: 36px;
+  font-size: 30px;
   margin: 0;
   color: #2f1249;
 }
 
-/* line 67, ../sass/style.scss */
+/* line 66, ../sass/style.scss */
 .sb-container {
   margin: 0 auto;
   width: 300px;
 }
 
-/* line 73, ../sass/style.scss */
+/* line 72, ../sass/style.scss */
 .sub-title {
   font-size: 14px;
   padding: 20px;
   color: #2f1249;
 }
 
-/* line 80, ../sass/style.scss */
+/* line 79, ../sass/style.scss */
 .upload-form {
   margin-top: 20px;
 }
 
-/* line 83, ../sass/style.scss */
+/* line 82, ../sass/style.scss */
 .sb-inline-form-control {
   display: inline-block;
   width: 140px;
 }
 
-/* line 87, ../sass/style.scss */
+/* line 86, ../sass/style.scss */
 .sb-form-group {
   width: 300px;
   text-align: center;
   margin: 0 auto 20px auto;
 }
-/* line 92, ../sass/style.scss */
+/* line 91, ../sass/style.scss */
 .sb-form-group .sb-help-block {
   margin: 0;
   padding: 10px 0 0 10px;
@@ -125,16 +124,16 @@ header .title {
   color: #777;
   font-size: 13px;
 }
-/* line 100, ../sass/style.scss */
+/* line 99, ../sass/style.scss */
 .sb-form-group .sb-help-block-warning {
   color: #a94442;
 }
-/* line 103, ../sass/style.scss */
+/* line 102, ../sass/style.scss */
 .sb-form-group .sb-help-block-success {
   color: #3c763d;
 }
 
-/* line 107, ../sass/style.scss */
+/* line 106, ../sass/style.scss */
 .uploaded-div {
   background-color: rgba(255, 255, 255, 0.6);
   border-radius: 8px;
@@ -143,11 +142,12 @@ header .title {
   margin-bottom: 10px;
   display: none;
 }
-/* line 116, ../sass/style.scss */
+/* line 115, ../sass/style.scss */
 .uploaded-div .uploaded-file .file-name {
   display: inline-block;
   text-align: left;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: bold;
   line-height: 45px;
   height: 45px;
   width: 200px;
@@ -158,11 +158,11 @@ header .title {
 /* line 128, ../sass/style.scss */
 .uploaded-div .uploaded-file .file-icon {
   display: inline-block;
-  width: 51px;
-  height: 45px;
+  width: 50px;
+  height: 50px;
   background-image: url(../img/file.png);
   background-repeat: no-repeat;
-  background-size: 51px 45px;
+  background-size: 50px 50px;
   margin-right: 6px;
 }
 
@@ -221,4 +221,18 @@ header .title {
 /* line 184, ../sass/style.scss */
 .sb-table td.td-chidao {
   color: red;
+}
+
+/* line 189, ../sass/style.scss */
+.input-date {
+  background-image: url(../img/month.png);
+  background-repeat: no-repeat;
+  background-position: 270px center;
+}
+
+/* line 194, ../sass/style.scss */
+.input-file {
+  background-image: url(../img/upload.png);
+  background-repeat: no-repeat;
+  background-position: 270px center;
 }
