@@ -1,30 +1,28 @@
         <header>
-          <div class="logo text-center"><a href="index.html"><img src="../img/logo.png" ></a></div>
+          <div class="logo text-center"><a href="index.html"><img src="/img/logo.png" ></a></div>
             <h1 class="title text-center">有米考勤签到分析神器</h1>
         </header>
         <div class="container">
+            <form>
             <div class="text-center mgb-20">
-                <input id="monthSelector" class="form-control sb-inline-form-control" placeholder="请选择月份" type="text" />
-                <a href="#" class="btn btn-green">查看其他数据</a>
-
+                    <select class="form-control type-selector" name="apartment">
+                        <option value="all">全部</option>
+                        <option value="tech">技术研发中心</option>
+                        <option value="action">行政部</option>
+                        <option value="hr">人事部</option>
+                        <option value="business">商务部</option>
+                    </select>
+                <input id="monthSelector" class="form-control sb-inline-form-control" name="month" placeholder="请选择月份" type="text" />
+                <input href="#" class="btn btn-green" type="submit" method="get" value="查看其他数据" />
             </div>
+            </form>
             <hr />
-            <div class="text-center mgb-20">
-                <select class="form-control type-selector">
-                    <option value="all">全部</option>
-                    <option value="tech">技术研发中心</option>
-                    <option value="action">行政部</option>
-                    <option value="hr">人事部</option>
-                    <option value="business">商务部</option>
-                </select>
-                <a href="#" class="btn btn-blue">导出该月记录</a>
-            </div>
+
         </div>
         <?php $this->Session->flash(); ?>
         <div>
             <div class="table-wrap">
             <ul class="table-tag">
-              <li><span class="iconfont">休假 &#xf004f;</li>
               <li><span class="iconfont">出勤 &#xf00b2;</li>
               <li><span class="iconfont">迟到 &#xf01a3;</li>
               <li><span class="iconfont">早退 &#x3444;</li>
@@ -75,27 +73,27 @@
             switch ($day_data['state_forenoon']) {
 
                 case 0://empty
-                    $trHTML.= '<td class="iconfont">0</td>';
+                    $trHTML.= '<td class="iconfont"></td>';
                     break;
 
                 case 1://normal
-                    $trHTML.= '<td class="iconfont">1</td>';
+                    $trHTML.= '<td class="iconfont">&#xf00b2;</td>';
                     break;
 
                 case 2://late
-                    $trHTML.= '<td class="iconfont">2</td>';
+                    $trHTML.= '<td class="iconfont">&#xf01a3;</td>';
                     break;
 
                 case 3://旷工
-                    $trHTML.= '<td class="iconfont">3</td>';
+                    $trHTML.= '<td class="iconfont">&#x004f;</td>';
                     break;  
 
                 case 4://早退
-                    $trHTML.= '<td class="iconfont">4</td>';
+                    $trHTML.= '<td class="iconfont">&#x3444;</td>';
                     break;                      
 
                 default://empty
-                    $trHTML.= '<td class="iconfont">5</td>';
+                    $trHTML.= '<td class="iconfont"></td>';
                     break;
             }
 
@@ -105,30 +103,30 @@
 
         foreach ($result as $day_data) {
             switch ($day_data['state_afternoon']) {
-
                 case 0://empty
-                    $trHTML.= '<td class="iconfont">0</td>';
+                    $trHTML.= '<td class="iconfont"></td>';
                     break;
 
                 case 1://normal
-                    $trHTML.= '<td class="iconfont">1</td>';
+                    $trHTML.= '<td class="iconfont">&#xf00b2;</td>';
                     break;
 
                 case 2://late
-                    $trHTML.= '<td class="iconfont">2</td>';
+                    $trHTML.= '<td class="iconfont">&#xf01a3;</td>';
                     break;
 
                 case 3://旷工
-                    $trHTML.= '<td class="iconfont">3</td>';
+                    $trHTML.= '<td class="iconfont">&#x004f;</td>';
                     break;  
 
                 case 4://早退
-                    $trHTML.= '<td class="iconfont">4</td>';
-                    break;                      
+                    $trHTML.= '<td class="iconfont">&#x3444;</td>';
+                    break;
 
                 default://empty
-                    $trHTML.= '<td class="iconfont">5</td>';
+                    $trHTML.= '<td class="iconfont"></td>';
                     break;
+
             }
             
         }
@@ -206,3 +204,10 @@
             </table>
             </div>
         </div>
+<?php echo $this->Html->scriptStart(array('block' => 'script')); ?>
+    $(document).ready(
+        function() {
+            signbook.display.init();
+        }
+    );
+<?php echo $this->Html->scriptEnd(); ?>

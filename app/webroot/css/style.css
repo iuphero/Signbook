@@ -11,11 +11,11 @@
  */
 @font-face {
   font-family: 'iconfont';
-  src: url("/font/iconfont.ttf") format("truetype");
+  src: url("../font/iconfont.ttf") format("truetype");
 }
 
 /* line 12, ../sass/style.scss */
-.icondat {
+.iconfont {
   font-family: "iconfont";
   font-size: 16px;
   font-style: normal;
