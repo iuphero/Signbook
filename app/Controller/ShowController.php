@@ -20,7 +20,7 @@ class ShowController extends AppController {
         }
 
         $month2 = str_replace('-', '', $month); //201402
-        
+
         $dpt_id = $this->Department->field('id',array('name'=>$dpt_name));
 
         $has_records = $this->SignRecord->find('count',array(
@@ -35,7 +35,6 @@ class ShowController extends AppController {
             $this->Session->setFlash('亲，没有查到相关记录，请先上传文件分析');
             $this->redirect('/');
         }
-        
 
         $results = $this->Department->find('all', array(
                 'conditions' => array(
@@ -43,7 +42,7 @@ class ShowController extends AppController {
                 )
             )
         );
-           
+
         $employees = $results[0]['Employee'];
         $month_timestamp = strtotime($month);
         $days = (int)date('t', $month_timestamp);   
@@ -100,7 +99,5 @@ class ShowController extends AppController {
         $this->set('department', $dpt_name);
         $this->set('dpt_names', $dpt_names);
         $this->set('results', $results);
-    
-        
     }
 }

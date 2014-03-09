@@ -38,22 +38,18 @@ class HandleController extends AppController {
             );
         }
 
-        
         $month= $this->request->data['month'];
-        $rows = file($file);
+        $rows = file($file, FILE_IGNORE_NEW_LINES);
         $n = count($rows);
 
         $first_tmp_ary = preg_split('/\s+/', $rows[0]);
         $last_tmp_ary = preg_split('/\s+/', $rows[$n-1]);
-        
 
         $first_datetime = new DateTime( date('Y-m', strtotime($first_tmp_ary[1])) );
-        $last_datetime = new DateTime( substr($last_tmp_ary[1],0,-3) );
-
+        $last_datetime = new DateTime( date('Y-m', strtotime($last_tmp_ary[1])) );
 
         $first_timestamp = $first_datetime->getTimestamp();
         $last_timestamp = $last_datetime->getTimestamp();
-
 
         $the_datetime = new DateTime($month);
         $the_timestamp = $the_datetime->getTimestamp();
@@ -73,11 +69,12 @@ class HandleController extends AppController {
 
         foreach ($rows as $row) {
             list($jobid, $datetime, $_, $_, $_, $_) = explode("\t", $row);
+            $timespan = strtotime($datetime);
+            $date = date('Y-m-d', $timespan);
+            $time = date('H:i:s', $timespan);
 
-            list($date,$time) = explode(' ',$datetime);
+            $row_datetime = new DateTime(date('Y-m', $timespan)) ;
 
-            $row_datetime = new DateTime(date('Y-m', strtotime($date))) ;
-            
             if($row_datetime->getTimestamp() < $the_timestamp) {
                 continue;
             }
@@ -90,10 +87,7 @@ class HandleController extends AppController {
             if(($the_time >= $sign_start_boundry) && ($the_time <= $sign_end_boundry)) {
                 $data[$jobid][$date][] =$time;
             }
-
         }
-        
-
 
         foreach ($data as $jobid => $date_ary) { // for a employee
             $employee = $this->Employee->findByJobId($jobid);
@@ -137,7 +131,6 @@ class HandleController extends AppController {
                 $y_m_str = substr($date, 0 ,-3);
                 list($year_str, $month_str) = explode('-', $y_m_str);
                 $record_data['year_and_month'] = (int)$year_str.$month_str;
-
 
                 if($n == 0) {                
                     
