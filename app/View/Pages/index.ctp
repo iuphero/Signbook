@@ -8,11 +8,11 @@
         <div class="sb-container">
             <form id="lookupHistory" class="text-center upload-form">
                 <div class="sb-form-group">
-                    <input id="monthSelector" type=text class="form-control" placeholder="选择月份">
+                    <input id="monthHistory" type=text class="form-control input-date" placeholder="选择月份">
                     <p class="sb-help-block">*选择月份后可以直接查看已统计的历史记录</p>
                 </div>
                 <div class="sb-form-group">
-                    <a href="display.html" class="btn btn-green">查看考勤记录</a>
+                    <a id="submitHistory" href="#" class="btn btn-green">查看考勤记录</a>
                 </div>
                 <hr/>
             </form>
@@ -20,8 +20,12 @@
 
             <form id="uploadForm" method="post" class="text-center upload-form" action="/handle/parseFile" enctype="multipart/form-data">
                 <div class="sb-form-group">
-                    <input class="file-wrap form-control" type="text" placeholder="选择上传文件">
-                    <input class="fileUpload" type="file" name="signfile" id="signfile" />
+                    <input id="monthNew" type=text class="form-control input-date" placeholder="选择月份">
+                    <p class="sb-help-block">*选择月份后可以直接查看已统计的历史记录</p>
+                </div>
+                <div class="sb-form-group">
+                    <input class="file-wrap form-control input-file" type="text" placeholder="选择上传文件">
+                    <input id="fileUpload" class="fileUpload hide" type="file"/>
                 </div>
                 <div class="uploaded-div">
                     <div class="uploaded-file">
@@ -30,19 +34,15 @@
                     </div>
                 </div>
                 <div class="sb-form-group">
-                    <input type="submit"  class="btn btn-blue" value="录入最新考勤统计" />
+                    <a id="submitNew" href="#" class="btn btn-blue">录入最新考勤统计</a>
                 </div>
             </form>
-            <div class="alert alert-danger alert-dismissable">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                <span>没有该月的考勤记录，请先上传!</span>
-            </div>
         </div>
 
 <?php echo $this->Html->scriptStart(array('block' => 'script')); ?>
-
-  
-        
-        signbook.upload.init();  
-    
+    $(document).ready(
+        function() {
+            signbook.upload.init();
+        }
+    );
 <?php echo $this->Html->scriptEnd(); ?>
