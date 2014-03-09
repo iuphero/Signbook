@@ -206,7 +206,15 @@ class HandleController extends AppController {
         $month_timestamp = strtotime($month);
         $month = date('Y-m', $month_timestamp);
         $this->Session->setFlash('考勤文件上传并分析成功');
-        $this->redirect('/show/getdptrecords/行政部/'.$month);
+        $this->redirect(array(
+                'controller' => 'Show',
+                'action' => 'getdptrecords',
+                '?' => array(
+                    'dpt_name' => '行政部',
+                    'month' => $month
+                )
+            )
+        );
     }    
 
 }
