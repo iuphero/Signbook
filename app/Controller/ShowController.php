@@ -10,11 +10,6 @@ class ShowController extends AppController {
     public $name = 'Show';
 
 
-    public function test($dptname, $month){
-        debug($_GET['month']);
-    }
-
-
 
     public function getDptRecords($dpt_name='', $month='') {
 /*      $dpt_name = '技术部';
