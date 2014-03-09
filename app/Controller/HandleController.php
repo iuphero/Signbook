@@ -17,6 +17,7 @@ class HandleController extends AppController {
 
     public function test() {
 
+
         $month='2014-2';
         $month_timestamp = strtotime($month);
         $month = date('Y-m', $month_timestamp);
@@ -30,13 +31,13 @@ class HandleController extends AppController {
         if(!$this->request->is('post')) {
             return;
         }
-        $result = array();
+        
+        debug($_FILES['signfile']);
         $file = $_FILES['signfile']['tmp_name'];
         $filename = $_FILES['signfile']['name'];
         if(substr($filename, -3) !== 'dat') {
-            $result['flag'] = 0;
-            $result['message'] = '请上传以.dat结尾的文件格式';
-            echo json_encode($result);
+            $this->Session->setFlash('this file is not right');
+            $this->redirect('/');
         }
 
         
@@ -61,7 +62,7 @@ class HandleController extends AppController {
 
         if(!($the_timestamp >= $first_timestamp && $the_timestamp <= $last_timestamp)) {
             $this->Session->setFlash('亲，您上传的文件不正确，请上传该月份对应的正确文件');
-            $this->redirect('/pages/index');
+            $this->redirect('/index');
         }
        
 

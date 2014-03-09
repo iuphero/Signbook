@@ -57,6 +57,10 @@ class PagesController extends AppController {
 
 	}
 
+	public function test() {
+
+	}
+	
 	public function display(){
 	    
 	}

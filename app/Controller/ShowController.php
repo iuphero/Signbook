@@ -11,8 +11,7 @@ class ShowController extends AppController {
 
 
     public function test($dptname, $month){
-        $this->set('dptname', $dptname);
-        $this->set('month', $month);
+        debug($_POSTS['month']);
     }
 
 
@@ -20,6 +19,9 @@ class ShowController extends AppController {
     public function getDptRecords($dpt_name, $month) {
 /*      $dpt_name = '技术部';
         $month = '2014-02';*/
+        if(empty($dpt_name) || empty($month)) {
+            $dpt_name = '技术部';
+        }
 
         $month2 = str_replace('-', '', $month); //201402
         
