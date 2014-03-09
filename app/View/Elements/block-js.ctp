@@ -8,6 +8,7 @@
 
     echo $this->Html->script('signbook.js');
     echo $this->Html->script('upload.js');
+    echo $this->Html->script('display.js');
     
     
 ?>

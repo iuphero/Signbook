@@ -1,5 +1,5 @@
         <header>
-          <div class="logo text-center"><a href="index.html"><img src="../img/logo.png" ></a></div>
+          <div class="logo text-center"><a href="index.html"><img src="/img/logo.png" ></a></div>
             <h1 class="title text-center">有米考勤签到分析神器</h1>
         </header>
         <div class="container">
