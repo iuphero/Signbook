@@ -3,17 +3,19 @@
             <h1 class="title text-center">有米考勤签到分析神器</h1>
         </header>
         <div class="container">
-            <form>
+            <form action="/show/getdptrecords" method="get">
             <div class="text-center mgb-20">
-                    <select class="form-control type-selector" name="apartment">
-                        <option value="all">全部</option>
-                        <option value="tech">技术研发中心</option>
-                        <option value="action">行政部</option>
-                        <option value="hr">人事部</option>
-                        <option value="business">商务部</option>
+                    <select class="form-control type-selector" name="dpt_name">
+<?php 
+    foreach ($dpt_names as $dpt_name) {
+        echo '<option value= "'.$dpt_name.'">'.$dpt_name.'</option>';
+    }
+
+?>
                     </select>
                 <input id="monthSelector" class="form-control sb-inline-form-control" name="month" placeholder="请选择月份" type="text" />
-                <input href="#" class="btn btn-green" type="submit" method="get" value="查看其他数据" />
+
+                <input class="btn btn-green" type="submit"  value="查看其他数据" />
             </div>
             </form>
             <hr />

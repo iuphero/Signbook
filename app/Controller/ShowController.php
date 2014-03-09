@@ -9,15 +9,17 @@ class ShowController extends AppController {
     public $uses = array('Department', 'Employee', 'SignRule', 'SignRecord');
     public $name = 'Show';
 
+    public function test() {
+        debug($this->request->query);
+        exit();
+    }
+
+    public function getDptRecords() {
+
+        $dpt_name = $this->request->query['dpt_name'];
+        $month = $this->request->query['month'];
 
 
-    public function getDptRecords($dpt_name='', $month='') {
-/*      $dpt_name = '技术部';
-        $month = '2014-02';*/
-        if(empty($dpt_name) || empty($month)) {
-            $dpt_name = '技术部';
-            $month = $_GET['month'];
-        }
 
         $month2 = str_replace('-', '', $month); //201402
         
