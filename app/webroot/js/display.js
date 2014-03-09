@@ -10,21 +10,19 @@ signbook.display = (function (sb){
             language : 'zh-CN'
         });
 
-        $('.sb-table td').tooltip({
-            container : 'body'
-        });
-
         var rest_days_str = $('.rest_days').text();
         if(rest_days_str) {
             var rest_days = rest_days_str.split(',');
-            $.each(rest_days, function(index,value){
-                value = value+1;
-                var selector = 'td:nth-child(' + value +')';
-                $(selector).addClass('rest');
-            });             
+            $('table tbody tr').each(function(){
+                var $self = $(this);
+                $.each(rest_days, function(index,value){
+                    var selector = 'td:nth-child('+(value*1+2)+')';
+                    console.log(selector);
+                    $self.find(selector).addClass('rest-day');
+                });
+            });
         }
 
-        
     };
 
     return sb;
