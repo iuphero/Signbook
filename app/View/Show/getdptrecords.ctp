@@ -3,7 +3,7 @@
             <h1 class="title text-center">有米考勤签到分析神器</h1>
         </header>
         <div class="container">
-            <form action="/show/getdptrecords" method="get">
+            <form id="submitMore" action="/show/getdptrecords" method="get">
             <div class="text-center mgb-20">
                     <select class="form-control type-selector" name="dpt_name">
 <?php 
@@ -143,71 +143,6 @@
         echo $trHTML.'</tr>';
     }//end foreach.someone
 ?>
-<!--                     <tr>
-                    <th rowspan="2">罗跃</th>
-                    <th>上午</th> -->
-                   <!--  <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont td-warning">&#xf00b3;</td>
-                    <td class="iconfont td-warning">&#xf00b3;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf004f;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td> -->
-
-<!--                     <td class="iconfont">&#xf01a3;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#x3444;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#x3444;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td>
-                    <td class="iconfont">&#xf00b2;</td> -->
                     </tr>
                 </tbody>
                 </div>

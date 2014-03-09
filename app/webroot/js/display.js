@@ -23,6 +23,14 @@ signbook.display = (function (sb){
             });
         }
 
+        //查看更多数据表单验证
+        var $helpBlockWarning = $('<p class="sb-help-block color-danger text-center">*请选择查看月份</p>');
+        $('#submitMore').submit(function(){
+            if(!$('#monthSelector').val()){
+                $helpBlockWarning.appendTo($(this));
+                return false;
+            }
+        });
     };
 
     return sb;
