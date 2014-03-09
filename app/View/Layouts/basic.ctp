@@ -2,6 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8" />
+        <link href="/sb.ico" mce_href="/sb.ico" rel="shortcut icon" type="image/x-icon" />
         <title>
         <?php 
             if(isset($page_title)) {
