@@ -17,7 +17,7 @@
                 </div>
                 <hr/>
             </form>
-            <?php $this->Session->flash(); ?>
+            
 
             <form id="uploadForm" method="post" class="text-center upload-form" action="/handle/parseFile" enctype="multipart/form-data">
                 <div class="sb-form-group">

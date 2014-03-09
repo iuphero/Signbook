@@ -43,13 +43,20 @@
     $date = $year.$month;  //201403
     $month_timestamp = strtotime($date.'01');
     $n_day = date('t', $month_timestamp);
+    $rest_days = array();
     for($i = 1; $i <= $n_day; $i++) {
+
         $date = $year. '-' .$month . '-'. $i;
         $weekday = date('D', strtotime($date));
-        echo '<th>'.$weekday.'</th>';
-       
+        if($weekday == 'Sat' || $weekday == 'Sun') {
+            echo '<th class="rest">'.$weekday.'</th>';
+            $rest_days[] = $i;
+        }
+        else {
+            echo '<th>'.$weekday.'</th>';           
+        }   
     }        
-
+    echo '<div class="rest_days hide">'.implode(',', $rest_days).'</div>';
 ?>
                 </tr>
                     <tr>
