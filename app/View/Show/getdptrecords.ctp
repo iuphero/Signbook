@@ -1,5 +1,5 @@
         <header>
-          <div class="logo text-center"><a href="index.html"><img src="/img/logo.png" ></a></div>
+          <div class="logo text-center"><a href="/"><img src="/img/logo.png" ></a></div>
             <h1 class="title text-center">有米考勤签到分析神器</h1>
         </header>
         <div class="container">
@@ -8,6 +8,10 @@
                     <select class="form-control type-selector" name="dpt_name">
 <?php 
     foreach ($dpt_names as $dpt_name) {
+        if($dpt_name == $department) {
+            echo '<option selected="selected" value= "'.$dpt_name.'">'.$dpt_name.'</option>';
+        }
+        else 
         echo '<option value= "'.$dpt_name.'">'.$dpt_name.'</option>';
     }
 
@@ -21,15 +25,15 @@
             <hr />
 
         </div>
-        <div class="flash-danger">
-            <?php $this->Session->flash(); ?>
-        </div>
+        <?php $this->Session->flash(); ?>
         <div>
             <div class="table-wrap">
             <ul class="table-tag">
               <li><span class="iconfont">出勤 &#xf00b2;</li>
               <li><span class="iconfont">迟到 &#xf01a3;</li>
               <li><span class="iconfont">早退 &#x3444;</li>
+              <li><span class="iconfont">旷工 &#xf004f;</li>
+              <li><span class="iconfont">异常 &#xf00b3;</li>
             </ul>
             <table class="sb-table table table-bordered table-hover">
                 <caption class="sb-caption">
@@ -55,9 +59,9 @@
             $rest_days[] = $i;
         }
         else {
-            echo '<th>'.$weekday.'</th>';
-        }
-    }
+            echo '<th>'.$weekday.'</th>';           
+        }   
+    }        
     echo '<div class="rest_days hide">'.implode(',', $rest_days).'</div>';
 ?>
                 </tr>
@@ -71,12 +75,11 @@
 ?>
                     </tr>
                 </thead>
-                <div id="#body">
                 <tbody>
 
 <?php 
     foreach ($results as $name=>$result) {//for someone
-        $trHTML = '<tr><th>'. $name .'</th><th>上午</th>' ;
+        $trHTML = '<tr><th rowspan="2">'. $name .'</th><th>上午</th>' ;
 
         foreach ($result as $day_data) {//for someone day fornoon
             
@@ -109,7 +112,7 @@
 
             
         }
-        $trHTML .= '</tr> <tr><th></th> <th>下午</th>' ;
+        $trHTML .= '</tr> <tr> <th>下午</th>' ;
 
         foreach ($result as $day_data) {
             switch ($day_data['state_afternoon']) {
@@ -143,9 +146,9 @@
         echo $trHTML.'</tr>';
     }//end foreach.someone
 ?>
+
                     </tr>
                 </tbody>
-                </div>
             </table>
             </div>
         </div>
