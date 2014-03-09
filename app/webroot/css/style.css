@@ -48,16 +48,31 @@
 }
 
 /* line 36, ../sass/style.scss */
+.color-green {
+  color: green;
+}
+
+/* line 39, ../sass/style.scss */
+.color-red {
+  color: red;
+}
+
+/* line 42, ../sass/style.scss */
+.color-yellow {
+  color: orange;
+}
+
+/* line 45, ../sass/style.scss */
 .btn-blue {
   background-color: #5c7cc4;
 }
 
-/* line 39, ../sass/style.scss */
+/* line 48, ../sass/style.scss */
 .btn-green {
   background-color: #45a152;
 }
 
-/* line 42, ../sass/style.scss */
+/* line 51, ../sass/style.scss */
 hr {
   width: 100%;
   border-top: 1px solid #c4c4c4;
@@ -65,89 +80,89 @@ hr {
   margin: 20px auto;
 }
 
-/* line 48, ../sass/style.scss */
+/* line 57, ../sass/style.scss */
 .rest-day {
   background-color: whiteSmoke;
 }
 
-/* line 51, ../sass/style.scss */
+/* line 60, ../sass/style.scss */
 .flash-danger {
   text-align: center;
   color: red;
   padding: 10px;
 }
 
-/* line 56, ../sass/style.scss */
+/* line 65, ../sass/style.scss */
 .input-date {
   background-image: url(../img/month.png);
   background-repeat: no-repeat;
   background-position: 270px center;
 }
 
-/* line 61, ../sass/style.scss */
+/* line 70, ../sass/style.scss */
 .input-file {
   background-image: url(../img/upload.png);
   background-repeat: no-repeat;
   background-position: 270px center;
 }
 
-/* line 68, ../sass/style.scss */
+/* line 77, ../sass/style.scss */
 body {
   background: url("../img/colorfill.png") left top repeat-x, url("../img/bg.png") repeat;
 }
 
-/* line 71, ../sass/style.scss */
+/* line 80, ../sass/style.scss */
 header {
   padding: 120px 0 60px 0;
   margin: 10px 0 40px 0;
   background-color: rgba(0, 0, 0, 0.1);
 }
-/* line 75, ../sass/style.scss */
+/* line 84, ../sass/style.scss */
 header .logo {
   margin-bottom: 10px;
 }
-/* line 77, ../sass/style.scss */
+/* line 86, ../sass/style.scss */
 header .logo img {
   width: 360px;
 }
-/* line 81, ../sass/style.scss */
+/* line 90, ../sass/style.scss */
 header .title {
   font-size: 30px;
   margin: 0;
   color: #2f1249;
 }
 
-/* line 87, ../sass/style.scss */
+/* line 96, ../sass/style.scss */
 .sb-container {
   margin: 0 auto;
   width: 300px;
 }
 
-/* line 93, ../sass/style.scss */
+/* line 102, ../sass/style.scss */
 .sub-title {
   font-size: 14px;
   padding: 20px;
   color: #2f1249;
 }
 
-/* line 100, ../sass/style.scss */
+/* line 109, ../sass/style.scss */
 .upload-form {
   margin-top: 20px;
 }
 
-/* line 103, ../sass/style.scss */
+/* line 112, ../sass/style.scss */
 .sb-inline-form-control {
   display: inline-block;
   width: 140px;
 }
 
-/* line 107, ../sass/style.scss */
+/* line 116, ../sass/style.scss */
 .sb-form-group {
   width: 300px;
   text-align: center;
   margin: 0 auto 20px auto;
 }
-/* line 112, ../sass/style.scss */
+/* line 121, ../sass/style.scss */
 .sb-form-group .sb-help-block {
   margin: 0;
   padding: 10px 0 0 10px;
@@ -155,16 +170,16 @@ header .title {
   color: #777;
   font-size: 13px;
 }
-/* line 120, ../sass/style.scss */
+/* line 129, ../sass/style.scss */
 .sb-form-group .sb-help-block-warning {
   color: #a94442;
 }
-/* line 123, ../sass/style.scss */
+/* line 132, ../sass/style.scss */
 .sb-form-group .sb-help-block-success {
   color: #3c763d;
 }
 
-/* line 127, ../sass/style.scss */
+/* line 136, ../sass/style.scss */
 .uploaded-div {
   background-color: rgba(255, 255, 255, 0.6);
   border-radius: 8px;
@@ -173,7 +188,7 @@ header .title {
   margin-bottom: 10px;
   display: none;
 }
-/* line 136, ../sass/style.scss */
+/* line 145, ../sass/style.scss */
 .uploaded-div .uploaded-file .file-name {
   display: inline-block;
   text-align: left;
@@ -186,7 +201,7 @@ header .title {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* line 149, ../sass/style.scss */
+/* line 158, ../sass/style.scss */
 .uploaded-div .uploaded-file .file-icon {
   display: inline-block;
   width: 50px;
@@ -197,13 +212,13 @@ header .title {
   margin-right: 6px;
 }
 
-/* line 162, ../sass/style.scss */
+/* line 171, ../sass/style.scss */
 .type-selector {
   display: inline-block;
   width: 140px;
 }
 
-/* line 166, ../sass/style.scss */
+/* line 175, ../sass/style.scss */
 .table-wrap {
   max-width: 1600px;
   border-radius: 8px;
@@ -211,7 +226,7 @@ header .title {
   padding: 20px;
   background-color: white;
 }
-/* line 173, ../sass/style.scss */
+/* line 182, ../sass/style.scss */
 .table-wrap .sb-caption {
   font-size: 20px;
   height: 34px;
@@ -220,23 +235,23 @@ header .title {
   margin-bottom: 40px;
 }
 
-/* line 181, ../sass/style.scss */
+/* line 190, ../sass/style.scss */
 .table-tag {
   list-style: none;
   padding-right: 20px;
   text-align: right;
 }
-/* line 186, ../sass/style.scss */
+/* line 195, ../sass/style.scss */
 .table-tag li {
   display: inline-block;
   margin-right: 15px;
 }
 
-/* line 192, ../sass/style.scss */
+/* line 201, ../sass/style.scss */
 .sb-table th {
   background-color: whitesmoke;
 }
-/* line 195, ../sass/style.scss */
+/* line 204, ../sass/style.scss */
 .sb-table td {
   text-align: center;
 }

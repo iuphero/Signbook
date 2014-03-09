@@ -29,11 +29,9 @@
         <div>
             <div class="table-wrap">
             <ul class="table-tag">
-              <li><span class="iconfont">出勤 &#xf00b2;</li>
-              <li><span class="iconfont">迟到 &#xf01a3;</li>
-              <li><span class="iconfont">早退 &#x3444;</li>
-              <li><span class="iconfont">旷工 &#xf004f;</li>
-              <li><span class="iconfont">异常 &#xf00b3;</li>
+              <li><span class="iconfont">出勤 <span>&#xf00b2;</span></li>
+              <li><span class="iconfont">迟到 <span class="color-red">&#xf01a3;</span></li>
+              <li><span class="iconfont">早退 <span class="color-green">&#x3444;</span></li>
             </ul>
             <table class="sb-table table table-bordered table-hover">
                 <caption class="sb-caption">
@@ -79,10 +77,10 @@
 
 <?php 
     foreach ($results as $name=>$result) {//for someone
-        $trHTML = '<tr><th rowspan="2">'. $name .'</th><th>上午</th>' ;
+        $trHTML = '<tr><th>'. $name .'</th><th>上午</th>' ;
 
         foreach ($result as $day_data) {//for someone day fornoon
-            
+
             switch ($day_data['state_forenoon']) {
 
                 case 0://empty
@@ -94,25 +92,24 @@
                     break;
 
                 case 2://late
-                    $trHTML.= '<td class="iconfont">&#xf01a3;</td>';
+                    $trHTML.= '<td class="iconfont color-red">&#xf01a3;</td>';
                     break;
 
                 case 3://旷工
-                    $trHTML.= '<td class="iconfont">&#x004f;</td>';
+                    $trHTML.= '<td class="iconfont color-yellow">&#x004f;</td>';
                     break;  
 
                 case 4://早退
-                    $trHTML.= '<td class="iconfont">&#x3444;</td>';
-                    break;                      
+                    $trHTML.= '<td class="iconfont color-green">&#x3444;</td>';
+                    break;
 
                 default://empty
                     $trHTML.= '<td class="iconfont"></td>';
                     break;
             }
 
-            
         }
-        $trHTML .= '</tr> <tr> <th>下午</th>' ;
+        $trHTML .= '</tr> <tr><th></th> <th>下午</th>' ;
 
         foreach ($result as $day_data) {
             switch ($day_data['state_afternoon']) {
@@ -125,7 +122,7 @@
                     break;
 
                 case 2://late
-                    $trHTML.= '<td class="iconfont">&#xf01a3;</td>';
+                    $trHTML.= '<td class="iconfont color-red">&#xf01a3;</td>';
                     break;
 
                 case 3://旷工
@@ -133,7 +130,7 @@
                     break;  
 
                 case 4://早退
-                    $trHTML.= '<td class="iconfont">&#x3444;</td>';
+                    $trHTML.= '<td class="iconfont color-green">&#x3444;</td>';
                     break;
 
                 default://empty
