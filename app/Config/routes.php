@@ -32,6 +32,7 @@
 
 
     Router::connect('/', array('controller' => 'pages', 'action' => 'index'  ) );
+    Router::connect('/:action', array('controller' => 'pages') );
 /**
  * Load all plugin routes. See the CakePlugin documentation on
  * how to customize the loading of plugin routes.

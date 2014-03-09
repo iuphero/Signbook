@@ -10,32 +10,17 @@ class ShowController extends AppController {
     public $name = 'Show';
 
 
-    public function getDateFromMonth($month,$dpt = 'all'){//201402
-        
-        $month = 201402;
-        $result = $this->SignRecord->find('all', array(
-                'conditions' => array(
-                    'year_and_month' => $month
-                ),
-                'order' => array('whichday asc','employee_id asc') 
-            )
-        );
-
-        debug($result);
+    public function test($dptname, $month){
+        $this->set('dptname', $dptname);
+        $this->set('month', $month);
     }
 
-
-    public function getCompanyRecords($month) {
-        $month = 201402;
-        $dpts = $this->Department->find('all');    
-
-        debug($dpts);exits;
-    }
 
 
     public function getDptRecords($dpt_name, $month) {
-        $dpt_name = '技术部';
-        $month = '2014-02';
+/*      $dpt_name = '技术部';
+        $month = '2014-02';*/
+
         $month2 = str_replace('-', '', $month); //201402
         
         $dpt_id = $this->Department->field('id',array('name'=>$dpt_name));
@@ -49,7 +34,8 @@ class ShowController extends AppController {
         );
 
         if(!$has_records) {
-            echo 'has not records';
+            $this->Session->setFlash('亲，没有查到相关记录，请先上传文件分析');
+            $this->redirect('/pages/index');
         }
         
 
@@ -116,50 +102,7 @@ class ShowController extends AppController {
         $this->set('department', $dpt_name);
         $this->set('dpt_names', $dpt_names);
         $this->set('results', $results);
-     
-
-// array(
-//     (int) 54 => array(
-//         (int) 1 => array(
-//             'sign_start' => null,
-//             'sign_end' => null,
-//             'state_forenoon' => (int) 0,
-//             'state_afternoon' => (int) 0,
-//             'is_abnormal' => (int) 0
-//         ),
-//         (int) 2 => array(
-//             'sign_start' => null,
-//             'sign_end' => null,
-//             'state_forenoon' => (int) 0,
-//             'state_afternoon' => (int) 0,
-//             'is_abnormal' => (int) 0
-//         ),
-//         (int) 3 => array(
-//             'sign_start' => null,
-//             'sign_end' => null,
-//             'state_forenoon' => (int) 0,
-//             'state_afternoon' => (int) 0,
-//             'is_abnormal' => (int) 0
-//         ),
-//         (int) 4 => array(
-//             'sign_start' => null,
-//             'sign_end' => null,
-//             'state_forenoon' => (int) 0,
-//             'state_afternoon' => (int) 0,
-//             'is_abnormal' => (int) 0
-//         ),
-
-        
-
-        
-
-        // $employee_ids = $this->Employee->find('all',array(
-        //         'conditions' => array(
-        //             'dpt_id' => $dpt_id
-        //         )
-        //     ) 
-        // );
-
+    
         
     }
 }

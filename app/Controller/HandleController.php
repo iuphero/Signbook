@@ -15,6 +15,16 @@ class HandleController extends AppController {
     }
 
 
+    public function test() {
+
+        $month='2014-2';
+        $month_timestamp = strtotime($month);
+        $month = date('Y-m', $month_timestamp);
+
+        $this->Session->setFlash('考勤文件上传并分析成功');
+        $this->redirect('/show/test/总公司/'.$month);        
+    }
+
     public function parseFile() {
 
         if(!$this->request->is('post')) {
@@ -30,7 +40,7 @@ class HandleController extends AppController {
         }
 
         
-        $month='2014-2';
+        $month='2014-02';
         $rows = file($file);
         $n = count($rows);
 
@@ -50,12 +60,11 @@ class HandleController extends AppController {
         $the_timestamp = $the_datetime->getTimestamp();
 
         if(!($the_timestamp >= $first_timestamp && $the_timestamp <= $last_timestamp)) {
-            return 'not in';  //return error show message
+            $this->Session->setFlash('亲，您上传的文件不正确，请上传该月份对应的正确文件');
+            $this->redirect('/pages/index');
         }
-        else echo  'in <br/>';//todo
+       
 
-
-        
 
         $data = array();
 
@@ -63,7 +72,7 @@ class HandleController extends AppController {
             list($jobid, $datetime, $_, $_, $_, $_) = explode("\t", $row);
 
             list($date,$time) = explode(' ',$datetime);
-            debug($date);
+            
             $row_datetime = new DateTime( substr($date, 0, -3) );
             
             if($row_datetime->getTimestamp() < $the_timestamp) {
@@ -78,7 +87,6 @@ class HandleController extends AppController {
             if(($the_time >= $sign_start_boundry) && ($the_time <= $sign_end_boundry)) {
                 $data[$jobid][$date][] =$time;
             }
-            //todo comment  
 
         }
         
@@ -96,7 +104,7 @@ class HandleController extends AppController {
             $this->SignRule->recursive = 0;
             $sign_rule = $this->SignRule->findById($sign_rule_id);
 
-            /*debug($sign_rule);exit;*/
+
             $core_starttime = $sign_rule['SignRule']['core_starttime'];
             $core_endtime = $sign_rule['SignRule']['core_endtime'];
             $flex_time = $sign_rule['SignRule']['flex_time']; //unit is minute
@@ -107,7 +115,7 @@ class HandleController extends AppController {
             foreach ($date_ary as $date => $times) { //for the employee someone date
 
 
-                $is_existing = $this->SignRule->find('count',array(
+                $is_existing = $this->SignRecord->find('count',array(
                         'conditions' => array(
                             'employee_id' => $employee_id,
                             'whichday' => $date
@@ -199,6 +207,10 @@ class HandleController extends AppController {
 
         }//end foreach for the employee
         
+        $month_timestamp = strtotime($month);
+        $month = date('Y-m', $month_timestamp);
+        $this->Session->setFlash('考勤文件上传并分析成功');
+        $this->redirect('/show/getdptrecords/总公司/'.$month);
     }    
 
 }
