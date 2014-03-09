@@ -17,9 +17,6 @@
     </head>
     <body>
     
-        
-        
-
         <?php 
             echo $this->fetch('content');
             echo $this->element('block-js');

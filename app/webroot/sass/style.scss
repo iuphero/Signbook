@@ -42,7 +42,14 @@ hr {
     border-bottom:1px solid #e1e1e1;
     margin:20px auto;
 }
-
+.rest-day {
+    background-color:whiteSmoke;
+}
+.flash-danger {
+    text-align:center;
+    color:red;
+    padding:10px;
+}
 //=signbook布局
 body {
     background:url('../img/colorfill.png') left top repeat-x, url('../img/bg.png') repeat;
@@ -196,3 +203,4 @@ header {
     background-repeat: no-repeat;
     background-position:270px center;
 }
+

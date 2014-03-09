@@ -21,15 +21,15 @@
             <hr />
 
         </div>
-        <?php $this->Session->flash(); ?>
+        <div class="flash-danger">
+            <?php $this->Session->flash(); ?>
+        </div>
         <div>
             <div class="table-wrap">
             <ul class="table-tag">
               <li><span class="iconfont">出勤 &#xf00b2;</li>
               <li><span class="iconfont">迟到 &#xf01a3;</li>
               <li><span class="iconfont">早退 &#x3444;</li>
-              <li><span class="iconfont">旷工 &#xf004f;</li>
-              <li><span class="iconfont">异常 &#xf00b3;</li>
             </ul>
             <table class="sb-table table table-bordered table-hover">
                 <caption class="sb-caption">
@@ -55,9 +55,9 @@
             $rest_days[] = $i;
         }
         else {
-            echo '<th>'.$weekday.'</th>';           
-        }   
-    }        
+            echo '<th>'.$weekday.'</th>';
+        }
+    }
     echo '<div class="rest_days hide">'.implode(',', $rest_days).'</div>';
 ?>
                 </tr>
@@ -71,11 +71,12 @@
 ?>
                     </tr>
                 </thead>
+                <div id="#body">
                 <tbody>
 
 <?php 
     foreach ($results as $name=>$result) {//for someone
-        $trHTML = '<tr><th rowspan="2">'. $name .'</th><th>上午</th>' ;
+        $trHTML = '<tr><th>'. $name .'</th><th>上午</th>' ;
 
         foreach ($result as $day_data) {//for someone day fornoon
             
@@ -108,7 +109,7 @@
 
             
         }
-        $trHTML .= '</tr> <tr> <th>下午</th>' ;
+        $trHTML .= '</tr> <tr><th></th> <th>下午</th>' ;
 
         foreach ($result as $day_data) {
             switch ($day_data['state_afternoon']) {
@@ -149,7 +150,6 @@
                     <td class="iconfont">&#xf00b2;</td>
                     <td class="iconfont td-warning">&#xf00b3;</td>
                     <td class="iconfont td-warning">&#xf00b3;</td>
-                    <td data-toggle="tooltip" data-placement="top" data-original-title="2018-09-05 12:00" class="iconfont td-warning">&#xf00b3;</td>
                     <td class="iconfont">&#xf00b2;</td>
                     <td class="iconfont">&#xf00b2;</td>
                     <td class="iconfont">&#xf00b2;</td>
@@ -210,6 +210,7 @@
                     <td class="iconfont">&#xf00b2;</td> -->
                     </tr>
                 </tbody>
+                </div>
             </table>
             </div>
         </div>
