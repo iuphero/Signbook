@@ -49,7 +49,7 @@ class HandleController extends AppController {
         $last_tmp_ary = preg_split('/\s+/', $rows[$n-1]);
         
 
-        $first_datetime = new DateTime( substr($first_tmp_ary[1],0,-3) );
+        $first_datetime = new DateTime( date('Y-m', strtotime($first_tmp_ary[1])) );
         $last_datetime = new DateTime( substr($last_tmp_ary[1],0,-3) );
 
 
@@ -73,8 +73,8 @@ class HandleController extends AppController {
             list($jobid, $datetime, $_, $_, $_, $_) = explode("\t", $row);
 
             list($date,$time) = explode(' ',$datetime);
-            
-            $row_datetime = new DateTime( substr($date, 0, -3) );
+
+            $row_datetime = new DateTime(date('Y-m', strtotime($date))) ;
             
             if($row_datetime->getTimestamp() < $the_timestamp) {
                 continue;
