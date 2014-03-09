@@ -38,40 +38,11 @@ class PagesController extends AppController {
 	public $uses = array();
 
 	public $components = array("Session");
-/**
- * Displays a view
- *
- * @param mixed What page to display
- * @return void
- * @throws NotFoundException When the view file could not be found
- *	or MissingViewException in debug mode.
- */
-	public function show() {
 
-	}
 
 	public function index() {
 
 
-
-
 	}
 
-	public function test() {
-		$this->redirect(array(
-		    'controller' => 'handle',
-		    'action' => 'test',
-		    'product' => 'pizza',
-		    'quantity' => 5)
-		);		
-
-	}
-
-	public function display(){
-	    
-	}
-
-	public function showdata() {
-
-	}
 }

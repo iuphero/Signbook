@@ -6,13 +6,9 @@ App::uses('AppController', 'Controller');
 
 class ShowController extends AppController {
 
-    public $uses = array('Department', 'Employee', 'SignRule', 'SignRecord');
+
     public $name = 'Show';
 
-    public function test() {
-        debug($this->request->query);
-        exit();
-    }
 
     public function getDptRecords() {
 
@@ -34,7 +30,7 @@ class ShowController extends AppController {
         );
 
         if(!$has_records) {
-            $this->Session->setFlash('亲，没有查到相关记录，请先上传文件分析');
+            $this->Session->setFlash('亲，没有查到相关记录，请先上传文件分析','flash_custom');
             $this->redirect('/');
         }
         

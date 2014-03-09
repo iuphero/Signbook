@@ -7,7 +7,6 @@ class HandleController extends AppController {
 
     public $name = 'handle';
 
-    public $uses = array('Department', 'Employee', 'SignRule', 'SignRecord');  //todo
 
     public function beforeFilter() {
         parent::beforeFilter();
@@ -15,22 +14,44 @@ class HandleController extends AppController {
     }
 
 
-    public function test() {
-        debug($this->request);exit();   
-    }
-
-
-
     public function parseFile() {
+        
+
 
         if(!$this->request->is('post')) {
-            $this->Session->setFlash('亲，这不科学');
+            $this->Session->setFlash('亲，这不科学', 'flash_custom');
+            $this->redirect(array(
+                    'controller' => 'pages',
+                    'action' => 'index'
+                )
+            );
         }
+
+        $month= $this->request->data['month'];
+
         
+        list($year, $month2) = explode('-', $month);
+
+        $is_existing = $this->SignRecord->find('count',array(
+                'conditions' => array(
+                    'year_and_month' => (int)(''.$year.$month2)
+                )
+            )
+        );
+
+        if($is_existing) {
+            $this->Session->setFlash('亲，您要上传的文件对应的月份数据已存在，不用再上传啦','flash_custom');
+            $this->redirect(array(
+                    'controller' => 'pages',
+                    'action' => 'index'
+                )
+            );
+        }
+
         $file = $_FILES['signfile']['tmp_name'];
         $filename = $_FILES['signfile']['name'];
         if(substr($filename, -3) !== 'dat') {
-            $this->Session->setFlash('this file is not right');
+            $this->Session->setFlash('this file is not right', 'flash_custom');
             $this->redirect(array(
                     'controller' => 'pages',
                     'action' => 'index'
@@ -39,7 +60,6 @@ class HandleController extends AppController {
         }
 
         
-        $month= $this->request->data['month'];
         $rows = file($file);
         $n = count($rows);
 
@@ -59,7 +79,7 @@ class HandleController extends AppController {
         $the_timestamp = $the_datetime->getTimestamp();
 
         if(!($the_timestamp >= $first_timestamp && $the_timestamp <= $last_timestamp)) {
-            $this->Session->setFlash('亲，您上传的文件不正确，请上传该月份对应的正确文件');
+            $this->Session->setFlash('亲，您上传的文件不正确，请上传该月份对应的正确文件', 'flash_custom');
             $this->redirect(array(
                     'controller' => 'pages',
                     'action' => 'index'
@@ -212,7 +232,7 @@ class HandleController extends AppController {
         
         $month_timestamp = strtotime($month);
         $month = date('Y-m', $month_timestamp);
-        $this->Session->setFlash('考勤文件上传并分析成功');
+        $this->Session->setFlash('考勤文件上传并分析成功', 'flash_custom');
         $this->redirect(array(
                 'controller' => 'Show',
                 'action' => 'getdptrecords',
