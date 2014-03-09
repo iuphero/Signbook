@@ -16,26 +16,30 @@ class HandleController extends AppController {
 
 
     public function test() {
-        $month = $_POST['month'];
-        debug($month);     
+        debug($this->request);exit();   
     }
+
+
 
     public function parseFile() {
 
         if(!$this->request->is('post')) {
-            return;
+            $this->Session->setFlash('亲，这不科学');
         }
         
-        debug($_FILES['signfile']);
         $file = $_FILES['signfile']['tmp_name'];
         $filename = $_FILES['signfile']['name'];
         if(substr($filename, -3) !== 'dat') {
             $this->Session->setFlash('this file is not right');
-            $this->redirect('/');
+            $this->redirect(array(
+                    'controller' => 'pages',
+                    'action' => 'index'
+                )
+            );
         }
 
         
-        $month= $_POST['month'];
+        $month= $this->request->data['month'];
         $rows = file($file);
         $n = count($rows);
 
@@ -56,7 +60,11 @@ class HandleController extends AppController {
 
         if(!($the_timestamp >= $first_timestamp && $the_timestamp <= $last_timestamp)) {
             $this->Session->setFlash('亲，您上传的文件不正确，请上传该月份对应的正确文件');
-            $this->redirect('/index');
+            $this->redirect(array(
+                    'controller' => 'pages',
+                    'action' => 'index'
+                )
+            );
         }
        
 

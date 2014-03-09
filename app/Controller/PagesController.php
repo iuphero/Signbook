@@ -58,9 +58,15 @@ class PagesController extends AppController {
 	}
 
 	public function test() {
+		$this->redirect(array(
+		    'controller' => 'handle',
+		    'action' => 'test',
+		    'product' => 'pizza',
+		    'quantity' => 5)
+		);		
 
 	}
-	
+
 	public function display(){
 	    
 	}
