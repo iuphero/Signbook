@@ -30,6 +30,9 @@
         color:white;
     }
 }
+.color-danger {
+    color:#a94442;
+}
 .btn-blue {
     background-color:#5c7cc4;
 }
@@ -50,6 +53,17 @@ hr {
     color:red;
     padding:10px;
 }
+.input-date {
+    background-image:url(../img/month.png);
+    background-repeat: no-repeat;
+    background-position:270px center;
+}
+.input-file {
+    background-image:url(../img/upload.png);
+    background-repeat: no-repeat;
+    background-position:270px center;
+}
+
 //=signbook布局
 body {
     background:url('../img/colorfill.png') left top repeat-x, url('../img/bg.png') repeat;
@@ -178,29 +192,8 @@ header {
     th {
         background-color:whitesmoke;
     }
-}
-.sb-table td{
-    text-align:center;
-
-    &.td-warning {
-        color:red;
+    td {
+        text-align:center;
     }
-    &.td-chidao {
-        color:red;
-    }
-    &.td-chidao {
-        color:red;
-    }
-}
-
-.input-date {
-    background-image:url(../img/month.png);
-    background-repeat: no-repeat;
-    background-position:270px center;
-}
-.input-file {
-    background-image:url(../img/upload.png);
-    background-repeat: no-repeat;
-    background-position:270px center;
 }
 

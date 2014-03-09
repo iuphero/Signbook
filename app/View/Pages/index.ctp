@@ -9,8 +9,8 @@
             <?php echo $this->Session->flash(); ?>
             <form id="lookupHistory" class="text-center upload-form" action="/show/getdptrecords" method="get">
                 <div class="sb-form-group">
-                    <input id="monthHistory" type=text class="form-control input-date" placeholder="选择月份" name="month" >
                     <input type="hidden" name="dpt_name" value="技术部" >
+                    <input id="monthHistory" type=text class="form-control input-date" placeholder="选择月份" name="month" >
                     <p class="sb-help-block">*选择月份后可以直接查看已统计的历史记录</p>
                 </div>
                 <div class="sb-form-group">
