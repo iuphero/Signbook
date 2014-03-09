@@ -28,6 +28,7 @@ Stack Trace:
 #6 /usr/share/nginx/html/signbook/lib/Cake/Routing/Dispatcher.php(160): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest), Object(CakeResponse))
 #7 /usr/share/nginx/html/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
 #8 {main}
+<<<<<<< HEAD
 2014-03-09 10:46:44 Error: [PDOException] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'employee_id' in 'where clause'
 Request URL: /handle/parseFile
 Stack Trace:
@@ -340,3 +341,5 @@ Stack Trace:
 #1 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(160): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest), Object(CakeResponse))
 #2 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
 #3 {main}
+=======
+>>>>>>> ae89af9d7ab96c59695e3af891413d35dad9457a
