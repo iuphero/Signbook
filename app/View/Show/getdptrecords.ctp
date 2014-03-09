@@ -20,6 +20,7 @@
                 <a href="#" class="btn btn-blue">导出该月记录</a>
             </div>
         </div>
+        <?php $this->Session->flash(); ?>
         <div>
             <div class="table-wrap">
             <ul class="table-tag">
@@ -74,27 +75,27 @@
             switch ($day_data['state_forenoon']) {
 
                 case 0://empty
-                    $trHTML.= '<td class="iconfont">e</td>';
+                    $trHTML.= '<td class="iconfont">0</td>';
                     break;
 
                 case 1://normal
-                    $trHTML.= '<td class="iconfont">&#xf00b2;</td>';
+                    $trHTML.= '<td class="iconfont">1</td>';
                     break;
 
                 case 2://late
-                    $trHTML.= '<td class="iconfont">&#xf00b2;</td>';
+                    $trHTML.= '<td class="iconfont">2</td>';
                     break;
 
                 case 3://旷工
-                    $trHTML.= '<td class="iconfont">&#xf00b2;</td>';
+                    $trHTML.= '<td class="iconfont">3</td>';
                     break;  
 
                 case 4://早退
-                    $trHTML.= '<td class="iconfont">&#xf00b2;</td>';
+                    $trHTML.= '<td class="iconfont">4</td>';
                     break;                      
 
                 default://empty
-                    $trHTML.= '<td class="iconfont">e</td>';
+                    $trHTML.= '<td class="iconfont">5</td>';
                     break;
             }
 
@@ -106,27 +107,27 @@
             switch ($day_data['state_afternoon']) {
 
                 case 0://empty
-                    $trHTML.= '<td class="iconfont">e</td>';
+                    $trHTML.= '<td class="iconfont">0</td>';
                     break;
 
                 case 1://normal
-                    $trHTML.= '<td class="iconfont">&#xf00b2;</td>';
+                    $trHTML.= '<td class="iconfont">1</td>';
                     break;
 
                 case 2://late
-                    $trHTML.= '<td class="iconfont">&#xf00b2;</td>';
+                    $trHTML.= '<td class="iconfont">2</td>';
                     break;
 
                 case 3://旷工
-                    $trHTML.= '<td class="iconfont">&#xf00b2;</td>';
+                    $trHTML.= '<td class="iconfont">3</td>';
                     break;  
-                    
+
                 case 4://早退
-                    $trHTML.= '<td class="iconfont">&#xf00b2;</td>';
+                    $trHTML.= '<td class="iconfont">4</td>';
                     break;                      
 
                 default://empty
-                    $trHTML.= '<td class="iconfont">e</td>';
+                    $trHTML.= '<td class="iconfont">5</td>';
                     break;
             }
             

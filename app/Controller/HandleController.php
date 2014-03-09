@@ -16,14 +16,8 @@ class HandleController extends AppController {
 
 
     public function test() {
-
-
-        $month='2014-2';
-        $month_timestamp = strtotime($month);
-        $month = date('Y-m', $month_timestamp);
-
-        $this->Session->setFlash('考勤文件上传并分析成功');
-        $this->redirect('/show/test/总公司/'.$month);        
+        $month = $_POST['month'];
+        debug($month);     
     }
 
     public function parseFile() {
@@ -41,7 +35,7 @@ class HandleController extends AppController {
         }
 
         
-        $month='2014-02';
+        $month= $_POST['month'];
         $rows = file($file);
         $n = count($rows);
 
@@ -211,7 +205,7 @@ class HandleController extends AppController {
         $month_timestamp = strtotime($month);
         $month = date('Y-m', $month_timestamp);
         $this->Session->setFlash('考勤文件上传并分析成功');
-        $this->redirect('/show/getdptrecords/总公司/'.$month);
+        $this->redirect('/show/getdptrecords/行政部/'.$month);
     }    
 
 }

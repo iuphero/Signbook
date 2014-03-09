@@ -11,16 +11,17 @@ class ShowController extends AppController {
 
 
     public function test($dptname, $month){
-        debug($_POSTS['month']);
+        debug($_GET['month']);
     }
 
 
 
-    public function getDptRecords($dpt_name, $month) {
+    public function getDptRecords($dpt_name='', $month='') {
 /*      $dpt_name = '技术部';
         $month = '2014-02';*/
         if(empty($dpt_name) || empty($month)) {
             $dpt_name = '技术部';
+            $month = $_GET['month'];
         }
 
         $month2 = str_replace('-', '', $month); //201402
@@ -37,7 +38,7 @@ class ShowController extends AppController {
 
         if(!$has_records) {
             $this->Session->setFlash('亲，没有查到相关记录，请先上传文件分析');
-            $this->redirect('/pages/index');
+            $this->redirect('/');
         }
         
 
