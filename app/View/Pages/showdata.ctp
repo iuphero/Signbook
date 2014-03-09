@@ -30,6 +30,7 @@
               <li><span class="iconfont">旷工 &#xf004f;</li>
               <li><span class="iconfont">异常 &#xf00b3;</li>
             </ul>
+            
             <table class="sb-table table table-bordered table-hover">
                 <caption class="sb-caption">2014-05技术研发中心考勤统计</caption>
                 <thead>

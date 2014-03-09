@@ -28,3 +28,315 @@ Stack Trace:
 #6 /usr/share/nginx/html/signbook/lib/Cake/Routing/Dispatcher.php(160): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest), Object(CakeResponse))
 #7 /usr/share/nginx/html/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
 #8 {main}
+2014-03-09 10:46:44 Error: [PDOException] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'employee_id' in 'where clause'
+Request URL: /handle/parseFile
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/Model/Datasource/DboSource.php(458): PDOStatement->execute(Array)
+#1 /home/xfight/vhost/signbook/lib/Cake/Model/Datasource/DboSource.php(424): DboSource->_execute('SELECT COUNT(*)...', Array)
+#2 /home/xfight/vhost/signbook/lib/Cake/Model/Datasource/DboSource.php(665): DboSource->execute('SELECT COUNT(*)...', Array, Array)
+#3 /home/xfight/vhost/signbook/lib/Cake/Model/Datasource/DboSource.php(1077): DboSource->fetchAll('SELECT COUNT(*)...', false)
+#4 /home/xfight/vhost/signbook/lib/Cake/Model/Model.php(2900): DboSource->read(Object(SignRule), Array)
+#5 /home/xfight/vhost/signbook/lib/Cake/Model/Model.php(2872): Model->_readDataSource('count', Array)
+#6 /home/xfight/vhost/signbook/app/Controller/HandleController.php(116): Model->find('count', Array)
+#7 [internal function]: HandleController->parseFile()
+#8 /home/xfight/vhost/signbook/lib/Cake/Controller/Controller.php(490): ReflectionMethod->invokeArgs(Object(HandleController), Array)
+#9 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(185): Controller->invokeAction(Object(CakeRequest))
+#10 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(160): Dispatcher->_invoke(Object(HandleController), Object(CakeRequest), Object(CakeResponse))
+#11 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#12 {main}
+2014-03-09 11:05:53 Error: Fatal Error (4): syntax error, unexpected ')' in [/home/xfight/vhost/signbook/app/Controller/ShowController.php, line 47]
+2014-03-09 11:05:53 Error: [FatalErrorException] syntax error, unexpected ')'
+Request URL: /show/getdptrecords
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/Error/ErrorHandler.php(203): ErrorHandler::handleFatalError(4, 'syntax error, u...', '/home/xfight/vh...', 47)
+#1 [internal function]: ErrorHandler::handleError(4, 'syntax error, u...', '/home/xfight/vh...', 47, Array)
+#2 /home/xfight/vhost/signbook/lib/Cake/Core/App.php(929): call_user_func('ErrorHandler::h...', 4, 'syntax error, u...', '/home/xfight/vh...', 47, Array)
+#3 /home/xfight/vhost/signbook/lib/Cake/Core/App.php(902): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
+2014-03-09 11:08:19 Error: [MissingViewException] View file "/home/xfight/vhost/signbook/app/View/Show/getdptrecords.ctp" is missing.
+Exception Attributes: array (
+  'file' => '/home/xfight/vhost/signbook/app/View/Show/getdptrecords.ctp',
+)
+Request URL: /show/getdptrecords
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/View/View.php(457): View->_getViewFileName(NULL)
+#1 /home/xfight/vhost/signbook/lib/Cake/Controller/Controller.php(952): View->render(NULL, NULL)
+#2 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(192): Controller->render()
+#3 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(160): Dispatcher->_invoke(Object(ShowController), Object(CakeRequest), Object(CakeResponse))
+#4 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#5 {main}
+2014-03-09 11:08:40 Error: [MissingViewException] View file "/home/xfight/vhost/signbook/app/View/Show/getdptrecords.ctp" is missing.
+Exception Attributes: array (
+  'file' => '/home/xfight/vhost/signbook/app/View/Show/getdptrecords.ctp',
+)
+Request URL: /show/getdptrecords
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/View/View.php(457): View->_getViewFileName(NULL)
+#1 /home/xfight/vhost/signbook/lib/Cake/Controller/Controller.php(952): View->render(NULL, NULL)
+#2 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(192): Controller->render()
+#3 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(160): Dispatcher->_invoke(Object(ShowController), Object(CakeRequest), Object(CakeResponse))
+#4 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#5 {main}
+2014-03-09 11:09:02 Error: [MissingViewException] View file "/home/xfight/vhost/signbook/app/View/Show/getdptrecords.ctp" is missing.
+Exception Attributes: array (
+  'file' => '/home/xfight/vhost/signbook/app/View/Show/getdptrecords.ctp',
+)
+Request URL: /show/getdptrecords
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/View/View.php(457): View->_getViewFileName(NULL)
+#1 /home/xfight/vhost/signbook/lib/Cake/Controller/Controller.php(952): View->render(NULL, NULL)
+#2 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(192): Controller->render()
+#3 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(160): Dispatcher->_invoke(Object(ShowController), Object(CakeRequest), Object(CakeResponse))
+#4 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#5 {main}
+2014-03-09 11:11:09 Error: [MissingViewException] View file "/home/xfight/vhost/signbook/app/View/Show/getdptrecords.ctp" is missing.
+Exception Attributes: array (
+  'file' => '/home/xfight/vhost/signbook/app/View/Show/getdptrecords.ctp',
+)
+Request URL: /show/getdptrecords
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/View/View.php(457): View->_getViewFileName(NULL)
+#1 /home/xfight/vhost/signbook/lib/Cake/Controller/Controller.php(952): View->render(NULL, NULL)
+#2 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(192): Controller->render()
+#3 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(160): Dispatcher->_invoke(Object(ShowController), Object(CakeRequest), Object(CakeResponse))
+#4 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#5 {main}
+2014-03-09 11:20:15 Error: Fatal Error (4): syntax error, unexpected 'as' (T_AS) in [/home/xfight/vhost/signbook/app/Controller/ShowController.php, line 67]
+2014-03-09 11:20:15 Error: [FatalErrorException] syntax error, unexpected 'as' (T_AS)
+Request URL: /show/getdptrecords
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/Error/ErrorHandler.php(203): ErrorHandler::handleFatalError(4, 'syntax error, u...', '/home/xfight/vh...', 67)
+#1 [internal function]: ErrorHandler::handleError(4, 'syntax error, u...', '/home/xfight/vh...', 67, Array)
+#2 /home/xfight/vhost/signbook/lib/Cake/Core/App.php(929): call_user_func('ErrorHandler::h...', 4, 'syntax error, u...', '/home/xfight/vh...', 67, Array)
+#3 /home/xfight/vhost/signbook/lib/Cake/Core/App.php(902): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
+2014-03-09 11:32:47 Error: Fatal Error (4): syntax error, unexpected ';', expecting ')' in [/home/xfight/vhost/signbook/app/Controller/ShowController.php, line 78]
+2014-03-09 11:32:47 Error: [FatalErrorException] syntax error, unexpected ';', expecting ')'
+Request URL: /show/getdptrecords
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/Error/ErrorHandler.php(203): ErrorHandler::handleFatalError(4, 'syntax error, u...', '/home/xfight/vh...', 78)
+#1 [internal function]: ErrorHandler::handleError(4, 'syntax error, u...', '/home/xfight/vh...', 78, Array)
+#2 /home/xfight/vhost/signbook/lib/Cake/Core/App.php(929): call_user_func('ErrorHandler::h...', 4, 'syntax error, u...', '/home/xfight/vh...', 78, Array)
+#3 /home/xfight/vhost/signbook/lib/Cake/Core/App.php(902): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
+2014-03-09 11:32:55 Error: Fatal Error (1): Call to undefined method ShowController::find() in [/home/xfight/vhost/signbook/app/Controller/ShowController.php, line 75]
+2014-03-09 11:32:55 Error: [FatalErrorException] Call to undefined method ShowController::find()
+Request URL: /show/getdptrecords
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/Error/ErrorHandler.php(203): ErrorHandler::handleFatalError(1, 'Call to undefin...', '/home/xfight/vh...', 75)
+#1 [internal function]: ErrorHandler::handleError(1, 'Call to undefin...', '/home/xfight/vh...', 75, Array)
+#2 /home/xfight/vhost/signbook/lib/Cake/Core/App.php(929): call_user_func('ErrorHandler::h...', 1, 'Call to undefin...', '/home/xfight/vh...', 75, Array)
+#3 /home/xfight/vhost/signbook/lib/Cake/Core/App.php(902): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
+2014-03-09 11:48:06 Error: [MissingViewException] View file "/home/xfight/vhost/signbook/app/View/Show/getdptrecords.ctp" is missing.
+Exception Attributes: array (
+  'file' => '/home/xfight/vhost/signbook/app/View/Show/getdptrecords.ctp',
+)
+Request URL: /show/getdptrecords
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/View/View.php(457): View->_getViewFileName(NULL)
+#1 /home/xfight/vhost/signbook/lib/Cake/Controller/Controller.php(952): View->render(NULL, NULL)
+#2 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(192): Controller->render()
+#3 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(160): Dispatcher->_invoke(Object(ShowController), Object(CakeRequest), Object(CakeResponse))
+#4 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#5 {main}
+2014-03-09 11:48:34 Error: [MissingViewException] View file "/home/xfight/vhost/signbook/app/View/Show/getdptrecords.ctp" is missing.
+Exception Attributes: array (
+  'file' => '/home/xfight/vhost/signbook/app/View/Show/getdptrecords.ctp',
+)
+Request URL: /show/getdptrecords
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/View/View.php(457): View->_getViewFileName(NULL)
+#1 /home/xfight/vhost/signbook/lib/Cake/Controller/Controller.php(952): View->render(NULL, NULL)
+#2 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(192): Controller->render()
+#3 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(160): Dispatcher->_invoke(Object(ShowController), Object(CakeRequest), Object(CakeResponse))
+#4 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#5 {main}
+2014-03-09 12:13:16 Error: [MissingControllerException] Controller class DisplayController could not be found.
+Exception Attributes: array (
+  'class' => 'DisplayController',
+  'plugin' => NULL,
+)
+Request URL: /display
+Stack Trace:
+#0 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#1 {main}
+2014-03-09 12:13:28 Error: [MissingActionException] Action ShowController::index() could not be found.
+Exception Attributes: array (
+  'controller' => 'ShowController',
+  'action' => 'index',
+)
+Request URL: /show
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(185): Controller->invokeAction(Object(CakeRequest))
+#1 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(160): Dispatcher->_invoke(Object(ShowController), Object(CakeRequest), Object(CakeResponse))
+#2 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#3 {main}
+2014-03-09 12:14:02 Error: [MissingControllerException] Controller class ShowdataController could not be found.
+Exception Attributes: array (
+  'class' => 'ShowdataController',
+  'plugin' => NULL,
+)
+Request URL: /showdata
+Stack Trace:
+#0 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#1 {main}
+2014-03-09 13:11:25 Error: Fatal Error (4): syntax error, unexpected '}', expecting ',' or ';' in [/home/xfight/vhost/signbook/app/View/Show/getdptrecords.ctp, line 71]
+2014-03-09 13:11:25 Error: [FatalErrorException] syntax error, unexpected '}', expecting ',' or ';'
+Request URL: /show/getdptrecords
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/Error/ErrorHandler.php(203): ErrorHandler::handleFatalError(4, 'syntax error, u...', '/home/xfight/vh...', 71)
+#1 [internal function]: ErrorHandler::handleError(4, 'syntax error, u...', '/home/xfight/vh...', 71, Array)
+#2 /home/xfight/vhost/signbook/lib/Cake/Core/App.php(929): call_user_func('ErrorHandler::h...', 4, 'syntax error, u...', '/home/xfight/vh...', 71, Array)
+#3 /home/xfight/vhost/signbook/lib/Cake/Core/App.php(902): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
+2014-03-09 13:12:14 Error: Fatal Error (1): Allowed memory size of 134217728 bytes exhausted (tried to allocate 442086 bytes) in [/home/xfight/vhost/signbook/lib/Cake/Utility/String.php, line 241]
+2014-03-09 13:12:14 Error: [FatalErrorException] Allowed memory size of 134217728 bytes exhausted (tried to allocate 442086 bytes)
+Request URL: /show/getdptrecords
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/Error/ErrorHandler.php(203): ErrorHandler::handleFatalError(1, 'Allowed memory ...', '/home/xfight/vh...', 241)
+#1 [internal function]: ErrorHandler::handleError(1, 'Allowed memory ...', '/home/xfight/vh...', 241, Array)
+#2 /home/xfight/vhost/signbook/lib/Cake/Core/App.php(929): call_user_func('ErrorHandler::h...', 1, 'Allowed memory ...', '/home/xfight/vh...', 241, Array)
+#3 /home/xfight/vhost/signbook/lib/Cake/Core/App.php(902): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
+2014-03-09 13:15:54 Error: Fatal Error (1): Allowed memory size of 134217728 bytes exhausted (tried to allocate 444302 bytes) in [/home/xfight/vhost/signbook/lib/Cake/Utility/String.php, line 241]
+2014-03-09 13:15:54 Error: [FatalErrorException] Allowed memory size of 134217728 bytes exhausted (tried to allocate 444302 bytes)
+Request URL: /show/getdptrecords
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/Error/ErrorHandler.php(203): ErrorHandler::handleFatalError(1, 'Allowed memory ...', '/home/xfight/vh...', 241)
+#1 [internal function]: ErrorHandler::handleError(1, 'Allowed memory ...', '/home/xfight/vh...', 241, Array)
+#2 /home/xfight/vhost/signbook/lib/Cake/Core/App.php(929): call_user_func('ErrorHandler::h...', 1, 'Allowed memory ...', '/home/xfight/vh...', 241, Array)
+#3 /home/xfight/vhost/signbook/lib/Cake/Core/App.php(902): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
+2014-03-09 13:17:23 Error: Fatal Error (4): syntax error, unexpected ',' in [/home/xfight/vhost/signbook/app/View/Show/getdptrecords.ctp, line 67]
+2014-03-09 13:17:23 Error: [FatalErrorException] syntax error, unexpected ','
+Request URL: /show/getdptrecords
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/Error/ErrorHandler.php(203): ErrorHandler::handleFatalError(4, 'syntax error, u...', '/home/xfight/vh...', 67)
+#1 [internal function]: ErrorHandler::handleError(4, 'syntax error, u...', '/home/xfight/vh...', 67, Array)
+#2 /home/xfight/vhost/signbook/lib/Cake/Core/App.php(929): call_user_func('ErrorHandler::h...', 4, 'syntax error, u...', '/home/xfight/vh...', 67, Array)
+#3 /home/xfight/vhost/signbook/lib/Cake/Core/App.php(902): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
+2014-03-09 13:19:25 Error: [MissingControllerException] Controller class CssController could not be found.
+Exception Attributes: array (
+  'class' => 'CssController',
+  'plugin' => NULL,
+)
+Request URL: /css/fonts/bootstrap/glyphicons-halflings-regular.woff
+Stack Trace:
+#0 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#1 {main}
+2014-03-09 13:19:25 Error: [MissingControllerException] Controller class CssController could not be found.
+Exception Attributes: array (
+  'class' => 'CssController',
+  'plugin' => NULL,
+)
+Request URL: /css/fonts/bootstrap/glyphicons-halflings-regular.ttf
+Stack Trace:
+#0 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#1 {main}
+2014-03-09 13:19:25 Error: [MissingControllerException] Controller class CssController could not be found.
+Exception Attributes: array (
+  'class' => 'CssController',
+  'plugin' => NULL,
+)
+Request URL: /css/fonts/bootstrap/glyphicons-halflings-regular.svg
+Stack Trace:
+#0 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#1 {main}
+2014-03-09 13:20:00 Error: [MissingViewException] View file "/home/xfight/vhost/signbook/app/View/Pages/display.ctp" is missing.
+Exception Attributes: array (
+  'file' => '/home/xfight/vhost/signbook/app/View/Pages/display.ctp',
+)
+Request URL: /pages/display
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/View/View.php(457): View->_getViewFileName(NULL)
+#1 /home/xfight/vhost/signbook/lib/Cake/Controller/Controller.php(952): View->render(NULL, NULL)
+#2 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(192): Controller->render()
+#3 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(160): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest), Object(CakeResponse))
+#4 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#5 {main}
+2014-03-09 13:20:05 Error: [MissingActionException] Action PagesController::showdata() could not be found.
+Exception Attributes: array (
+  'controller' => 'PagesController',
+  'action' => 'showdata',
+)
+Request URL: /pages/showdata
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(185): Controller->invokeAction(Object(CakeRequest))
+#1 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(160): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest), Object(CakeResponse))
+#2 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#3 {main}
+2014-03-09 13:29:34 Error: Fatal Error (4): syntax error, unexpected '$trHTML' (T_VARIABLE) in [/home/xfight/vhost/signbook/app/View/Show/getdptrecords.ctp, line 94]
+2014-03-09 13:29:34 Error: [FatalErrorException] syntax error, unexpected '$trHTML' (T_VARIABLE)
+Request URL: /show/getdptrecords
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/Error/ErrorHandler.php(203): ErrorHandler::handleFatalError(4, 'syntax error, u...', '/home/xfight/vh...', 94)
+#1 [internal function]: ErrorHandler::handleError(4, 'syntax error, u...', '/home/xfight/vh...', 94, Array)
+#2 /home/xfight/vhost/signbook/lib/Cake/Core/App.php(929): call_user_func('ErrorHandler::h...', 4, 'syntax error, u...', '/home/xfight/vh...', 94, Array)
+#3 /home/xfight/vhost/signbook/lib/Cake/Core/App.php(902): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
+2014-03-09 13:33:32 Error: [MissingViewException] View file "/home/xfight/vhost/signbook/app/View/Pages/show.ctp" is missing.
+Exception Attributes: array (
+  'file' => '/home/xfight/vhost/signbook/app/View/Pages/show.ctp',
+)
+Request URL: /pages/show
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/View/View.php(457): View->_getViewFileName(NULL)
+#1 /home/xfight/vhost/signbook/lib/Cake/Controller/Controller.php(952): View->render(NULL, NULL)
+#2 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(192): Controller->render()
+#3 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(160): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest), Object(CakeResponse))
+#4 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#5 {main}
+2014-03-09 13:33:37 Error: [MissingActionException] Action ShowController::index() could not be found.
+Exception Attributes: array (
+  'controller' => 'ShowController',
+  'action' => 'index',
+)
+Request URL: /show
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(185): Controller->invokeAction(Object(CakeRequest))
+#1 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(160): Dispatcher->_invoke(Object(ShowController), Object(CakeRequest), Object(CakeResponse))
+#2 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#3 {main}
+2014-03-09 13:33:40 Error: [MissingViewException] View file "/home/xfight/vhost/signbook/app/View/Pages/show.ctp" is missing.
+Exception Attributes: array (
+  'file' => '/home/xfight/vhost/signbook/app/View/Pages/show.ctp',
+)
+Request URL: /pages/show
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/View/View.php(457): View->_getViewFileName(NULL)
+#1 /home/xfight/vhost/signbook/lib/Cake/Controller/Controller.php(952): View->render(NULL, NULL)
+#2 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(192): Controller->render()
+#3 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(160): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest), Object(CakeResponse))
+#4 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#5 {main}
+2014-03-09 13:33:41 Error: [MissingControllerException] Controller class ShowdataController could not be found.
+Exception Attributes: array (
+  'class' => 'ShowdataController',
+  'plugin' => NULL,
+)
+Request URL: /showdata
+Stack Trace:
+#0 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#1 {main}
+2014-03-09 13:34:23 Error: [MissingActionException] Action PagesController::showdata() could not be found.
+Exception Attributes: array (
+  'controller' => 'PagesController',
+  'action' => 'showdata',
+)
+Request URL: /pages/showdata
+Stack Trace:
+#0 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(185): Controller->invokeAction(Object(CakeRequest))
+#1 /home/xfight/vhost/signbook/lib/Cake/Routing/Dispatcher.php(160): Dispatcher->_invoke(Object(PagesController), Object(CakeRequest), Object(CakeResponse))
+#2 /home/xfight/vhost/signbook/app/webroot/index.php(108): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#3 {main}
