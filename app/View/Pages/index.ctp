@@ -3,10 +3,10 @@
             <h1 class="title text-center">有米考勤签到分析神器</h1>
         </header>
 
-
+    <?php echo $this->Session->flash(); ?>
 
         <div class="sb-container">
-            <form id="lookupHistory" class="text-center upload-form" action="/show/test" method="get">
+            <form id="lookupHistory" class="text-center upload-form" action="/show/getdptrecords" method="get">
                 <div class="sb-form-group">
                     <input id="monthHistory" type=text class="form-control input-date" placeholder="选择月份" name="month" >
                     <input type="hidden" name="dpt_name" value="技术部" >
