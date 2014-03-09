@@ -19,7 +19,9 @@
             <hr />
 
         </div>
-        <?php $this->Session->flash(); ?>
+        <div class="flash-danger">
+            <?php $this->Session->flash(); ?>
+        </div>
         <div>
             <div class="table-wrap">
             <ul class="table-tag">
@@ -27,7 +29,6 @@
               <li><span class="iconfont">迟到 &#xf01a3;</li>
               <li><span class="iconfont">早退 &#x3444;</li>
               <li><span class="iconfont">旷工 &#xf004f;</li>
-              <li><span class="iconfont">异常 &#xf00b3;</li>
             </ul>
             <table class="sb-table table table-bordered table-hover">
                 <caption class="sb-caption">
@@ -62,6 +63,7 @@
 ?>
                     </tr>
                 </thead>
+                <div id="#body">
                 <tbody>
 
 <?php 
@@ -201,6 +203,7 @@
                     <td class="iconfont">&#xf00b2;</td> -->
                     </tr>
                 </tbody>
+                </div>
             </table>
             </div>
         </div>
