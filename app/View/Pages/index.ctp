@@ -15,10 +15,12 @@
                 </div>
                 <hr/>
             </form>
-            <form id="uploadForm" class="text-center upload-form">
+            <?php $this->Session->flash(); ?>
+
+            <form id="uploadForm" method="post" class="text-center upload-form" action="/handle/parseFile" enctype="multipart/form-data">
                 <div class="sb-form-group">
                     <input class="file-wrap form-control" type="text" placeholder="选择上传文件">
-                    <input class="fileUpload hide" type="file" class="hide"/>
+                    <input class="fileUpload" type="file" name="signfile" id="signfile" />
                 </div>
                 <div class="uploaded-div">
                     <div class="uploaded-file">
@@ -27,7 +29,7 @@
                     </div>
                 </div>
                 <div class="sb-form-group">
-                    <a href="#" class="btn btn-blue">录入最新考勤统计</a>
+                    <input type="submit"  class="btn btn-blue" value="录入最新考勤统计" />
                 </div>
             </form>
             <div class="alert alert-danger alert-dismissable">
@@ -37,10 +39,9 @@
         </div>
 
 <?php echo $this->Html->scriptStart(array('block' => 'script')); ?>
-    document.ready(
-        function() {
-            signbook.upload.init();
-        }
-    );
+
+  
+        
+        signbook.upload.init();  
     
 <?php echo $this->Html->scriptEnd(); ?>

@@ -11,5 +11,8 @@ class SignRecord extends AppModel {
 
     public $name = 'SignRecord';
 
-    
+    public function getCompanyRecords(){
+        
+    }
+
 }

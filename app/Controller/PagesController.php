@@ -37,6 +37,7 @@ class PagesController extends AppController {
  */
 	public $uses = array();
 
+	public $components = array("Session");
 /**
  * Displays a view
  *
@@ -50,6 +51,16 @@ class PagesController extends AppController {
 	}
 
 	public function index() {
+
+		if($this->request->is('post')) {
+			$file = $_FILES['signfile'];
+			$fileExt = substr($file['name'], -3);
+
+			if($fileExt != 'dat')
+			debug($_FILES);
+			$this->Session->setFlash($filetype);
+		}
+
 
 	}
 

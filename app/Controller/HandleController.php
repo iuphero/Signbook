@@ -3,49 +3,35 @@
 App::uses('AppController', 'Controller');
 
 
+class HandleController extends AppController {
 
-class AjaxController extends AppController {
+    public $name = 'handle';
 
-    public $name = 'Ajax';
     public $uses = array('Department', 'Employee', 'SignRule', 'SignRecord');  //todo
 
     public function beforeFilter() {
+        parent::beforeFilter();
         $this->autoRender = false;
     }
 
 
-    public function uploadFile() {
-        
-        if($this->request->is('post')) {
-            $result = array();
-            $file = $_FILES['Filedata']['tmp_name'];
-            $filename = $_FILES['Filedata']['name'];
-            if(substr($filename, -3) !== 'dat') {
-                $result['flag'] = 0;
-                $result['message'] = '请上传以.dat结尾的文件格式';
-                echo json_encode($result);
-            }
+    public function parseFile() {
 
-            $dir = $_SERVER['DOCUMENT_ROOT'].'/signfile';
-            $tempfilepath = tempnam($dir, '');
-            if( move_uploaded_file($file, $tempfilepath) ){
-                @chmod($tempfilepath, 0777);
-                $result = $this->parseFile($tempfilepath,'2014-02');
-                echo $result;exit;
-            }
-
-
+        if(!$this->request->is('post')) {
+            return;
+        }
+        $result = array();
+        $file = $_FILES['signfile']['tmp_name'];
+        $filename = $_FILES['signfile']['name'];
+        if(substr($filename, -3) !== 'dat') {
+            $result['flag'] = 0;
+            $result['message'] = '请上传以.dat结尾的文件格式';
             echo json_encode($result);
         }
-        else debug('woqu');
-    }
 
-    public function parseFile($filename,$month) {
         
-        $filename = 'sign.dat';
-        $month = '2013-12';
-
-        $rows = file($filename);
+        $month='2014-2';
+        $rows = file($file);
         $n = count($rows);
 
         $first_tmp_ary = preg_split('/\s+/', $rows[0]);
@@ -77,6 +63,7 @@ class AjaxController extends AppController {
             list($jobid, $datetime, $_, $_, $_, $_) = explode("\t", $row);
 
             list($date,$time) = explode(' ',$datetime);
+            debug($date);
             $row_datetime = new DateTime( substr($date, 0, -3) );
             
             if($row_datetime->getTimestamp() < $the_timestamp) {
@@ -118,11 +105,23 @@ class AjaxController extends AppController {
             $all_record_data = array();
 
             foreach ($date_ary as $date => $times) { //for the employee someone date
-               
+
+
+                $is_existing = $this->SignRule->find('count',array(
+                        'conditions' => array(
+                            'employee_id' => $employee_id,
+                            'whichday' => $date
+                        )
+                    )
+                );
+
+                if($is_existing) continue;
+
                 $n = count($times);
                 $record_data = array();
                 $record_data['employee_id'] = $employee_id;
                 $record_data['whichday'] = $date;
+
                 $record_data['dpt_id'] = $dpt_id;
                 $y_m_str = substr($date, 0 ,-3);
                 list($year_str, $month_str) = explode('-', $y_m_str);
@@ -200,11 +199,6 @@ class AjaxController extends AppController {
 
         }//end foreach for the employee
         
-    }
-
-
-    public function test(){
-        return 'this is a test';
-    }
+    }    
 
 }

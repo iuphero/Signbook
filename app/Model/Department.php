@@ -22,7 +22,7 @@ class Department extends AppModel {
     public $belongsTo = array(
         'SignRule' => array(
             'className' => 'SignRule',
-            'foreignKey' => 'dpt_id'
+            'foreignKey' => 'sign_rule_id'
         )
     );   
 
