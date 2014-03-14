@@ -3,7 +3,7 @@
             <h1 class="title text-center">有米考勤签到分析神器</h1>
         </header>
 
-    
+
 
         <div class="sb-container">
             <?php echo $this->Session->flash(); ?>
@@ -18,7 +18,7 @@
                 </div>
                 <hr/>
             </form>
-            
+
 
             <form id="uploadForm" method="post" class="text-center upload-form" action="/handle/parseFile" enctype="multipart/form-data">
                 <div class="sb-form-group">
@@ -27,7 +27,7 @@
                 </div>
                 <div class="sb-form-group">
                     <input class="file-wrap form-control input-file" type="text" placeholder="选择上传文件">
-                    <input id="fileUpload" class="fileUpload hide" type="file" name="signfile" />
+                    <input id="fileUpload" class="fileUpload hide" type="file" name="data[signfile]"  />
                 </div>
                 <div class="uploaded-div">
                     <div class="uploaded-file">
