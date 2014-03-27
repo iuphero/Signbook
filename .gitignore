@@ -17,6 +17,7 @@ app/Config/database.php
 app/Config/core.php
 app/Config/email.php
 app/Config/memcached.php
+app/webroot/sign_data_vmoaq8
 app/tmp/
 app/files/
 app/Model/Datasource/
@@ -75,3 +76,8 @@ Thumbs.db
 
 TestController.php
 /app/Config/database.php
+/app/webroot/js/empty
+/app/webroot/favicon.ico
+.htaccess
+/app/webroot/css/
+

@@ -17,7 +17,6 @@ signbook.display = (function (sb){
                 var $self = $(this);
                 $.each(rest_days, function(index,value){
                     var selector = 'td:nth-child('+(value*1+2)+')';
-                    console.log(selector);
                     $self.find(selector).addClass('rest-day');
                 });
             });

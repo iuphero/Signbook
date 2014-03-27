@@ -84,27 +84,27 @@
             switch ($day_data['state_forenoon']) {
 
                 case 0://empty
-                    $trHTML.= '<td class="iconfont"></td>';
+                    $trHTML.= '<td title=" '. $day_data['sign_start'] .'"class="iconfont"></td>';
                     break;
 
                 case 1://normal
-                    $trHTML.= '<td class="iconfont">&#xf00b2;</td>';
+                    $trHTML.= '<td title=" '. $day_data['sign_start'] .'"class="iconfont">&#xf00b2;</td>';
                     break;
 
                 case 2://late
-                    $trHTML.= '<td class="iconfont color-red">&#xf01a3;</td>';
+                    $trHTML.= '<td title=" '. $day_data['sign_start'] .'"class="iconfont color-red">&#xf01a3;</td>';
                     break;
 
                 case 3://旷工
-                    $trHTML.= '<td class="iconfont color-yellow">&#x004f;</td>';
+                    $trHTML.= '<td title=" '. $day_data['sign_start'] .'"class="iconfont color-yellow">&#x004f;</td>';
                     break;  
 
                 case 4://早退
-                    $trHTML.= '<td class="iconfont color-green">&#x3444;</td>';
+                    $trHTML.= '<td title=" '. $day_data['sign_start'] .'"class="iconfont color-green">&#x3444;</td>';
                     break;
 
                 default://empty
-                    $trHTML.= '<td class="iconfont"></td>';
+                    $trHTML.= '<td title=" '. $day_data['sign_start'] .'"class="iconfont"></td>';
                     break;
             }
 
@@ -114,27 +114,27 @@
         foreach ($result as $day_data) {
             switch ($day_data['state_afternoon']) {
                 case 0://empty
-                    $trHTML.= '<td class="iconfont"></td>';
+                    $trHTML.= '<td title=" '. $day_data['sign_end'] .'"class="iconfont"></td>';
                     break;
 
                 case 1://normal
-                    $trHTML.= '<td class="iconfont">&#xf00b2;</td>';
+                    $trHTML.= '<td title=" '. $day_data['sign_end'] .'"class="iconfont">&#xf00b2;</td>';
                     break;
 
                 case 2://late
-                    $trHTML.= '<td class="iconfont color-red">&#xf01a3;</td>';
+                    $trHTML.= '<td title=" '. $day_data['sign_end'] .'"class="iconfont color-red">&#xf01a3;</td>';
                     break;
 
                 case 3://旷工
-                    $trHTML.= '<td class="iconfont">&#x004f;</td>';
+                    $trHTML.= '<td title=" '. $day_data['sign_end'] .'"class="iconfont">&#x004f;</td>';
                     break;  
 
                 case 4://早退
-                    $trHTML.= '<td class="iconfont color-green">&#x3444;</td>';
+                    $trHTML.= '<td title=" '. $day_data['sign_end'] .'"class="iconfont color-green">&#x3444;</td>';
                     break;
 
                 default://empty
-                    $trHTML.= '<td class="iconfont"></td>';
+                    $trHTML.= '<td title=" '. $day_data['sign_end'] .'"class="iconfont"></td>';
                     break;
 
             }
