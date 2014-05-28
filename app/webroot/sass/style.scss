@@ -14,6 +14,15 @@
     font-size:16px;
     font-style:normal;
 }
+.icon-early:before { content: "\3432"; }
+.icon-i_leave:before { content: "\3485";color:red; }
+.icon-outgoing:before { content: "\f0043"; }
+.icon-late:before { content: "\f0018"; }
+.icon-p_leave:before { content: "\e611"; }
+.icon-absent:before { content: "\e737";color:red; }
+.icon-regular:before { content: "\e61f"; }
+.icon-off:before { content: "\e66a"; }
+.icon-special:before { content: "？"; }
 
 //=通用class
 .mgb-20 {
@@ -84,7 +93,7 @@ header {
         .logo {
             margin-bottom:10px;
             img {
-                width:360px;
+                width:300px;
             }
         }
         .title {
@@ -107,7 +116,7 @@ header {
 
 //=upload
 .upload-form {
-    margin-top:20px;
+    margin-top:80px;
 }
 .sb-inline-form-control {
     display:inline-block;
@@ -205,4 +214,14 @@ header {
         text-align:center;
     }
 }
+
+.tab-content {
+    margin-top:60px;
+}
+.nav-tabs>li.active>a,
+.nav-tabs>li.active>a:hover,
+.nav-tabs>li>a:hover {
+    background-color:rgba(0,0,0,.5);
+    color:white;
+} 
 
