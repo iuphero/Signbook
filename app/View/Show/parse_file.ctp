@@ -46,35 +46,56 @@
                             foreach($emp as $date_time => $date ){
                                 switch ($date['morning']) {
                                 case 'regular':
-                                    $regular ++;
+                                    $regular += 0.5;
                                     break;
                                 case 'outgoing':
-                                    $regular ++;
-                                    $outgoing ++;
+                                    $regular += 0.5;
+                                    $outgoing += 0.5;
                                     break;
                                 case 'p_leave':
-                                    $p_leave ++;
+                                    $p_leave += 0.5;
                                     break;
                                 case 'off':
-                                    $off ++;
+                                    $off += 0.5;
                                     break;
                                 case 'i_leave':
-                                    $i_leave ++;
+                                    $i_leave += 0.5;
                                     break;
                                 case 'late':
-                                    $regular ++;
-                                    $late ++;
+                                    $regular += 0.5;
+                                    $late += 1;
                                     break;
                                 case 'absent':
-                                    $absent ++;
+                                    $absent +=0.5;
                                     break;
                                 }
                                 echo '<td class="iconfont icon-'.$date['morning'].'"></td>';
                             }
                             foreach($emp as $date_time => $date) {
-                                if($date['afternoon'] == 'late') {
-                                    $regular ++;
-                                    $early ++;
+                                switch ($date['afternoon']) {
+                                case 'regular':
+                                    $regular += 0.5;
+                                    break;
+                                case 'outgoing':
+                                    $regular += 0.5;
+                                    $outgoing += 0.5;
+                                    break;
+                                case 'p_leave':
+                                    $p_leave += 0.5;
+                                    break;
+                                case 'off':
+                                    $off += 0.5;
+                                    break;
+                                case 'i_leave':
+                                    $i_leave += 0.5;
+                                    break;
+                                case 'early':
+                                    $regular += 0.5;
+                                    $early += 1;
+                                    break;
+                                case 'absent':
+                                    $absent += 0.5;
+                                    break;
                                 }
                             }
 
