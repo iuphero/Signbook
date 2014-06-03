@@ -9,6 +9,11 @@
             <?php echo $this->Session->flash(); ?>
             <form id="uploadForm" method="post" class="text-center upload-form" action="/show/parseFile" enctype="multipart/form-data">
                 <div class="sb-form-group">
+                    <input class="form-control" id="holidaySelector" type="text" placeholder="公众假期" name="data[holiday]">
+                    <p class="sb-help-block">*用以下方式输入该月公众假期（包括周末）</p>
+                    <p class="sb-help-block">*01;02;15;16;19;20</p>
+                </div>
+                <div class="sb-form-group">
                     <input class="file-wrap form-control input-file" type="text" placeholder="选择上传文件">
                     <input id="fileUpload" class="fileUpload hide" type="file" name="data[signfile]"  />
                     <p class="sb-help-block">*选择上传总公司考勤excel后点击录入</p>

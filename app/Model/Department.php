@@ -17,14 +17,4 @@ class Department extends AppModel {
             'foreignKey' => 'dpt_id'
         )
     );
-
-
-    public $belongsTo = array(
-        'SignRule' => array(
-            'className' => 'SignRule',
-            'foreignKey' => 'sign_rule_id'
-        )
-    );   
-
-
 }
