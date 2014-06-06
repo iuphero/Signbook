@@ -14,6 +14,7 @@ class ShowController extends AppController {
         APP::import('Vender','/excel/Classes/PHPExcel/IOFactory');
         APP::import('Vender','/excel/Classes/PHPExcel/Reader/Excel2007');
 
+        //处理考勤记录
         $holiday_str = $this->request->data['holiday'];
         $holiday = explode(';',$holiday_str);
 
@@ -30,6 +31,7 @@ class ShowController extends AppController {
         $this->loadModel('Department');
         $this->loadModel('Employee');
         $this->loadModel('SignRecord');
+        
         $department = array();
         $employee = array();
         $records = array();
@@ -101,35 +103,6 @@ class ShowController extends AppController {
                 $state_afternoon = 'late';
             }
 
-            //请假情况
-            switch($sheet->getCellByColumnAndRow(18,$j)->getValue()) {
-                case '事假':
-                    $state_forenoon = 'p_leave';
-                    $state_afternoon = 'p_leave';
-                    break;
-
-                case '年假':
-                    $state_forenoon = 'off';
-                    $state_afternoon = 'off';
-                    break;
-
-                case '病假':
-                    $state_forenoon = 'i_leave';
-                    $state_afternoon = 'i_leave';
-                    break;
-
-                case '出差':
-                    $state_forenoon = 'outgoing';
-                    $state_afternoon = 'outgoing';
-                    break;
-
-                case '调休':
-                    $state_forenoon = 'off';
-                    $state_afternoon = 'off';
-                    break;
-
-            }
-
              //表单提交的公众假期 权重最高
             if(in_array($day_time,$holiday)) {
                 $state_forenoon = 'off';
@@ -150,83 +123,146 @@ class ShowController extends AppController {
         }
 
         //更新考勤记录表
-        $this->SignRecord->saveMany($records);
+        //$this->SignRecord->saveMany($records);
+        $records = array();
 
-        //文件分析并写入数据库完成，跳转到展示页面
-        $this->redirect('/showResult');
-/*
-        $youmi = array();
+
+
+        //处理休假数据
+        $fileInfo = $this->request->data['offfile'];     
+        $inputFileName = $fileInfo['tmp_name'];
+        $objReader = PHPExcel_IOFactory::createReader('Excel2007');
+        $objReader = $objReader->load($inputFileName);
+        $sheet = $objReader->getsheet(0);
+
+        $highestRow = $sheet->getHighestRow();
+        $highestColumn = $sheet->getHighestColumn();
+        $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+
         for($j=2;$j<=$highestRow;$j++) {
-            $department = $sheet->getCellByColumnAndRow(21,$j)->getValue();
-            $employee = $sheet->getCellByColumnAndRow(3,$j)->getValue();
+            $job_id = $sheet->getCellByColumnAndRow(1,$j)->getValue();
+            $off_start = $sheet->getCellByColumnAndRow(2,$j)->getValue();
+            $off_end = $sheet->getCellByColumnAndRow(3,$j)->getValue();
+            $off_type = $sheet->getCellByColumnAndRow(4,$j)->getValue();
 
-            $date = $sheet->getCellByColumnAndRow(5,$j)->getValue();
-            $date = gmdate('Y-m-d-l',PHPExcel_shared_date::ExcelToPhp($date));
-            $date_time = substr($date,0 ,10);
-            $day_time = substr($date,8,2);
-            $date = array();
 
-            $youmi[$department][$employee][$date_time] = array('morning'=>'regular','afternoon'=>'regular');
+            $off_start_date = date('Y-m-d',strtotime($off_start));
+            $off_end_date = date('Y-m-d',strtotime($off_end));
 
-            //特殊情况
-            //技术部一天有一个打卡记录即可
-            if($department != '研发中心') {
-                if($sheet->getCellByColumnAndRow(9,$j)->getValue()==null) {
-                    $youmi[$department][$employee][$date_time]['morning'] = 'special';
-                }
-                if($sheet->getCellByColumnAndRow(10,$j)->getValue()==null) {
-                    $youmi[$department][$employee][$date_time]['afternoon'] = 'special';
-                }
-            }
-            if($sheet->getCellByColumnAndRow(9,$j)->getValue()==null && $sheet->getCellByColumnAndRow(10,$j)->getValue()==null) {
-                $youmi[$department][$employee][$date_time]['morning'] = 'absent';
-                $youmi[$department][$employee][$date_time]['afternoon'] = 'absent';
-            }
-            //迟到早退标记
-            if($sheet->getCellByColumnAndRow(13,$j)->getValue()!==null) {
-                $youmi[$department][$employee][$date_time]['morning'] = 'late';
-            }
-            if($sheet->getCellByColumnAndRow(14,$j)->getValue()!==null) {
-                $youmi[$department][$employee][$date_time]['afternoon'] = 'early';
-            }
+            $off_start_time = date('H',strtotime($off_start));
+            $off_end_time = date('H',strtotime($off_end));
 
-            //请假情况
-            switch($sheet->getCellByColumnAndRow(18,$j)->getValue()) {
+            $employee_record = $this->Employee->find('first',array(
+                'conditions' => array(
+                    'Employee.job_id' => $job_id
+                )
+            ));
+
+            $employee_id = $employee_record['Employee']['id'];
+
+            //开始修改数据库
+
+
+
+            switch ($off_type) {
                 case '事假':
-                    $youmi[$department][$employee][$date_time] = array('morning'=>'p_leave','afternoon'=>'p_leave');
+                    $off_type = 'p_leave';
                     break;
 
                 case '年假':
-                    $youmi[$department][$employee][$date_time] = array('morning'=>'off','afternoon'=>'off');
+                    $off_type = 'off';
                     break;
 
                 case '病假':
-                    $youmi[$department][$employee][$date_time] = array('morning'=>'i_leave','afternoon'=>'i_leave');
+                    $off_type = 'i_leave';
                     break;
 
                 case '出差':
-                    $youmi[$department][$employee][$date_time] = array('morning'=>'outgoing','afternoon'=>'outgoing');
+                    $off_type = 'outgoing';
+                    break;
+
+                case '外出':
+                    $off_type = 'outgoing';
                     break;
 
                 case '调休':
-                    $youmi[$department][$employee][$date_time] = array('morning'=>'off','afternoon'=>'off');
+                    $off_type = 'off';
                     break;
-
             }
 
-             //表单提交的公众假期 权重最高
-            if(in_array($day_time,$holiday)) {
-                $youmi[$department][$employee][$date_time] = array('morning'=>'off','afternoon'=>'off');
+            //待测试
+            //开始时间
+            $record = $this->SignRecord->find('first', array(
+                'conditions'=>array(
+                    'SignRecord.employee_id' => $employee_id,
+                    'SignRecord.date' => $off_start_date
+                )
+            ));
+            if(isset($record['SignRecord']['id'])){
+                $this->SignRecord->id = $record['SignRecord']['id'];
             }
+            if($off_start_time == '09') {
+                $this->SignRecord->save(array(
+                    'state_forenoon' => $off_type,
+                    'state_afternoon' => $off_type
+                ));
+            }
+            else{
+                $this->SignRecord->save(array(
+                    'state_afternoon' => $off_type
+                ));
+            }
+
+            $record = $this->SignRecord->find('first', array(
+                'conditions'=>array(
+                    'SignRecord.employee_id' => $employee_id,
+                    'SignRecord.date' => $off_end_date
+                )
+            ));
+            if(isset($record['SignRecord']['id'])) {
+                $this->SignRecord->id = $record['SignRecord']['id'];
+            }
+
+            //结束时间
+            if($off_end_time == '18') {
+                $this->SignRecord->save(array(
+                    'state_forenoon' => $off_type,
+                    'state_afternoon' => $off_type
+                ));
+            }
+            else{
+                $this->SignRecord->save(array(
+                    'state_forenoon' => $off_type,
+                    'state_afternoon' => 'regular'
+                ));
+            }
+
+            //中间的时间
+            $middleDate = $this->SignRecord->find('all', array(
+                'conditions' => array(
+                    'SignRecord.employee_id' => $employee_id,
+                    'SignRecord.date >' => $off_start_date,
+                    'SignRecord.date <' => $off_end_date
+                )
+            ));
+            
+            foreach($middleDate as $one_date ) {
+                $this->SignRecord->id = $one_date['SignRecord']['id'];
+                $this->SignRecord->save(array(
+                    'state_forenoon' => $off_type,
+                    'state_afternoon' => $off_type
+                ));
+            }
+
         }
-        
 
-        $this->set('youmi', $youmi);
- */
+
+        //文件分析并写入数据库完成，跳转到展示页面
+        $this->redirect('/show/showResult');
     }
 
     public function showResult(){
-    
+        
     }
 
 }
