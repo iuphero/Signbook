@@ -27,6 +27,9 @@
                     <a id="submitNew" href="#" class="btn btn-green">录入最新考勤统计</a>
                 </div>
             </form>
+            <div style="text-align:center;">
+                <a id="submitNew" href="/show/showResult" class="btn btn-blue">查看最新考勤统计</a>
+            </div>
         </div>
 
 <?php echo $this->Html->scriptStart(array('block' => 'script')); ?>
