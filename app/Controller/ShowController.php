@@ -88,15 +88,12 @@ class ShowController extends AppController {
             $state_forenoon = 'regular';
             $state_afternoon = 'regular';
 
-            //技术部一天有一个打卡记录即可
-            //其他部门一天中只有一个打卡记录 记为specail
-            if($one_department != '研发中心') {
-                if($sheet->getCellByColumnAndRow(9,$j)->getValue()==null) {
-                    $state_forenoon = 'special';
-                }
-                if($sheet->getCellByColumnAndRow(10,$j)->getValue()==null) {
-                    $state_afternoon = 'special';
-                }
+            //部门一天中只有一个打卡记录 记为special
+            if($sheet->getCellByColumnAndRow(9,$j)->getValue()==null) {
+                $state_forenoon = 'special';
+            }
+            if($sheet->getCellByColumnAndRow(10,$j)->getValue()==null) {
+                $state_afternoon = 'special';
             }
 
             //上午下午都没有打卡记录的记为absent
@@ -110,7 +107,7 @@ class ShowController extends AppController {
                 $state_forenoon = 'late';
             }
             if($sheet->getCellByColumnAndRow(14,$j)->getValue()!==null) {
-                $state_afternoon = 'late';
+                $state_afternoon = 'early';
             }
 
             //表单提交的公众假期 权重最高
@@ -135,18 +132,9 @@ class ShowController extends AppController {
 
 
 
-
-
-
         //更新考勤记录表
-        //$this->SignRecord->saveMany($records);
+        $this->SignRecord->saveMany($records);
         $records = array();
-
-
-
-
-
-
 
 
 
@@ -162,6 +150,7 @@ class ShowController extends AppController {
         $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
 
         for($j=2;$j<=$highestRow;$j++) {
+
             $job_id = $sheet->getCellByColumnAndRow(1,$j)->getValue();
             $off_start = $sheet->getCellByColumnAndRow(2,$j)->getValue();
             $off_end = $sheet->getCellByColumnAndRow(3,$j)->getValue();
@@ -189,7 +178,7 @@ class ShowController extends AppController {
                     break;
 
                 case '年假':
-                    $off_type = 'off';
+                    $off_type = 'regular';
                     break;
 
                 case '病假':
@@ -197,20 +186,54 @@ class ShowController extends AppController {
                     break;
 
                 case '出差':
-                    $off_type = 'outgoing';
+                    $off_type = 'w_outgoing';
                     break;
 
                 case '外出':
-                    $off_type = 'outgoing';
+                    $off_type = 'n_outgoing';
                     break;
 
                 case '调休':
-                    $off_type = 'off';
+                    $off_type = 'regular';
+                    break;
+
+                default : 
+                    $off_type = 'wrong';
                     break;
             }
 
-            //待测试
-            //开始时间
+
+            //修改休假表的每条记录对应的signrecord表
+            //休假一天的情况
+            if($off_start_date == $off_end_date) {
+
+            $record = $this->SignRecord->find('first', array(
+                'conditions'=>array(
+                    'SignRecord.employee_id' => $employee_id,
+                    'SignRecord.date' => $off_start_date
+                )
+            ));
+            if(isset($record['SignRecord']['id'])){
+                $this->SignRecord->id = $record['SignRecord']['id'];
+
+            }
+
+            if($off_start_time == '09') {
+                $this->SignRecord->save(array(
+                    'state_forenoon' => $off_type
+                ));
+            }
+            if($off_end_time == '18'){
+                $this->SignRecord->save(array(
+                    'state_afternoon' => $off_type
+                ));
+            }
+
+            }
+
+            //连续休假多天的情况
+            else {
+
             $record = $this->SignRecord->find('first', array(
                 'conditions'=>array(
                     'SignRecord.employee_id' => $employee_id,
@@ -241,7 +264,6 @@ class ShowController extends AppController {
             if(isset($record['SignRecord']['id'])) {
                 $this->SignRecord->id = $record['SignRecord']['id'];
             }
-
             //结束时间
             if($off_end_time == '18') {
                 $this->SignRecord->save(array(
@@ -263,8 +285,8 @@ class ShowController extends AppController {
                     'SignRecord.date >' => $off_start_date,
                     'SignRecord.date <' => $off_end_date
                 )
-            ));
-            
+            )); 
+
             foreach($middleDate as $one_date ) {
                 $this->SignRecord->id = $one_date['SignRecord']['id'];
                 $this->SignRecord->save(array(
@@ -273,11 +295,15 @@ class ShowController extends AppController {
                 ));
             }
 
+            }//连续休假多天
+
         }
 
 
+
         //文件分析并写入数据库完成，跳转到展示页面
-        $this->redirect('/show/showResult');
+        //$this->redirect('/show/showResult');
+
     }
 
 
@@ -369,16 +395,16 @@ class ShowController extends AppController {
             $activeSheet->getColumnDimension('AF')->setWidth(4);
             $activeSheet->getColumnDimension('AG')->setWidth(4);
             $activeSheet->getColumnDimension('AH')->setWidth(4);
-            $activeSheet->getColumnDimension('AI')->setWidth(4);
-            $activeSheet->getColumnDimension('AJ')->setWidth(4);
-            $activeSheet->getColumnDimension('AK')->setWidth(4);
-            $activeSheet->getColumnDimension('AL')->setWidth(4);
-            $activeSheet->getColumnDimension('AM')->setWidth(4);
-            $activeSheet->getColumnDimension('AN')->setWidth(4);
-            $activeSheet->getColumnDimension('AO')->setWidth(4);
-            $activeSheet->getColumnDimension('AP')->setWidth(4);
-            $activeSheet->getColumnDimension('AQ')->setWidth(4);
-            $activeSheet->getColumnDimension('AR')->setWidth(4);
+            $activeSheet->getColumnDimension('AI')->setWidth(6);
+            $activeSheet->getColumnDimension('AJ')->setWidth(6);
+            $activeSheet->getColumnDimension('AK')->setWidth(6);
+            $activeSheet->getColumnDimension('AL')->setWidth(6);
+            $activeSheet->getColumnDimension('AM')->setWidth(6);
+            $activeSheet->getColumnDimension('AN')->setWidth(6);
+            $activeSheet->getColumnDimension('AO')->setWidth(6);
+            $activeSheet->getColumnDimension('AP')->setWidth(6);
+            $activeSheet->getColumnDimension('AQ')->setWidth(6);
+            $activeSheet->getColumnDimension('AR')->setWidth(6);
 
             $activeSheet->getStyle('A1:AR200')->getFont()->setSize(10);
 
@@ -455,6 +481,7 @@ class ShowController extends AppController {
                 $c = 2;
                 foreach($employee_record as $one_record) {
                     switch($one_record['SignRecord']['state_forenoon']) {
+
                         case 'regular':
                             $state_forenoon = '√';
                             break;
@@ -467,8 +494,11 @@ class ShowController extends AppController {
                         case 'i_leave':
                             $state_forenoon = '☆';
                             break;
-                        case 'outgoing':
+                        case 'w_outgoing':
                             $state_forenoon = '△';
+                            break;
+                        case 'n_outgoing':
+                            $state_forenoon = '▲';
                             break;
                         case 'absent':
                             $state_forenoon = '×';
@@ -480,9 +510,9 @@ class ShowController extends AppController {
                             $state_forenoon = '◇';
                             break;
                         case 'special':
-                        default :
                             $state_forenoon = '?';
                             break;
+
                     }
                     switch($one_record['SignRecord']['state_afternoon']) {
                         case 'regular':
@@ -497,8 +527,11 @@ class ShowController extends AppController {
                         case 'i_leave':
                             $state_afternoon = '☆';
                             break;
-                        case 'outgoing':
+                        case 'w_outgoing':
                             $state_afternoon = '△';
+                            break;
+                        case 'n_outgoing':
+                            $state_afternoon = '▲';
                             break;
                         case 'absent':
                             $state_afternoon = '×';
@@ -510,8 +543,7 @@ class ShowController extends AppController {
                             $state_afternoon = '◇';
                             break;
                         case 'special':
-                        default :
-                            $state_forenoon = '?';
+                            $state_afternoon = '?';
                             break;
                     }
                     $activeSheet->getCellByColumnAndRow($c,$b)->getDataValidation()
@@ -531,17 +563,16 @@ class ShowController extends AppController {
                     $c = $c+1;
                 }
 
-
                 $activeSheet->setCellValueByColumnAndRow(34,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"√")+COUNTIF(C'.($b+1).':AG'.($b+1).',"√"))*0.5');
-                $activeSheet->setCellValueByColumnAndRow(35,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"△")+COUNTIF(C'.($b+1).':AG'.($b+1).',"△"))*0.5');
-                $activeSheet->setCellValueByColumnAndRow(36,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"▲")+COUNTIF(C'.($b+1).':AG'.($b+1).',"▲"))*0.5');
-                $activeSheet->setCellValueByColumnAndRow(37,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"●")+COUNTIF(C'.($b+1).':AG'.($b+1).',"●"))*0.5');
-                $activeSheet->setCellValueByColumnAndRow(38,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"○")+COUNTIF(C'.($b+1).':AG'.($b+1).',"○"))*0.5');
-                $activeSheet->setCellValueByColumnAndRow(39,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"☆")+COUNTIF(C'.($b+1).':AG'.($b+1).',"☆"))*0.5');
-                $activeSheet->setCellValueByColumnAndRow(40,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"×")+COUNTIF(C'.($b+1).':AG'.($b+1).',"×"))*0.5');
-                $activeSheet->setCellValueByColumnAndRow(41,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"※")+COUNTIF(C'.($b+1).':AG'.($b+1).',"※"))*0.5');
-                $activeSheet->setCellValueByColumnAndRow(42,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"◇")+COUNTIF(C'.($b+1).':AG'.($b+1).',"◇"))*0.5');
-                $activeSheet->setCellValueByColumnAndRow(43,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"◆")+COUNTIF(C'.($b+1).':AG'.($b+1).',"◆"))*0.5');
+                $activeSheet->setCellValueByColumnAndRow(38,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"△")+COUNTIF(C'.($b+1).':AG'.($b+1).',"△"))*0.5');
+                $activeSheet->setCellValueByColumnAndRow(43,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"▲")+COUNTIF(C'.($b+1).':AG'.($b+1).',"▲"))*0.5');
+                $activeSheet->setCellValueByColumnAndRow(35,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"●")+COUNTIF(C'.($b+1).':AG'.($b+1).',"●"))*0.5');
+                $activeSheet->setCellValueByColumnAndRow(36,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"○")+COUNTIF(C'.($b+1).':AG'.($b+1).',"○"))*0.5');
+                $activeSheet->setCellValueByColumnAndRow(37,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"☆")+COUNTIF(C'.($b+1).':AG'.($b+1).',"☆"))*0.5');
+                $activeSheet->setCellValueByColumnAndRow(39,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"×")+COUNTIF(C'.($b+1).':AG'.($b+1).',"×"))*0.5');
+                $activeSheet->setCellValueByColumnAndRow(40,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"※")+COUNTIF(C'.($b+1).':AG'.($b+1).',"※"))');
+                $activeSheet->setCellValueByColumnAndRow(41,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"◇")+COUNTIF(C'.($b+1).':AG'.($b+1).',"◇"))');
+                $activeSheet->setCellValueByColumnAndRow(42,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"◆")+COUNTIF(C'.($b+1).':AG'.($b+1).',"◆"))');
                 $activeSheet->mergeCells('AI'.$b.':AI'.($b+1));
                 $activeSheet->mergeCells('AJ'.$b.':AJ'.($b+1));
                 $activeSheet->mergeCells('AK'.$b.':AK'.($b+1));
