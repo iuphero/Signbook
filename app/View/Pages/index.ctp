@@ -9,6 +9,11 @@
             <?php echo $this->Session->flash(); ?>
             <form id="uploadForm" method="post" class="text-center upload-form" action="/show/parseFile" enctype="multipart/form-data">
                 <div class="sb-form-group">
+                    <input class="form-control" id="holidaySelector" type="text" name="data[date]">
+                    <p class="sb-help-block">*输入该月的第一天和最后一天</p>
+                    <p class="sb-help-block">*2014-02-01;2014-02-28</p>
+                </div>
+                <div class="sb-form-group">
                     <input class="form-control" id="holidaySelector" type="text" placeholder="公众假期" name="data[holiday]">
                     <p class="sb-help-block">*用以下方式输入该月公众假期（包括周末）</p>
                     <p class="sb-help-block">*01;02;15;16;19;20</p>

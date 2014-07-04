@@ -15,6 +15,12 @@ class ShowController extends AppController {
         APP::import('Vender','/excel/Classes/PHPExcel/IOFactory');
         APP::import('Vender','/excel/Classes/PHPExcel/Reader/Excel2007');
 
+        //获取该月第一天和最后一天
+        $date_str = $this->request->data['date'] ;
+        $date = explode(';',$date_str);
+        $first_date = $date[0];
+        $last_date = $date[1];
+
         //获取月中的所有公众假期 包括周末
         $holiday_str = $this->request->data['holiday'];
         $holiday = explode(';',$holiday_str);
@@ -79,7 +85,7 @@ class ShowController extends AppController {
             $date_time = substr($date,0 ,10);
             $day_time = substr($date,8,2);
 
-            $employee_id = $this->Employee->findByName($one_employee);
+            $employee_id = $this->Employee->findByJob_id($one_employee_id);
             $employee_id = $employee_id['Employee']['id'];
             $dpt_id = $this->Department->findByName($one_department);
             $dpt_id = $dpt_id['Department']['id'];
@@ -136,8 +142,6 @@ class ShowController extends AppController {
         $this->SignRecord->saveMany($records);
         $records = array();
 
-
-
         //处理休假数据
         $fileInfo = $this->request->data['offfile'];     
         $inputFileName = $fileInfo['tmp_name'];
@@ -150,6 +154,7 @@ class ShowController extends AppController {
         $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
 
         for($j=2;$j<=$highestRow;$j++) {
+
 
             $job_id = $sheet->getCellByColumnAndRow(1,$j)->getValue();
             $off_start = $sheet->getCellByColumnAndRow(2,$j)->getValue();
@@ -170,6 +175,7 @@ class ShowController extends AppController {
             ));
 
             $employee_id = $employee_record['Employee']['id'];
+
 
             //开始修改数据库
             switch ($off_type) {
@@ -197,6 +203,10 @@ class ShowController extends AppController {
                     $off_type = 'regular';
                     break;
 
+                case '丧假':
+                    $off_type = 'regular';
+                    break;
+
                 default : 
                     $off_type = 'wrong';
                     break;
@@ -204,108 +214,237 @@ class ShowController extends AppController {
 
 
             //修改休假表的每条记录对应的signrecord表
+            //公众假期优先于事假病假
+            if($off_type == 'p_leave' || $off_type == 'i_leave') {
             //休假一天的情况
             if($off_start_date == $off_end_date) {
 
-            $record = $this->SignRecord->find('first', array(
-                'conditions'=>array(
-                    'SignRecord.employee_id' => $employee_id,
-                    'SignRecord.date' => $off_start_date
-                )
-            ));
-            if(isset($record['SignRecord']['id'])){
-                $this->SignRecord->id = $record['SignRecord']['id'];
 
-            }
+                $record = $this->SignRecord->find('first', array(
+                    'conditions'=>array(
+                        'SignRecord.employee_id' => $employee_id,
+                        'SignRecord.date' => $off_start_date
+                    )
+                ));
 
-            if($off_start_time == '09') {
-                $this->SignRecord->save(array(
-                    'state_forenoon' => $off_type
-                ));
-            }
-            if($off_end_time == '18'){
-                $this->SignRecord->save(array(
-                    'state_afternoon' => $off_type
-                ));
-            }
+                $old_state_forenoon = $record['SignRecord']['state_forenoon'];
+
+                if(isset($record['SignRecord']['id'])){
+                    $this->SignRecord->id = $record['SignRecord']['id'];
+                }
+
+
+                if($old_state_forenoon != 'off') {
+                    if($off_start_time == '09') {
+                        $this->SignRecord->save(array(
+                            'state_forenoon' => $off_type
+                        ));
+                    }
+                    if($off_end_time == '18'){
+                        $this->SignRecord->save(array(
+                            'state_afternoon' => $off_type
+                        ));
+                    }               
+                }
 
             }
 
             //连续休假多天的情况
             else {
+                if($off_start_date < $first_date) {
+                    $off_start_date = $first_date;
+                    $off_start_time = '09';
+                }
+                if($off_end_date > $last_date) {
+                    $off_end_date = $last_date;
+                    $off_end_time = '18';
+                }
+                $record = $this->SignRecord->find('first', array(
+                    'conditions'=>array(
+                        'SignRecord.employee_id' => $employee_id,
+                        'SignRecord.date' => $off_start_date
+                    )
+                ));
 
-            $record = $this->SignRecord->find('first', array(
-                'conditions'=>array(
-                    'SignRecord.employee_id' => $employee_id,
-                    'SignRecord.date' => $off_start_date
-                )
-            ));
-            if(isset($record['SignRecord']['id'])){
+                $old_state_forenoon = $record['SignRecord']['state_forenoon'];
+
                 $this->SignRecord->id = $record['SignRecord']['id'];
-            }
-            if($off_start_time == '09') {
-                $this->SignRecord->save(array(
-                    'state_forenoon' => $off_type,
-                    'state_afternoon' => $off_type
-                ));
-            }
-            else{
-                $this->SignRecord->save(array(
-                    'state_afternoon' => $off_type
-                ));
-            }
 
-            $record = $this->SignRecord->find('first', array(
-                'conditions'=>array(
-                    'SignRecord.employee_id' => $employee_id,
-                    'SignRecord.date' => $off_end_date
-                )
-            ));
-            if(isset($record['SignRecord']['id'])) {
+                if($old_state_forenoon != 'off') {
+                if($off_start_time == '09') {
+                    $this->SignRecord->save(array(
+                        'state_forenoon' => $off_type,
+                        'state_afternoon' => $off_type
+                    ));
+                }
+                else{
+                    $this->SignRecord->save(array(
+                        'state_afternoon' => $off_type
+                    ));
+                }
+                }
+
+                $record = $this->SignRecord->find('first', array(
+                    'conditions'=>array(
+                        'SignRecord.employee_id' => $employee_id,
+                        'SignRecord.date' => $off_end_date
+                    )
+                ));
+
+                $old_state_afternoon = $record['SignRecord']['state_afternoon'];
+
                 $this->SignRecord->id = $record['SignRecord']['id'];
+
+                //结束时间
+                if($old_state_afternoon != 'off') {
+                if($off_end_time == '18') {
+                    $this->SignRecord->save(array(
+                        'state_forenoon' => $off_type,
+                        'state_afternoon' => $off_type
+                    ));
+                }
+                else{
+                    $this->SignRecord->save(array(
+                        'state_forenoon' => $off_type,
+                        'state_afternoon' => 'regular'
+                    ));
+                }
+                }
+
+                //中间的时间
+                $middleDate = $this->SignRecord->find('all', array(
+                    'conditions' => array(
+                        'SignRecord.employee_id' => $employee_id,
+                        'SignRecord.date >' => $off_start_date,
+                        'SignRecord.date <' => $off_end_date
+                    )
+                )); 
+
+                foreach($middleDate as $one_date ) {
+                    $this->SignRecord->id = $one_date['SignRecord']['id'];
+                    $old_state_forenoon = $one_date['SignRecord']['state_forenoon'];
+                    if($old_state_forenoon != 'off') {
+                        $this->SignRecord->save(array(
+                            'state_forenoon' => $off_type,
+                            'state_afternoon' => $off_type
+                        ));
+                    }
+                }
+
+            }//连续休假多天
             }
-            //结束时间
-            if($off_end_time == '18') {
-                $this->SignRecord->save(array(
-                    'state_forenoon' => $off_type,
-                    'state_afternoon' => $off_type
+            else {
+            if($off_start_date == $off_end_date) {
+
+                $record = $this->SignRecord->find('first', array(
+                    'conditions'=>array(
+                        'SignRecord.employee_id' => $employee_id,
+                        'SignRecord.date' => $off_start_date
+                    )
                 ));
-            }
-            else{
-                $this->SignRecord->save(array(
-                    'state_forenoon' => $off_type,
-                    'state_afternoon' => 'regular'
-                ));
+                if(isset($record['SignRecord']['id'])){
+                    $this->SignRecord->id = $record['SignRecord']['id'];
+                }
+
+                if($off_start_time == '09') {
+                    $this->SignRecord->save(array(
+                        'state_forenoon' => $off_type
+                    ));
+                }
+                if($off_end_time == '18'){
+                    $this->SignRecord->save(array(
+                        'state_afternoon' => $off_type
+                    ));
+                }
             }
 
-            //中间的时间
-            $middleDate = $this->SignRecord->find('all', array(
-                'conditions' => array(
-                    'SignRecord.employee_id' => $employee_id,
-                    'SignRecord.date >' => $off_start_date,
-                    'SignRecord.date <' => $off_end_date
-                )
-            )); 
-
-            foreach($middleDate as $one_date ) {
-                $this->SignRecord->id = $one_date['SignRecord']['id'];
-                $this->SignRecord->save(array(
-                    'state_forenoon' => $off_type,
-                    'state_afternoon' => $off_type
+            //连续休假多天的情况
+            else {
+                if($off_start_date < $first_date) {
+                    $off_start_date = $first_date;
+                    $off_start_time = '09';
+                }
+                if($off_end_date > $last_date) {
+                    $off_end_date = $last_date;
+                    $off_end_time = '18';
+                }
+                $record = $this->SignRecord->find('first', array(
+                    'conditions'=>array(
+                        'SignRecord.employee_id' => $employee_id,
+                        'SignRecord.date' => $off_start_date
+                    )
                 ));
-            }
+
+
+
+
+                if(isset($record['SignRecord']['id'])){
+                    $this->SignRecord->id = $record['SignRecord']['id'];
+                }
+
+                if($off_start_time == '09') {
+                    $this->SignRecord->save(array(
+                        'state_forenoon' => $off_type,
+                        'state_afternoon' => $off_type
+                    ));
+                }
+                else{
+                    $this->SignRecord->save(array(
+                        'state_afternoon' => $off_type
+                    ));
+                }
+
+                $record = $this->SignRecord->find('first', array(
+                    'conditions'=>array(
+                        'SignRecord.employee_id' => $employee_id,
+                        'SignRecord.date' => $off_end_date
+                    )
+                ));
+                if(isset($record['SignRecord']['id'])) {
+                    $this->SignRecord->id = $record['SignRecord']['id'];
+                }
+
+                //结束时间
+                if($off_end_time == '18') {
+                    $this->SignRecord->save(array(
+                        'state_forenoon' => $off_type,
+                        'state_afternoon' => $off_type
+                    ));
+                }
+                else{
+                    $this->SignRecord->save(array(
+                        'state_forenoon' => $off_type,
+                        'state_afternoon' => 'regular'
+                    ));
+                }
+
+                //中间的时间
+                $middleDate = $this->SignRecord->find('all', array(
+                    'conditions' => array(
+                        'SignRecord.employee_id' => $employee_id,
+                        'SignRecord.date >' => $off_start_date,
+                        'SignRecord.date <' => $off_end_date
+                    )
+                )); 
+
+                foreach($middleDate as $one_date ) {
+                    $this->SignRecord->id = $one_date['SignRecord']['id'];
+                    $this->SignRecord->save(array(
+                        'state_forenoon' => $off_type,
+                        'state_afternoon' => $off_type
+                    ));
+                }
 
             }//连续休假多天
 
+            }
+
         }
 
-
-
         //文件分析并写入数据库完成，跳转到展示页面
-        //$this->redirect('/show/showResult');
+        $this->redirect('/show/showResult');
 
     }
-
 
     public function showResult(){
         $this->autoRender = false;
@@ -357,11 +496,12 @@ class ShowController extends AppController {
             $activeSheet->setCellValue('AK6','事假');
             $activeSheet->setCellValue('AL6','病假');
             $activeSheet->setCellValue('AM6','外地出差');
-            $activeSheet->setCellValue('AN6','旷工');
+            $activeSheet->setCellValue('AN6','市内出差');
             $activeSheet->setCellValue('AO6','迟到');
             $activeSheet->setCellValue('AP6','早退');
             $activeSheet->setCellValue('AQ6','中途脱岗');
-            $activeSheet->setCellValue('AR6','市内出差');
+            $activeSheet->setCellValue('AR6','异常');
+            $activeSheet->setCellValue('AS6','旷工');
 
             $activeSheet->getColumnDimension('C')->setWidth(4);
             $activeSheet->getColumnDimension('D')->setWidth(4);
@@ -405,14 +545,15 @@ class ShowController extends AppController {
             $activeSheet->getColumnDimension('AP')->setWidth(6);
             $activeSheet->getColumnDimension('AQ')->setWidth(6);
             $activeSheet->getColumnDimension('AR')->setWidth(6);
+            $activeSheet->getColumnDimension('AS')->setWidth(6);
 
-            $activeSheet->getStyle('A1:AR200')->getFont()->setSize(10);
+            $activeSheet->getStyle('A1:AS200')->getFont()->setSize(10);
 
             //设置居中
-            $activeSheet->getStyle('A1:AR200')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            $activeSheet->getStyle('A1:AS200')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
             
             //所有垂直居中
-            $activeSheet->getStyle('A1:AR200')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+            $activeSheet->getStyle('A1:AS200')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
 
             $activeSheet->setCellValue('A5','姓名');
@@ -423,8 +564,8 @@ class ShowController extends AppController {
             //填写日期
             $one_employee = $this->SignRecord->find('all',array(
                 'conditions' => array(
-                    'SignRecord.dpt_id'=> '2',
-                    'SignRecord.employee_id'=>'14'
+                    'SignRecord.dpt_id'=> '7',
+                    'SignRecord.employee_id'=>'24'
                 )
             ));
 
@@ -510,7 +651,7 @@ class ShowController extends AppController {
                             $state_forenoon = '◇';
                             break;
                         case 'special':
-                            $state_forenoon = '?';
+                            $state_forenoon = '!';
                             break;
 
                     }
@@ -543,7 +684,7 @@ class ShowController extends AppController {
                             $state_afternoon = '◇';
                             break;
                         case 'special':
-                            $state_afternoon = '?';
+                            $state_afternoon = '!';
                             break;
                     }
                     $activeSheet->getCellByColumnAndRow($c,$b)->getDataValidation()
@@ -565,14 +706,15 @@ class ShowController extends AppController {
 
                 $activeSheet->setCellValueByColumnAndRow(34,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"√")+COUNTIF(C'.($b+1).':AG'.($b+1).',"√"))*0.5');
                 $activeSheet->setCellValueByColumnAndRow(38,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"△")+COUNTIF(C'.($b+1).':AG'.($b+1).',"△"))*0.5');
-                $activeSheet->setCellValueByColumnAndRow(43,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"▲")+COUNTIF(C'.($b+1).':AG'.($b+1).',"▲"))*0.5');
+                $activeSheet->setCellValueByColumnAndRow(39,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"▲")+COUNTIF(C'.($b+1).':AG'.($b+1).',"▲"))*0.5');
                 $activeSheet->setCellValueByColumnAndRow(35,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"●")+COUNTIF(C'.($b+1).':AG'.($b+1).',"●"))*0.5');
                 $activeSheet->setCellValueByColumnAndRow(36,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"○")+COUNTIF(C'.($b+1).':AG'.($b+1).',"○"))*0.5');
                 $activeSheet->setCellValueByColumnAndRow(37,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"☆")+COUNTIF(C'.($b+1).':AG'.($b+1).',"☆"))*0.5');
-                $activeSheet->setCellValueByColumnAndRow(39,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"×")+COUNTIF(C'.($b+1).':AG'.($b+1).',"×"))*0.5');
+                $activeSheet->setCellValueByColumnAndRow(44,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"×")+COUNTIF(C'.($b+1).':AG'.($b+1).',"×"))*0.5');
                 $activeSheet->setCellValueByColumnAndRow(40,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"※")+COUNTIF(C'.($b+1).':AG'.($b+1).',"※"))');
                 $activeSheet->setCellValueByColumnAndRow(41,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"◇")+COUNTIF(C'.($b+1).':AG'.($b+1).',"◇"))');
                 $activeSheet->setCellValueByColumnAndRow(42,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"◆")+COUNTIF(C'.($b+1).':AG'.($b+1).',"◆"))');
+                $activeSheet->setCellValueByColumnAndRow(43,$b,'=(COUNTIF(C'.$b.':AG'.$b.',"!")+COUNTIF(C'.($b+1).':AG'.($b+1).',"!"))');
                 $activeSheet->mergeCells('AI'.$b.':AI'.($b+1));
                 $activeSheet->mergeCells('AJ'.$b.':AJ'.($b+1));
                 $activeSheet->mergeCells('AK'.$b.':AK'.($b+1));
@@ -583,6 +725,7 @@ class ShowController extends AppController {
                 $activeSheet->mergeCells('AP'.$b.':AP'.($b+1));
                 $activeSheet->mergeCells('AQ'.$b.':AQ'.($b+1));
                 $activeSheet->mergeCells('AR'.$b.':AR'.($b+1));
+                $activeSheet->mergeCells('AS'.$b.':AS'.($b+1));
                 //b => 行
                 $b = $b+2;
 
