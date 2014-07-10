@@ -1,15 +1,15 @@
-<?php 
-    
+<?php
+
 
 class SignRule extends AppModel {
-    
+
+    public $name = 'SignRule';
+
     public $primaryKey = 'id';
 
     public $useDbConfig = 'default';
 
     public $useTable = 'sign_rule';
-
-    public $name = 'SignRule';
 
     public $hasMany = array(
         'Department' => array(

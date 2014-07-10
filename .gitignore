@@ -80,3 +80,4 @@ TestController.php
 /app/webroot/css/
 *.swn
 *.swo
+test.ctp

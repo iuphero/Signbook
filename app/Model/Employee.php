@@ -1,15 +1,15 @@
-<?php 
-    
+<?php
+
 
 class Employee extends AppModel {
-    
+
+    public $name = 'Employee';
+
     public $primaryKey = 'id';
 
     public $useDbConfig = 'default';
 
     public $useTable = 'employee';
-
-    public $name = 'Employee';
 
     public $belongsTo = array(
         'Department' => array(
