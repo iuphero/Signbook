@@ -43,7 +43,7 @@ app/Model/Test.php
 app/tmp
 app/webroot/.sass-cache
 
-# grunt && bower 
+# grunt && bower
 .jshintrc
 app/webroot/.sass-cache
 /app/webroot/.sass-cache
@@ -78,3 +78,5 @@ TestController.php
 /app/webroot/favicon.ico
 .htaccess
 /app/webroot/css/
+*.swn
+*.swo
