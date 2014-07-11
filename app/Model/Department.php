@@ -26,10 +26,10 @@ class Department extends AppModel {
     );
 
 
-    /* 得到员工工号(job_id)到该员工所在部门的规则的映射
+    /* 得到所有员工id到该员工所在部门的规则的映射
     **
     ** @return $epy2rule array
-    ** 此array的key为员工工号, value为一个数组, 包含startime(规定的上班时间),
+    ** 此array的key为员工id, value为一个数组, 包含startime(规定的上班时间),
     ** endtime(规定的离开时间), flextime(弹性时间)
     ** 例如其中一个元素为
     ** (int) 10114 => array(
@@ -58,8 +58,7 @@ class Department extends AppModel {
             $tmpRule['endtime'] = $dpt['SignRule']['core_endtime'];
             $tmpRule['flextime'] = $dpt['SignRule']['flex_time'];
             foreach($epys as $epy) {
-                $job_id = $epy['job_id'];
-                $epy2rule[$job_id] = $tmpRule;
+                $epy2rule[ $epy['id'] ] = $tmpRule;
             }
         }
 
