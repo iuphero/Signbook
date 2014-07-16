@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * tmp部分为有待决定和修改的部分, 存疑
+ * todo部分有待完善
+ */
 App::uses('Component', 'Controller');
 
 class ExcelComponent extends Component {
@@ -7,25 +10,25 @@ class ExcelComponent extends Component {
     /**
      * 考勤假期类型定义
      */
-    CONST EMPTY = 0;    //留空
-    CONST NORMAL = 1;   //正常
-    CONST LATE = 2;     //迟到
-    CONST ABSENT = 3;   //旷工
-    CONST EARLY = 4;    //早退, leave early
-    CONST HALFWAY = 5;  //中途脱岗
-    CONST CASUAL = 6;   //事假
-    CONST TRAVEL = 7;   //出差
-    CONST ANNUAL = 8;   //年假
-    CONST SICK = 9;     //病假
-    CONST FUNERAL = 10; //丧假
-    CONST PAYBACK = 11; //调休
-    CONST HOLIDAY = 12; //假期
+    const EMPTYDAY = 0;    //留空
+    const NORMAL = 1;   //正常
+    const LATE = 2;     //迟到
+    const ABSENT = 3;   //旷工
+    const EARLY = 4;    //早退, leave early
+    const HALFWAY = 5;  //中途脱岗
+    const CASUAL = 6;   //事假
+    const TRAVEL = 7;   //出差
+    const ANNUAL = 8;   //年假
+    const SICK = 9;     //病假
+    const FUNERAL = 10; //丧假
+    const PAYBACK = 11; //调休
+    const HOLIDAY = 12; //假期
 
 
     protected $reader = false;
     protected $year = false;    //要统计的表格的年份, 两位数字, 2014年就是14
     protected $month = false;   //要统计的表格的月份, 1月1, 12月为12
-    protected $epy2rule = false; //员工工号到考勤规则的映射
+
 
     /**
      * 记录考勤表中各项信息在第几列, 从0开始
@@ -62,8 +65,8 @@ class ExcelComponent extends Component {
             $this->reader = PHPExcel_IOFactory::createReader('Excel2007');
         }
 
-        $sheet = $this->reader->load($file)->getsheet();
-        $tmpDate = $sheet->getCellByColumnAndRow($this->date_index, 2)->getFormattedValue(); // '06-01-14'
+        $sheet = $this->reader->load($file)->getsheet(0);
+        $tmpDate = $sheet->getCellByColumnAndRow($this->signIndex['date'], 2)->getFormattedValue(); // '06-01-14'
         if($this->year === false) {
             $this->year = (int)substr($tmpDate, -2);
         }
@@ -77,31 +80,43 @@ class ExcelComponent extends Component {
 
         $Department = ClassRegistry::init('Department');
         $LeaveRecord = ClassRegistry::init('LeaveRecord');
-        $this->epy2rule = $Department->get_epy2rule();
-        $this->epy2leave = $LeaveRecord->get_epy2leave();
+        $this->epy2rule = $Department->get_epy2rule(); //员工=>考勤规则
+        $this->epy2leave = $LeaveRecord->get_epy2leave($this->year, $this->month); //员工=>请假记录
+
+        $result = array();
 
         //todo, 小于两行提示出错
         for($i = 2; $i <= $highestRow ; $i++) {
             $job_id = $sheet->getCellByColumnAndRow($this->signIndex['job_id'], $i)->getValue();
-            $epyname = $sheet->getCellByColumnAndRow($this->signIndex['epyname'], $i)->getValue();
             $date = $sheet->getCellByColumnAndRow($this->signIndex['date'], $i)->getFormattedValue(); //'06-01-14'
             $sign_start = $sheet->getCellByColumnAndRow($this->signIndex['signtime'], $i)->getFormattedValue();
             $sign_end = $sheet->getCellByColumnAndRow($this->signIndex['leavetime'], $i)->getFormattedValue();
-            $department = $sheet->getCellByColumnAndRow($this->signIndex['dpt'], $i)->getValue();
 
-            $date = (int)substr($date, 2, 2);
-            $date = $this->year . '-' . $this->month . '-' . $date;
-            $epy_id = $Employee->field('id', array('Employee.job_id' => $job_id));
+            $tmpDateAry = explode('-', $date);
+            $whichDay = (int)$tmpDateAry[1];
+            $is_holiday = in_array($whichDay, $holidays);
+            $date = $this->year . '-' . $this->month . '-' . $whichDay;
+            $epy_id = (int)$Employee->field('id', array('Employee.job_id' => $job_id));
             if($epy_id === false) {//  通过工号找不到员工id时, 通知出错, 需要先更新员工表
                 //todo
             }
-
-
+            list($state_forenoon,$state_afternoon) = $this->getSignState($epy_id, $whichDay, $sign_start, $sign_end, $is_holiday);
+            $result[] = array(
+                'date' => $date,
+                'employee_id' => $epy_id,
+                'sign_start' => $sign_start,
+                'sign_end' => $sign_end,
+                'state_forenoon' => $state_forenoon,
+                'state_afternoon' => $state_afternoon
+            );
         }
-
-
-        // $date = array($employeeId, $employee, $date, $signtime, $leavetime, $department, $this->year, $this->month);
-
+        $SignRecord = ClassRegistry::init('SignRecord');
+        if( $SignRecord->saveMany($result) ) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
 
         return array($this->year, $this->month, $tmpDate, $tmpTimestamp);
     }
@@ -152,7 +167,7 @@ class ExcelComponent extends Component {
                 $duration = ceil($tmp_hours / 24) * 2;
             }
 
-            $type = $this->getLeaveType($type);
+            $type = $this->getLeaveType(trim($type));
             $epyModel = ClassRegistry::init('Employee');
             $employee_id = $epyModel->field('id', array('Employee.job_id' => $job_id));
             if($employee_id === false) {//找不到员工号提示出错, 要先更新员工表
@@ -175,10 +190,10 @@ class ExcelComponent extends Component {
 
         $LeaveRecord = ClassRegistry::init('LeaveRecord');
         if($LeaveRecord->saveMany($result)) {
-            return true;
+            return 1;
         }
         else {
-            return false;
+            return 0;
         }
     }// end parseLeave
 
@@ -193,27 +208,27 @@ class ExcelComponent extends Component {
     private function getLeaveType($type) {
         switch ($type) {
             case '事假':
-                $result = 0;
+                $result = self::CASUAL;
                 break;
 
             case '出差':
-                $result = 1;
+                $result = self::TRAVEL;
                 break;
 
             case '年假':
-                $result = 2;
+                $result = self::ANNUAL;
                 break;
 
             case '病假':
-                $result = 3;
+                $result = self::SICK;
                 break;
 
             case '丧假':
-                $result = 4;
+                $result = self::FUNERAL;
                 break;
 
             case '调休':
-                $result = 5;
+                $result = self::PAYBACK;
                 break;
 
             default:
@@ -225,66 +240,132 @@ class ExcelComponent extends Component {
 
 
     /**
-     * 得到员工的上午打卡状态和下午打卡状态
-     * @param  [type] $id     [description]
-     * @param  [type] $sign_start [description]
-     * @param  [type] $sign_end   [description]
-     * @param  [type] $holidays   [description]
-     * @return [type]             [description]
+     * 获取员工某一天的考勤状态
+     * @param  $id          员工id
+     * @param  $sign_start  上班打卡时间
+     * @param  $sign_end    下班打卡时间
+     * @return array($forenoonState, $afternoonState)    早上的考勤状态, 下午的考勤状态
      */
-    private function getSignState($id, $sign_start, $sign_end) {
-
+    private function getSignState($id, $date, $sign_start, $sign_end, $is_holiday=false) {
         //ttp == timestamp
-        $ttp_sign_start = strtotime($sign_start);
-        $ttp_sign_end = strtotime($sign_end);
+        $sign_start_ttp = strtotime($sign_start);
+        $sign_end_ttp = strtotime($sign_end);
 
         $sign_rule = $this->epy2rule[$id];
-        $flextime = $sign_rule['flextime'];
-        $starttime = $sign_rule['starttime'];
-        $endtime = $sign_rule['endtime'];
+        $flextime = $sign_rule['flextime']; //弹性时间
+        $rule_starttime_ttp = strtotime( $sign_rule['starttime'] ); //规定的上班打卡时间
+        $rule_endtime_ttp = strtotime( $sign_rule['endtime'] ); //规定的下班打卡时间
 
-        $tmpDate = $sheet->getCellByColumnAndRow($this->date_index, 2)->getFormattedValue(); // '06-01-14'
-        $date = (int)substr($tmpDate, 3, 2);
-
-        if(empty($sign_start) && empty($sign_end)) {//看是否在假期之内
-            if(in_array($date, $this->holidays)) { //是假期
-                return array(HOLIDAY, HOLIDAY);
+        $leaveItems = @$this->epy2leave[$id] or false; //获取员工请假记录
+        $hasLeave = !empty($leaveItems);
+        if(empty($sign_start) && empty($sign_end)) { //早上下午都没打卡
+            if($is_holiday) { //是否在假期之内, 在假期内
+                return array(self::HOLIDAY, self::HOLIDAY);
             }
-            else {
-                $leaveItems = $this->epy2leave[$id]; //获取员工请假记录
+            else {//不在假期内, 查看是否在请假范围内
+                if(!$hasLeave) { //没有请假记录
+                    return array(self::EMPTYDAY, self::EMPTYDAY);
+                }
                 $forenoonPoint = sprintf('%s-%s-%s 10:00', $this->year, $this->month, $date);
                 $afternoonPoint = sprintf('%s-%s-%s 15:00', $this->year, $this->month, $date);
                 $forenoonPointTtp = strtotime($forenoonPoint);
                 $afternoonPointTtp = strtotime($afternoonPoint);
-                foreach($leaveItems as $leaveItem) {
-                    $forenoonLeave = $forenoonPoint > $leaveItem['start_time'];
-                    $afternoonLeave = $afternoonPoint < $leaveItem['end_time'];
-                    if() {
+                $forenoonState = self::EMPTYDAY;
+                $afternoonState = self::EMPTYDAY;
+                foreach($leaveItems as $leaveItem) { //是否在请假范围内
+                    $isForenoonInLeave = $forenoonPointTtp > $leaveItem['start_time']
+                                         && $forenoonPointTtp < $leaveItem['end_time'];
+                    $isAfternoonInLeave = $afternoonPointTtp > $leaveItem['start_time']
+                                          && $afternoonPointTtp < $leaveItem['end_time'];
+                    if($isForenoonInLeave) {
+                        $forenoonState = $leaveItem['type'];
+                    }
+                    if($isAfternoonInLeave) {
+                        $afternoonState = $leaveItem['type'];
+                    }
+                }
+                return array($forenoonState, $afternoonState);
+            }
+        }// end 早上下午都没打卡
 
+        if(empty($sign_start)) {//仅早上没打卡
+            if($is_holiday) { //tmp是否在假期之内, 在假期内
+                return array(self::EMPTYDAY, self::NORMAL);
+            }
+            $forenoonPoint = sprintf('%s-%s-%s 10:00', $this->year, $this->month, $date);
+            $forenoonPointTtp = strtotime($forenoonPoint);
+            $forenoonState = self::EMPTYDAY; //tmp
+            if($hasLeave) {
+                foreach($leaveItems as $leaveItem) { //是否在请假范围内
+                    $isForenoonInLeave = $forenoonPointTtp > $leaveItem['start_time']
+                                         && $forenoonPointTtp < $leaveItem['end_time'];
+                    if($isForenoonInLeave) {
+                        $forenoonState = $leaveItem['type'];
                     }
                 }
             }
-
-            //不在假期内
-            //判断是否在请假
-            //在请假就返回状态, 不是就返回array(0, 0)
+            if($sign_end_ttp < $rule_endtime_ttp) { //下班打卡时间过早, 为早退
+                $afternoonState = self::EMPTYDAY;
+            }
+            else {
+                $afternoonState = self::NORMAL;
+            }
+            return array($forenoonState, $afternoonState);
         }
 
-        if(empty($sign_start)) {//看是否在请假
-
+        if(empty($sign_end)) {//仅下午没打卡
+            if($is_holiday) { //tmp是否在假期之内, 在假期内
+                return array(self::NORMAL, self::EMPTYDAY);
+            }
+            $afternoonPoint = sprintf('%s-%s-%s 15:00', $this->year, $this->month, $date);
+            $afternoonPointTtp = strtotime($afternoonPoint);
+            $afternoonState = self::EMPTYDAY; //tmp
+            if($hasLeave) {
+                foreach($leaveItems as $leaveItem) { //是否在请假范围内
+                    $isAfternoonInLeave = $afternoonPointTtp > $leaveItem['start_time']
+                                         && $afternoonPointTtp < $leaveItem['end_time'];
+                    if($isAfternoonInLeave) {
+                        $forenoonState = $leaveItem['type'];
+                    }
+                }
+            }
+            $edgetime_ttp = $rule_starttime_ttp + $flextime * 60; //规定的上班打卡时间+弹性时间=最迟的上班打卡时间
+            if($sign_start_ttp > $edgetime_ttp) { //上班迟到鸟
+                $forenoonState = self::LATE;
+            }
+            else {
+                $forenoonState = self::NORMAL;
+            }
+            return array($forenoonState, $afternoonState);
         }
 
-        if(empty($sign_end)) {//看是否在请假
-
+        /**
+         * tmp
+         * 以下处理一天打两次卡的情况
+         * 要考虑有的同事来得晚, 但是也走得比较晚的情况,
+         * 这样不能算迟到. 比如说早上10点来晚上7点走
+         */
+        $between_hours = ($sign_end_ttp - $sign_start_ttp) / 3600;
+        if($between_hours >= 9) {
+            return array(self::NORMAL, self::NORMAL);
         }
-
-        if($flextime == 0) { //弹性时间为0
-
+        $edgetime_ttp = $rule_starttime_ttp + $flextime * 60;
+        if($sign_start_ttp > $edgetime_ttp) { //上班迟到鸟
+            $forenoonState = self::LATE;
         }
         else {
-
+            $forenoonState = self::NORMAL;
         }
+
+        if($sign_end_ttp < $rule_endtime_ttp) { //早退
+            $afternoonState = self::EARLY;
+        }
+        else {
+            $afternoonState = self::NORMAL;
+        }
+        return array($forenoonState, $afternoonState);
+
     }// end getSignState
 
 
-}
+}// end class

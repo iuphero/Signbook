@@ -32,7 +32,7 @@ class LeaveRecord extends AppModel {
      * end_time:请假结束时间, int 时间戳类型
      * type:请假类型
      */
-    public function get_epy2leave($year, $month) {
+    public function get_epy2leave($year = 14, $month) {
         $tmpRecords = $this->find('all', array(
             'fields' => array('employee_id', 'start_time', 'end_time', 'type'),
             'order' => 'employee_id asc',
