@@ -32,12 +32,10 @@ App::uses('Controller', 'Controller');
  */
 class AppController extends Controller {
 
-    public $components = array('DebugKit.Toolbar', 'Session');
-
-    public $uses = array('Department', 'Employee', 'SignRule', 'SignRecord');
-
     public $helpers = array('Html', 'Session');
 
-    public $layout = 'basic';
-
+    public $components = array(
+        'DebugKit.Toolbar',
+        'Session'
+    );
 }

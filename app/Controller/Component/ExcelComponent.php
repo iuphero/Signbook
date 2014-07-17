@@ -42,6 +42,7 @@ class ExcelComponent extends Component {
         'dpt' => 21  //部门
     );
 
+
     /**
      * 记录请假表中各项信息在第几列, 从0开始
      */
@@ -54,6 +55,14 @@ class ExcelComponent extends Component {
         'reason' => 5       //请假原因
     );
 
+
+
+    /**
+     * 分析考勤文件, 保存数据到signbook.sign_record表中
+     * @param  $file     string 文件路径
+     * @param  $holidays array  要分析的月份的假期(几号)数组,包括周六周日,例如[1, 4, 6, 30]
+     * @return $boolean  分析成功返回true, 失败返回false
+     */
     public function parseSign($file, $holidays = array())    {
         //load phpexcel
         APP::import('Vendor','/excel/Classes/PHPExcel');
@@ -112,19 +121,18 @@ class ExcelComponent extends Component {
         }
         $SignRecord = ClassRegistry::init('SignRecord');
         if( $SignRecord->saveMany($result) ) {
-            return 1;
+            return true;
         }
         else {
-            return 0;
+            return false;
         }
-
-        return array($this->year, $this->month, $tmpDate, $tmpTimestamp);
     }
 
 
 
     /** 分析请假的Excel文件, 保存到signbook.leave_record表格中
-     *
+     *  @param $file 文件路径
+     *  @return boolean 处理成功返回true, 处理失败返回false
      */
     public function parseLeave($file) {
         //todo 重复分析插入的检测
@@ -174,7 +182,7 @@ class ExcelComponent extends Component {
                 //todo
             }
 
-            $row_data = array(
+            $result[] = array(
                 'type' => $type,
                 'employee_id' => $employee_id,
                 'start_time' => $start_time,
@@ -185,22 +193,20 @@ class ExcelComponent extends Component {
                 'year' =>  $this->year
             );
 
-            array_push($result, $row_data);
         }//end for
 
         $LeaveRecord = ClassRegistry::init('LeaveRecord');
         if($LeaveRecord->saveMany($result)) {
-            return 1;
+            return true;
         }
         else {
-            return 0;
+            return false;
         }
     }// end parseLeave
 
 
     /**
      * 根据请假类型名称(string), 获取对应的类型编号(int)
-     * 事假=>0,出差=>1,年假=>2,病假=>3,丧假=>4,调休=>5
      *
      * @param $type string 中文类型名称
      * @return $result int 类型编号, 数字
@@ -241,9 +247,11 @@ class ExcelComponent extends Component {
 
     /**
      * 获取员工某一天的考勤状态
-     * @param  $id          员工id
-     * @param  $sign_start  上班打卡时间
-     * @param  $sign_end    下班打卡时间
+     * @param  $id    int   员工id
+     * @param  $date  int   日期, 几号, 例如1, 15, 31
+     * @param  $sign_start  string  上班打卡时间
+     * @param  $sign_end    string  下班打卡时间
+     * @param  $is_holiday  boolean 是否为假期
      * @return array($forenoonState, $afternoonState)    早上的考勤状态, 下午的考勤状态
      */
     private function getSignState($id, $date, $sign_start, $sign_end, $is_holiday=false) {
