@@ -163,7 +163,7 @@
   margin: 0;
 }
 
-/* line 143, ../../sass/lib/bootstrap-datetimepicker.scss */
+/* line 142, ../../sass/lib/bootstrap-datetimepicker.scss */
 .datetimepicker td,
 .datetimepicker th {
   text-align: center;
@@ -175,7 +175,7 @@
   border: none;
 }
 
-/* line 154, ../../sass/lib/bootstrap-datetimepicker.scss */
+/* line 153, ../../sass/lib/bootstrap-datetimepicker.scss */
 .table-striped .datetimepicker table tr td,
 .table-striped .datetimepicker table tr th {
   background-color: transparent;
@@ -199,13 +199,13 @@
   cursor: pointer;
 }
 
-/* line 174, ../../sass/lib/bootstrap-datetimepicker.scss */
+/* line 173, ../../sass/lib/bootstrap-datetimepicker.scss */
 .datetimepicker table tr td.old,
 .datetimepicker table tr td.new {
   color: #999999;
 }
 
-/* line 179, ../../sass/lib/bootstrap-datetimepicker.scss */
+/* line 178, ../../sass/lib/bootstrap-datetimepicker.scss */
 .datetimepicker table tr td.disabled,
 .datetimepicker table tr td.disabled:hover {
   background: none;
@@ -213,7 +213,7 @@
   cursor: default;
 }
 
-/* line 188, ../../sass/lib/bootstrap-datetimepicker.scss */
+/* line 185, ../../sass/lib/bootstrap-datetimepicker.scss */
 .datetimepicker table tr td.today,
 .datetimepicker table tr td.today:hover,
 .datetimepicker table tr td.today.disabled,
@@ -232,7 +232,7 @@
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
 
-/* line 222, ../../sass/lib/bootstrap-datetimepicker.scss */
+/* line 203, ../../sass/lib/bootstrap-datetimepicker.scss */
 .datetimepicker table tr td.today:hover,
 .datetimepicker table tr td.today:hover:hover,
 .datetimepicker table tr td.today.disabled:hover,
@@ -256,7 +256,7 @@
   background-color: #fdf59a;
 }
 
-/* line 233, ../../sass/lib/bootstrap-datetimepicker.scss */
+/* line 226, ../../sass/lib/bootstrap-datetimepicker.scss */
 .datetimepicker table tr td.today:active,
 .datetimepicker table tr td.today:hover:active,
 .datetimepicker table tr td.today.disabled:active,
@@ -268,7 +268,7 @@
   background-color: #fbf069;
 }
 
-/* line 240, ../../sass/lib/bootstrap-datetimepicker.scss */
+/* line 237, ../../sass/lib/bootstrap-datetimepicker.scss */
 .datetimepicker table tr td.active,
 .datetimepicker table tr td.active:hover,
 .datetimepicker table tr td.active.disabled,
@@ -289,7 +289,7 @@
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 
-/* line 276, ../../sass/lib/bootstrap-datetimepicker.scss */
+/* line 257, ../../sass/lib/bootstrap-datetimepicker.scss */
 .datetimepicker table tr td.active:hover,
 .datetimepicker table tr td.active:hover:hover,
 .datetimepicker table tr td.active.disabled:hover,
@@ -313,7 +313,7 @@
   background-color: #0044cc;
 }
 
-/* line 287, ../../sass/lib/bootstrap-datetimepicker.scss */
+/* line 280, ../../sass/lib/bootstrap-datetimepicker.scss */
 .datetimepicker table tr td.active:active,
 .datetimepicker table tr td.active:hover:active,
 .datetimepicker table tr td.active.disabled:active,
@@ -345,13 +345,13 @@
   line-height: 26px;
 }
 
-/* line 310, ../../sass/lib/bootstrap-datetimepicker.scss */
+/* line 309, ../../sass/lib/bootstrap-datetimepicker.scss */
 .datetimepicker .datetimepicker-hours table tr td span.hour_am,
 .datetimepicker .datetimepicker-hours table tr td span.hour_pm {
   width: 14.6%;
 }
 
-/* line 315, ../../sass/lib/bootstrap-datetimepicker.scss */
+/* line 314, ../../sass/lib/bootstrap-datetimepicker.scss */
 .datetimepicker .datetimepicker-hours fieldset legend,
 .datetimepicker .datetimepicker-minutes fieldset legend {
   margin-bottom: inherit;
@@ -369,7 +369,7 @@
   background: #eeeeee;
 }
 
-/* line 330, ../../sass/lib/bootstrap-datetimepicker.scss */
+/* line 329, ../../sass/lib/bootstrap-datetimepicker.scss */
 .datetimepicker table tr td span.disabled,
 .datetimepicker table tr td span.disabled:hover {
   background: none;
@@ -377,7 +377,7 @@
   cursor: default;
 }
 
-/* line 339, ../../sass/lib/bootstrap-datetimepicker.scss */
+/* line 336, ../../sass/lib/bootstrap-datetimepicker.scss */
 .datetimepicker table tr td span.active,
 .datetimepicker table tr td span.active:hover,
 .datetimepicker table tr td span.active.disabled,
@@ -398,7 +398,7 @@
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 
-/* line 375, ../../sass/lib/bootstrap-datetimepicker.scss */
+/* line 356, ../../sass/lib/bootstrap-datetimepicker.scss */
 .datetimepicker table tr td span.active:hover,
 .datetimepicker table tr td span.active:hover:hover,
 .datetimepicker table tr td span.active.disabled:hover,
@@ -422,7 +422,7 @@
   background-color: #0044cc;
 }
 
-/* line 386, ../../sass/lib/bootstrap-datetimepicker.scss */
+/* line 379, ../../sass/lib/bootstrap-datetimepicker.scss */
 .datetimepicker table tr td span.active:active,
 .datetimepicker table tr td span.active:hover:active,
 .datetimepicker table tr td span.active.disabled:active,
@@ -444,19 +444,19 @@
   width: 145px;
 }
 
-/* line 399, ../../sass/lib/bootstrap-datetimepicker.scss */
+/* line 398, ../../sass/lib/bootstrap-datetimepicker.scss */
 .datetimepicker thead tr:first-child th,
 .datetimepicker tfoot tr:first-child th {
   cursor: pointer;
 }
 
-/* line 404, ../../sass/lib/bootstrap-datetimepicker.scss */
+/* line 403, ../../sass/lib/bootstrap-datetimepicker.scss */
 .datetimepicker thead tr:first-child th:hover,
 .datetimepicker tfoot tr:first-child th:hover {
   background: #eeeeee;
 }
 
-/* line 410, ../../sass/lib/bootstrap-datetimepicker.scss */
+/* line 408, ../../sass/lib/bootstrap-datetimepicker.scss */
 .input-append.date .add-on i,
 .input-prepend.date .add-on i,
 .input-group.date .input-group-addon span {

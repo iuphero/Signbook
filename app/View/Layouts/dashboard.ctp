@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-    	<meta charset="UTF-8">
-    	<title>
-    	<?php
+        <meta charset="UTF-8">
+        <title>
+        <?php
             if(isset($page_title)) {
                 echo $page_title;
             }
             else echo 'Signbook';
         ?>
-    	</title>
+        </title>
         <?php echo $this->element('block-css', array(), array('cache' => 'false')); ?>
-
+    </head>
+    <body>
+        <?php echo $this->element('header'); ?>
         <div class="container">
             <aside class="left-side">
                 <form action="#" method="get" class="sidebar-form">
@@ -67,13 +69,13 @@
                     </li>
                 </ul>
             </aside>
+            <!-- end left-side -->
+            <aside class="right-side">
+                <?php echo $this->fetch('content'); ?>
+            </aside>
         </div>
-    </head>
-    <body>
-        <?php echo $this->element('header'); ?>
         <?php
-            echo $this->fetch('content');
-            echo $this->element('block-js');
+            echo $this->element('block-lib-js');
             echo $this->fetch('script');
         ?>
     </body>
