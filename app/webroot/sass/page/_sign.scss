@@ -1,0 +1,18 @@
+.input-leave {
+    .input-month, .input-file {
+        position: relative;
+        width: 400px;
+        margin-top: 20px;
+        padding: 5px 15px 15px 15px;
+    }
+
+
+    .btn-month, .btn-reset {
+        margin-top: 20px;
+        float: right;
+    }
+
+    .error-warning {
+        margin-top: 20px;
+    }
+}

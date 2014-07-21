@@ -77,6 +77,7 @@
         <?php
             echo $this->element('block-lib-js');
             echo $this->fetch('script');
+            echo $this->fetch('page-script');
         ?>
     </body>
 </html>
