@@ -205,6 +205,18 @@ class ExcelComponent extends Component {
     }// end parseLeave
 
 
+    public function parseEpy($file) {
+
+        $book =
+        $sheet = $this->reader->load($file)->getsheet(0);
+        $highestRow = $sheet->getHighestRow();
+        return $sheet->getCellByColumnAndRow(1,2);
+        // for($i = 2; $i< $highestRow; $i++) {
+        //     $name = $sheet->getCellByColumnAndRow(, $i)->getValue();
+
+        // }
+    }
+
     /**
      * 根据请假类型名称(string), 获取对应的类型编号(int)
      *

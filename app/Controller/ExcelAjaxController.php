@@ -82,23 +82,34 @@ class ExcelAjaxController extends AppController {
     }
 
     public function parseLeave() {
+        // if(!isset($_FILES['leave']) || $_FILES['leave']['error'] != 0) {
+        //     return json_encode(array(
+        //         'code' => 0,
+        //         'info' => '文件上传错误，错误代码为' . $_FILES['leave']['error']
+        //     ));
+        // }
 
-        if(!isset($_FILES['leave']) || $_FILES['leave']['error'] != 0) {
-            return 'error-unknow';
-        }
+        // if(strpos($_FILES['leave']['type'], 'excel') === false &&
+        //     strpos($_FILES['leave']['type'], 'sheet') === false &&
+        //     strpos($_FILES['leave']['type'], 'xlsx') === false &&
+        //     strpos($_FILES['leave']['type'], 'xls') === false
+        // ) { //文件类型不对
+        //     return json_encode(array(
+        //         'code' => 0,
+        //         'info' => sprintf('文件类型错误[%s], 请上传正确的文件类型', $_FILES['leave']['type'])
+        //     ));
+        // }
+        // $filename =  sys_get_temp_dir() . DS . basename($_FILES['leave']['name']);
+        // //要保证目录可写
+        // if( !@move_uploaded_file($_FILES['leave']['tmp_name'], $filename) ) {
+        //     return json_encode(array(
+        //         'code' => 0,
+        //         'info' => sprintf('将文件移动到%s时出错，目录可能不可写', $filename)
+        //     ));
+        // }
 
-        if(strpos($_FILES['leave']['type'], 'excel') === false &&
-            strpos($_FILES['leave']['type'], 'sheet') === false
-        ) { //文件类型不对
-            return 'error-type';
-        }
-        $filename = ROOT. DS. APP_DIR. DS. 'Data/leave/' . basename($_FILES['leave']['name']);
 
-        //要保证signbook/app/Data可写 mode-777
-        if( !@move_uploaded_file($_FILES['leave']['tmp_name'], $filename) ) {
-            return 'error-upload';
-        }
-
+        $filename = '/home/xfight/download/请假单06.xlsx';
         //开始使用PHP-Excel分析文件
         APP::import('Vendor','/excel/Classes/PHPExcel');
         APP::import('Vender','/excel/Classes/PHPExcel/IOFactory');
@@ -140,9 +151,9 @@ class ExcelAjaxController extends AppController {
 
             $type = $this->getLeaveType(trim($type));
             $this->loadModel('Employee');
-            $employee_id = $this->Employee->field('id', array('Employee.job_id' => $job_id));
+            $employee_id = $this->Employee->field('id', array('Employee.name' => $name));
             if($employee_id === false) {//找不到员工号提示出错, 要先更新员工表
-                return 'error-employee';
+                continue;
             }
 
             $result[] = array(
@@ -159,12 +170,18 @@ class ExcelAjaxController extends AppController {
         }//end for
         $this->loadModel('LeaveRecord');
         if($this->LeaveRecord->saveMany($result)) {
-            return 'done';
+            return json_encode(array(
+                'code' => 1
+            ));
         }
         else {
-            return 'error-db';
+            return json_encode(array(
+                'code' => 0,
+                'info' => '数据库保存出错，情联系程序猿'
+            ));
         }
-    }
+
+    }// end parseLeave
 
 
     /**
@@ -173,7 +190,8 @@ class ExcelAjaxController extends AppController {
      * @param  $file  string  文件路径
      * @return boolean  成功返回true, 失败返回false
      */
-    public function parseEmployee($file) {
+    public function parseEmployee($file = null) {
+        $file = '/home/xfight/download/个人编号.xlsx';
         APP::import('Vendor','/excel/Classes/PHPExcel');
         APP::import('Vender','/excel/Classes/PHPExcel/IOFactory');
         APP::import('Vender','/excel/Classes/PHPExcel/Reader/Excel2007');
@@ -215,7 +233,6 @@ class ExcelAjaxController extends AppController {
             if ($jobID < 10000) {
                 $jobID += 10000;
             }
-
 
             if ( !empty($dptV1) && !isset($dptV1s[$dptV1]) ) {
                 $this->Department->create();
