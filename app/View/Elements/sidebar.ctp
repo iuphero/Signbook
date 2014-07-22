@@ -13,10 +13,16 @@
 
                 <ul class="sidebar-menu">
 
+                    <li class="active">
+                            <a href="#">
+                                <i class="glyphicon glyphicon-home"></i> <span>首页</span>
+                            </a>
+                    </li>
+
                     <li class="treeview">
                         <a href="#">
-                            <i class="fa fa-bar-chart-o"></i>
-                            <span>部门设置</span>
+                            <i class="glyphicon glyphicon-user"></i>
+                            <span>部门</span>
                             <i class="glyphicon glyphicon-chevron-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
@@ -31,7 +37,8 @@
 
                     <li class="treeview">
                         <a href="#">
-                            <i class="fa fa-edit"></i> <span>考勤设置</span>
+                            <i class="glyphicon glyphicon-tasks"></i>
+                            <span>考勤</span>
                             <i class="glyphicon glyphicon-chevron-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
@@ -42,8 +49,8 @@
 
                     <li class="treeview">
                         <a href="#">
-                            <i class="fa fa-laptop"></i>
-                            <span>请假设置</span>
+                            <i class="glyphicon glyphicon-check"></i>
+                            <span>请假</span>
                             <i class="glyphicon glyphicon-chevron-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">

@@ -34,5 +34,6 @@
 .alert-link {
     &:hover {
         color: red;
+        text-decoration: underline;
     }
 }

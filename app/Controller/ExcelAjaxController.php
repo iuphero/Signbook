@@ -508,7 +508,7 @@ class ExcelAjaxController extends AppController {
      * @return boolean  成功返回true, 失败返回false
      */
     public function parseEmployee($file = null) {
-        $file = '/home/xfight/tmp/signbook/个人编号.xlsx';
+        $file = '/home/xfight/download/个人编号.xlsx';
         APP::import('Vendor','/excel/Classes/PHPExcel');
         APP::import('Vender','/excel/Classes/PHPExcel/IOFactory');
         APP::import('Vender','/excel/Classes/PHPExcel/Reader/Excel2007');

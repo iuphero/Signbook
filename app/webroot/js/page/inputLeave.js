@@ -1,4 +1,4 @@
-signbook.inputLeave1 = (function (sk) {
+signbook.inputLeave = (function (sk) {
 
     sk.init = function () {
 
@@ -19,12 +19,14 @@ signbook.inputLeave1 = (function (sk) {
             onSuccess : function (e, xhr, text){
                 var result = JSON.parse(text);
                 if(result.code == 0) {
-                    $('.leave-alert').text(result.info + '， 然后刷新重试').slideDown();
+                    $('.leave-alert').text(result.info + '， 刷新重试').slideDown();
                 }
                 else {//导入请假数据文件成功
                     $('.leave-alert').text('成功导入数据，可以导出Excel文件了').slideDown();
                     $('.input-file').slideUp();
-                    $('.btn-output-leave').text('导出' + monthText + '月份请假Excel表格').show();
+                    var href = '/excelAjax/outputLeave/' + month.substr(0, 7);
+                    $('.btn-output-leave').attr('href', href)
+                    .text('导出' + monthText + '月份请假Excel表格').show();
                 }
             }
         });
@@ -54,13 +56,6 @@ signbook.inputLeave1 = (function (sk) {
                     $('.input-file .box-header').text('上传' + monthText + '月份的Excel请假文件');
                 }
             });
-        });
-
-        $('.btn-output-leave').click(function (event) {
-            event.preventDefault();
-            var href = '/excelAjax/outputLeave/' + month.substr(0, 7);
-            console.log(href);
-            window.location.replace(href);
         });
 
     };//end sk.init

@@ -5,7 +5,7 @@
     </h1>
 </section>
 <div class="row input-leave">
-    <div class="input-leave-left col-sm-4">
+    <div class="input-leave-left col-sm-5">
         <div class="box box-red input-month clearfix">
             <h4 class="box-header">
                 您要导入几月份的请假数据
@@ -26,7 +26,7 @@
             <div>
                 <input class="the-file form-control" size="16" type="file" value="">
             </div>
-            <a class="btn btn-primary btn-reset" href="/sign/inputLeave1">重新选择月份</a>
+            <a class="btn btn-primary btn-reset" href="/sign/inputLeave">重新选择月份</a>
         </div>
 
         <div class="alert alert-warning alert-dismissible leave-alert dn" role="alert">
@@ -37,10 +37,10 @@
     </div>
     <!-- end .input-leave-left -->
 
-    <div class="input-leave-right col-sm-4">
+    <div class="input-leave-right col-sm-5">
         <div class="input-leave-tip">
             <div class="alert alert-info" role="alert">
-                小提示: 请在导入/导出请假数据前, 先更新员工和部门信息
+                请在导入/导出请假数据前, 先更新员工和部门信息
                 <a href="#" class="alert-link">更新</a>
             </div>
 
@@ -82,11 +82,11 @@
 </div><!-- /.modal -->
 
 
-<?php echo $this->Html->scriptStart(array('block' => 'script')); ?>
-    $(document).ready(function(){
-        signbook.inputLeave1.init();
-    });
 <?php
-echo $this->Html->scriptEnd();
-echo $this->Html->script('page/inputLeave1', array('inline' => false));
+    echo $this->Html->script('page/inputLeave', array('inline' => false));
+    echo $this->Html->scriptStart(array('block' => 'script'));
 ?>
+    $(document).ready(function(){
+        signbook.inputLeave.init();
+    });
+<?php echo $this->Html->scriptEnd(); ?>

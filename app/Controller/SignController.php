@@ -18,15 +18,12 @@ class SignController extends AppController {
 
     }
 
-/*
-录入假期信息
-选择月份  本月假期情况是否存在提示, 不存在就要先上传假期数据
- */
-    public function inputLeave1() {
-        //todo 展示已有请假数据的月份
-        $this->loadModel('LeaveRecord');
-        $this->LeaveRecord->find('count', array(
-            'conditions'
-        ));
+    /*
+    录入假期信息
+    选择月份  本月假期情况是否存在提示, 不存在就要先上传假期数据
+     */
+    public function inputLeave() {
+
+
     }
 }
