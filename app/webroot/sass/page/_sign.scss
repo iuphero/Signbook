@@ -16,8 +16,23 @@
 .leave-alert {
     width: 400px;
     border: 1px solid red;
+    margin-top: 20px;
 }
 
 #leave-modal-box {
     top: 20px;  //使modal框低一些
+}
+
+
+.input-leave-right {
+    padding-top: 20px;
+    .progress-tip {
+        margin-top: 20px;
+    }
+}
+
+.alert-link {
+    &:hover {
+        color: red;
+    }
 }
