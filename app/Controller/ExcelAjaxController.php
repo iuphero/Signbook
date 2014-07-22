@@ -82,10 +82,10 @@ class ExcelAjaxController extends AppController {
         ));
 
         if($count < 10) {//todo, 这个判定不严格, 还找一个更好的方法
-            return 1;
+            return 0;
         }
         else {
-            return 0;
+            return 1;
         }
     }
 

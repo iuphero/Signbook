@@ -24,7 +24,7 @@ signbook.inputLeave = (function (sk) {
                 else {//导入请假数据文件成功
                     $('.leave-alert').text('成功导入数据，可以导出Excel文件了').slideDown();
                     $('.input-file').slideUp();
-                    var href = '/excelAjax/outputLeave/' + month.substr(0, 7);
+                    var href = '/excelAjax/outputLeave/' + monthText;
                     $('.btn-output-leave').attr('href', href)
                     .text('导出' + monthText + '月份请假Excel表格').show();
                 }
@@ -44,7 +44,7 @@ signbook.inputLeave = (function (sk) {
             $.post('/excelAjax/hasLeaveData', {
                 'time' : month
             }, function(result) {
-                if(result == 0) {//此月数据已存在, 提示错误
+                if(result == 1) {//此月数据已存在, 提示错误
                     $('.modal-title').text('已有数据');
                     $('.modal-body').text('您选择的月份已有数据存在, 请重新选择');
                     $('#leave-modal-box').modal();

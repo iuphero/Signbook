@@ -26,4 +26,8 @@ class SignController extends AppController {
 
 
     }
+
+    public function getLeave() {
+
+    }
 }
