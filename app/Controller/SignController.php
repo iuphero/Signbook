@@ -18,11 +18,16 @@ class SignController extends AppController {
 
     }
 
+
+    public function getSign() {
+
+    }
+
     /*
     录入假期信息
     选择月份  本月假期情况是否存在提示, 不存在就要先上传假期数据
      */
-    public function inputLeave($type) {
+    public function input($type) {
         if( !in_array($type, array('leave','sign') ) ) {
             throw new NotFoundException;
         }

@@ -100,10 +100,10 @@
 
 
 <?php
-    echo $this->Html->script('page/inputLeave', array('inline' => false));
+    echo $this->Html->script('page/input', array('inline' => false));
     echo $this->Html->scriptStart(array('block' => 'script'));
 ?>
     $(document).ready(function(){
-        signbook.inputLeave.init();
+        signbook.input.init();
     });
 <?php echo $this->Html->scriptEnd(); ?>

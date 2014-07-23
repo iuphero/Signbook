@@ -42,8 +42,8 @@
                             <i class="glyphicon glyphicon-chevron-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="#"><i class="glyphicon glyphicon-chevron-right"></i> 录入考勤数据</a></li>
-                            <li><a href="#"><i class="glyphicon glyphicon-chevron-right"></i> 导出考勤表格</a></li>
+                            <li><a href="/sign/input/sign"><i class="glyphicon glyphicon-chevron-right"></i> 录入考勤数据</a></li>
+                            <li><a href="/sign/getSign"><i class="glyphicon glyphicon-chevron-right"></i> 导出考勤表格</a></li>
                         </ul>
                     </li>
 
@@ -54,7 +54,7 @@
                             <i class="glyphicon glyphicon-chevron-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="/sign/inputLeave"><i class="glyphicon glyphicon-chevron-right"></i> 录入请假数据</a></li>
+                            <li><a href="/sign/input/leave"><i class="glyphicon glyphicon-chevron-right"></i> 录入请假数据</a></li>
                             <li><a href="/sign/getLeave"><i class="glyphicon glyphicon-chevron-right"></i> 导出请假表格</a></li>
                         </ul>
                     </li>

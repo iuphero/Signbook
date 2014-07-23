@@ -1,4 +1,4 @@
-signbook.inputLeave = (function (sk) {
+signbook.input = (function (sk) {
 
     sk.init = function () {
 
@@ -87,4 +87,4 @@ signbook.inputLeave = (function (sk) {
     };//end sk.init
 
     return sk;
-}(signbook.inputLeave1 || {}));
+}(signbook.input || {}));
