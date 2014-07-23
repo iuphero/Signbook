@@ -125,9 +125,9 @@ class ExcelAjaxController extends AppController {
         }
     }
 
-    public function outputSign($time = '2014-07') {
+    public function outputSign($time = '2014-06') {
         $this->time = $time;
-        $holidays = array(5, 6, 12, 13, 19, 20, 26, 27);//dummy data
+        $holidays = array(1,2,7,8,14,15,21,22,28,29);//dummy data
         $this->loadModel('Department');
         $employees = $this->Department->get_epy2dpt();
         $department = array();
@@ -181,11 +181,18 @@ class ExcelAjaxController extends AppController {
                     $signs = $epy['signs'];
                     $normalCount = 0; //正常天数
                     $holidayCount = count($holidays);
-                    $travelCount = @$epy['leaves']['travel']['sum'] or 0;
-                    $casualCount = $epy['leaves']['casual'];
-                    $sickCount = $epy['leaves']['sick'];
-                    $annualAndPaybackCount = $epy['leaves']['casual'] +
-                    $epy['leaves']['payback']; //年假和调休天数
+                    $travelCount =  0;
+                    $casualCount = 0;
+                    $sickCount = 0;
+                    $annualAndPaybackCount = 0; //年假和调休天数
+                    if (!empty($epy['leaves'])) {
+                        if (!empty(@$epy['leaves']['travel'])) {
+                            $travelCount = $epy['leaves']['travel']['sum'];
+                        }
+                        $casualCount = $epy['leaves']['casual'];
+                        $sickCount = $epy['leaves']['sick'];
+                        $annualAndPaybackCount = $epy['leaves']['casual'] + $epy['leaves']['payback']; //年假和调休天数
+                    }
 
                     $absentCount = 0;
                     $lateCount = 0;
@@ -207,7 +214,6 @@ class ExcelAjaxController extends AppController {
                         for($day = 1, $col = 2; $day <= $dayCount; $day++, $col++) {
                             if(in_array($day, $holidays)) {
                                 $state_afternoon = $state_forenoon = $this->sign2symbol[self::HOLIDAY];
-                                $holidayCount ++;
                             }
                             else {
                                 $signOfDay = @$signs[$day] or false;
@@ -215,12 +221,23 @@ class ExcelAjaxController extends AppController {
                                     $state_afternoon = $state_forenoon = $this->sign2symbol[self::EMPTYDAY];
                                 }
                                 else {
-                                    if($signOfDay['state_afternoon'] == self::NORMAL ||
-                                        $signOfDay['state_afternoon'] == self::NORMAL) {
+                                    $raw_forenoon = $signOfDay['state_forenoon'];
+                                    $raw_afternoon = $signOfDay['state_afternoon'];
+                                    if($raw_forenoon == self::NORMAL ||
+                                        $raw_afternoon == self::NORMAL) {
                                         $normalCount ++;
                                     }
-                                    $state_forenoon = $this->sign2symbol[$signOfDay['state_forenoon']];
-                                    $state_afternoon = $this->sign2symbol[$signOfDay['state_afternoon']];
+                                    if ($raw_forenoon == self::LATE || $raw_afternoon == self::LATE) {
+                                        $lateCount ++;
+                                    }
+                                    if ($raw_forenoon == self::EARLY || $raw_afternoon == self::EARLY) {
+                                        $earlyCount ++;
+                                    }
+                                    if ($raw_forenoon == self::ABSENT|| $raw_afternoon == self::ABSENT) {
+                                        $absentCount ++;
+                                    }
+                                    $state_forenoon = $this->sign2symbol[$raw_forenoon];
+                                    $state_afternoon = $this->sign2symbol[$raw_afternoon];
                                 }
                             }
                             $sheet->setCellValueByColumnAndRow($col, $i, $state_forenoon);
@@ -301,6 +318,7 @@ class ExcelAjaxController extends AppController {
                 }//end foreach $dpt2['employees']
             }//end foreach $dpt['dpt2s']
         }//end foreach $department
+        $this->setCellCenter('A1:AU1000');
         $excel->getActiveSheet()->setTitle('出差请假汇总');
         $excel->setActiveSheetIndex(0);
         header('Content-Type: application/vnd.ms-excel');
@@ -410,7 +428,7 @@ class ExcelAjaxController extends AppController {
         $sheet->getColumnDimension('AD')->setWidth(4);
         $sheet->getColumnDimension('AE')->setWidth(4);
         $sheet->getColumnDimension('AF')->setWidth(4);
-        $sheet->getColumnDimension('AG')->setWidth(4);
+        $sheet->getColumnDimension('AG')->setWidth(12);
 
         $sheet->getColumnDimension('AQ')->setWidth(12);
         $sheet->getColumnDimension('AR')->setWidth(12);
