@@ -16,21 +16,30 @@ signbook.inputLeave = (function (sk) {
         $('.the-file').html5Uploader({
             name: 'leave',
             postUrl: '/excelAjax/parseLeave',
+            onClientLoadStart: function () {
+                $('.waiting-alert').slideDown();
+            },
             onSuccess : function (e, xhr, text){
-                var result = JSON.parse(text);
+                try{
+                    var result = JSON.parse(text);
+                }catch(error){
+                    $('.error-alert').text('可能是程序错误或上传文件不对, 请刷新重试, 上传正确的请假Excel表格').slideDown();
+                    $('.waiting-alert').hide();
+                    return;
+                }
                 if(result.code == 0) {
-                    $('.leave-alert').text(result.info + '， 刷新重试').slideDown();
+                    $('.error-alert').text(result.info + '， 刷新重试').slideDown();
                 }
                 else {//导入请假数据文件成功
-                    $('.leave-alert').text('成功导入数据，可以导出Excel文件了').slideDown();
+                    $('.error-alert').text('成功导入数据，可以导出Excel文件了').slideDown();
                     $('.input-file').slideUp();
                     var href = '/excelAjax/outputLeave/' + monthText;
                     $('.btn-output-leave').attr('href', href)
                     .text('导出' + monthText + '月份请假Excel表格').show();
                 }
+                $('.waiting-alert').hide();
             }
         });
-
 
         $('.btn-month').click(function(){
             month = $('#the-month').val(); //2014-07-01 00:00:00

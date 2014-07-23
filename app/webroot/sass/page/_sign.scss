@@ -1,10 +1,4 @@
 .input-leave {
-    .input-month, .input-file {
-        position: relative;
-        width: 400px;
-        margin-top: 20px;
-        padding: 5px 15px 15px 15px;
-    }
 
     .btn-month, .btn-reset {
         margin-top: 20px;
@@ -13,27 +7,9 @@
 
 }
 
-.leave-alert {
-    width: 400px;
-    border: 1px solid red;
-    margin-top: 20px;
-}
-
-#leave-modal-box {
-    top: 20px;  //使modal框低一些
-}
-
-
 .input-leave-right {
-    padding-top: 20px;
     .progress-tip {
         margin-top: 20px;
     }
 }
 
-.alert-link {
-    &:hover {
-        color: red;
-        text-decoration: underline;
-    }
-}

@@ -1,0 +1,30 @@
+.sk-box {
+    position: relative;
+    width: 400px;
+    margin-top: 20px;
+    padding: 5px 15px 15px 15px;
+}
+
+
+.alert-link {
+    &:hover {
+        color: red;
+        text-decoration: underline;
+    }
+}
+
+
+.sk-alert {
+    display: none;
+    width: 400px;
+    border: 1px solid red;
+    margin-top: 20px;
+}
+
+.sk-modal {
+    top: 20px;
+}
+
+.page-right {
+    padding-top: 25px;
+}

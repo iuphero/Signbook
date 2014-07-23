@@ -6,7 +6,7 @@
 </section>
 <div class="row input-leave">
     <div class="input-leave-left col-sm-5">
-        <div class="box box-red input-month clearfix">
+        <div class="box box-red sk-box input-month clearfix">
             <h4 class="box-header">
                 您要导入几月份的请假数据
             </h4>
@@ -19,17 +19,24 @@
             <button type="button" class="btn btn-primary btn-month">确定</button>
         </div>
 
-        <div class="box input-file clearfix dn">
+        <div class="box input-file sk-box clearfix dn">
             <h4 class="box-header">
                 上传此月请假的Excel表格
             </h4>
             <div>
                 <input class="the-file form-control" size="16" type="file" value="">
             </div>
-            <a class="btn btn-primary btn-reset" href="/sign/inputLeave">重新选择月份</a>
+            <a class="btn btn-primary btn-reset" href="/sign/inputLeave">返回重试</a>
         </div>
 
-        <div class="alert alert-warning alert-dismissible leave-alert dn" role="alert">
+        <div class="waiting-alert sk-alert alert alert-warning  alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+            </button>
+            <strong>请等待...</strong>正在处理结果中
+        </div>
+
+        <div class="error-alert sk-alert alert alert-warning alert-dismissible" role="alert">
              有错误
         </div>
 
@@ -37,7 +44,7 @@
     </div>
     <!-- end .input-leave-left -->
 
-    <div class="input-leave-right col-sm-5">
+    <div class="input-leave-right page-right col-sm-5">
         <div class="input-leave-tip">
             <div class="alert alert-info" role="alert">
                 请在导入/导出请假数据前, 先更新员工和部门信息

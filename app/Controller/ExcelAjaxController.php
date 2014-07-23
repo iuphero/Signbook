@@ -396,34 +396,7 @@ class ExcelAjaxController extends AppController {
 
 
     public function parseLeave() {
-        if(!isset($_FILES['leave']) || $_FILES['leave']['error'] != 0) {
-            return json_encode(array(
-                'code' => 0,
-                'info' => '文件上传错误，错误代码为' . $_FILES['leave']['error']
-            ));
-        }
-
-        if(strpos($_FILES['leave']['type'], 'excel') === false &&
-            strpos($_FILES['leave']['type'], 'sheet') === false &&
-            strpos($_FILES['leave']['type'], 'xlsx') === false &&
-            strpos($_FILES['leave']['type'], 'xls') === false
-        ) { //文件类型不对
-            return json_encode(array(
-                'code' => 0,
-                'info' => sprintf('文件类型错误[%s], 请上传正确的文件类型', $_FILES['leave']['type'])
-            ));
-        }
-        $filename =  sys_get_temp_dir() . DS . basename($_FILES['leave']['name']);
-        //要保证目录可写
-        if( !@move_uploaded_file($_FILES['leave']['tmp_name'], $filename) ) {
-            return json_encode(array(
-                'code' => 0,
-                'info' => sprintf('将文件移动到%s时出错，目录可能不可写', $filename)
-            ));
-        }
-
-
-        // $filename = '/home/xfight/download/请假单06.xlsx';
+        $filename = $this->uploadFile('leave');
         //开始使用PHP-Excel分析文件
         APP::import('Vendor','/excel/Classes/PHPExcel');
         APP::import('Vender','/excel/Classes/PHPExcel/IOFactory');
@@ -435,27 +408,40 @@ class ExcelAjaxController extends AppController {
         $sheet = $reader->load($filename)->getsheet(0);
         $highestRow = $sheet->getHighestRow();
 
+        if($highestRow <= 5) {
+            return json_encode(array(
+                'code' => 0,
+                'info' => '您上传的可能不是请假数据的Excel表格,请选择正确的文件'
+            ));
+        }
+
+        $cellA1 = trim($sheet->getCellByColumnAndRow($this->leaveIndex['name'], 1));
+        $cellB1 = trim($sheet->getCellByColumnAndRow($this->leaveIndex['job_id'], 1));
+        if($cellA1 != '姓名' || $cellB1 != '考勤号码') {
+            return json_encode(array(
+                'code' => 0,
+                'info' => '您上传的可能不是请假数据的Excel表格,请选择正确的文件'
+            ));
+        }
+
         // return $highestRow;
         if($this->year === false) {
             $tmpDate = $sheet->getCellByColumnAndRow($this->leaveIndex['start_time'], 2)->getFormattedValue(); // '2014-06-16 9:00:00'
             $this->year = substr($tmpDate, 2, 2);
         }
 
-        $this->Session->write('Leave.year', $this->year);
-        $this->Session->write('Leave.month', substr($tmpDate, 5, 2));
-
         for($i = 2; $i< $highestRow; $i++) {
-            $name = $sheet->getCellByColumnAndRow($this->leaveIndex['name'], $i)->getValue();
-            $job_id = $sheet->getCellByColumnAndRow($this->leaveIndex['job_id'], $i)->getValue();
+            $name = trim($sheet->getCellByColumnAndRow($this->leaveIndex['name'], $i)->getValue());
+            $job_id = trim($sheet->getCellByColumnAndRow($this->leaveIndex['job_id'], $i)->getValue());
 
             //'2014-06-22 9:00:00'
-            $start_time = $sheet->getCellByColumnAndRow($this->leaveIndex['start_time'], $i)->getValue();
+            $start_time = trim($sheet->getCellByColumnAndRow($this->leaveIndex['start_time'], $i)->getValue());
 
             //'2014-06-25 18:00:00'
-            $end_time = $sheet->getCellByColumnAndRow($this->leaveIndex['end_time'], $i)->getValue();
+            $end_time = trim($sheet->getCellByColumnAndRow($this->leaveIndex['end_time'], $i)->getValue());
 
-            $type = $sheet->getCellByColumnAndRow($this->leaveIndex['type'], $i)->getValue();
-            $reason = $sheet->getCellByColumnAndRow($this->leaveIndex['reason'], $i)->getValue();
+            $type = trim($sheet->getCellByColumnAndRow($this->leaveIndex['type'], $i)->getValue());
+            $reason = trim($sheet->getCellByColumnAndRow($this->leaveIndex['reason'], $i)->getValue());
 
 
             $tmp_hours = ( strtotime($end_time) - strtotime($start_time) ) / 3600; //请假持续小时数
@@ -466,7 +452,7 @@ class ExcelAjaxController extends AppController {
                 $duration = ceil($tmp_hours / 24) * 2;
             }
 
-            $type = $this->getLeaveType(trim($type));
+            $type = $this->getLeaveType($type);
             $this->loadModel('Employee');
             $employee_id = $this->Employee->field('id', array('Employee.name' => $name));
             if($employee_id === false) {//找不到员工号
@@ -478,7 +464,7 @@ class ExcelAjaxController extends AppController {
                 'employee_id' => $employee_id,
                 'start_time' => $start_time,
                 'end_time' => $end_time,
-                'name' => trim($name),
+                'name' => $name,
                 'duration' => $duration,
                 'reason' => $reason,
                 'year' =>  $this->year
@@ -507,18 +493,29 @@ class ExcelAjaxController extends AppController {
      * @param  $file  string  文件路径
      * @return boolean  成功返回true, 失败返回false
      */
-    public function parseEmployee($file = null) {
-        $file = '/home/xfight/download/个人编号.xlsx';
+    public function parseEmployee() {
+
+        $result = $this->uploadFile('employee');
+        if($result['code'] == 0) {
+            return $result['info'];
+        }
+        else {
+            $filename = $result['info'];
+        }
+        // $filename = '/home/xfight/Download/signbook/个人编号.xlsx';
         APP::import('Vendor','/excel/Classes/PHPExcel');
         APP::import('Vender','/excel/Classes/PHPExcel/IOFactory');
         APP::import('Vender','/excel/Classes/PHPExcel/Reader/Excel2007');
 
         $reader = PHPExcel_IOFactory::createReader('Excel2007');
-        $sheet = $reader->load($file)->getsheet(1);
+        $sheet = $reader->load($filename)->getsheet(1);
         $rowCount = $sheet->getHighestRow();  //总行数
 
         if($rowCount < 200) {
-            //todo, 提示错误
+            return json_encode(array(
+                'code' => 0,
+                'info' => '您上传的可能不是正确的Excel表格,请选择正确的文件'
+            ));
         }
 
         $jobIDIndex = 0;
@@ -535,6 +532,7 @@ class ExcelAjaxController extends AppController {
         $this->loadModel('Department');
         $this->Department->deleteAll(array('1=1'));
         //todo,先从数据库构造数据,出错时恢复,这里用不到事务
+
 
         for ($i = 2; $i < $rowCount; $i++) {
             $jobID = trim( $sheet->getCellByColumnAndRow($jobIDIndex, $i)->getValue() );
@@ -563,6 +561,12 @@ class ExcelAjaxController extends AppController {
                 if($result) {
                     $dptV1s[$dptV1] = $this->Department->id;
                 }
+                else {
+                    return json_encode(array(
+                        'code' => 0,
+                        'info' => '数据库保存出错，情联系程序猿'
+                    ));
+                }
             }
 
             if ( !empty($dptV2) && !isset($dptV2s[$dptV1][$dptV2]) ) {
@@ -577,6 +581,12 @@ class ExcelAjaxController extends AppController {
                 ));
                 if($result) {
                     $dptV2s[$dptV1][$dptV2] = $this->Department->id;
+                }
+                else {
+                    return json_encode(array(
+                        'code' => 0,
+                        'info' => '数据库保存出错，情联系程序猿'
+                    ));
                 }
             }
 
@@ -593,6 +603,12 @@ class ExcelAjaxController extends AppController {
                 ));
                 if($result) {
                     $dptV3s[$dptV1][$dptV2][$dptV3] = $this->Department->id;
+                }
+                else {
+                    return json_encode(array(
+                        'code' => 0,
+                        'info' => '数据库保存出错，情联系程序猿'
+                    ));
                 }
             }
 
@@ -622,10 +638,15 @@ class ExcelAjaxController extends AppController {
         $this->loadModel('Employee');
         $this->Employee->deleteAll(array('1=1'));
         if( $this->Employee->SaveMany($employees) ) {
-            return true;
+            return json_encode(array(
+                'code' => 1
+            ));
         }
         else {
-            return false;
+            return json_encode(array(
+                'code' => 0,
+                'info' => '数据库保存出错，情联系程序猿'
+            ));
         }
     }// end parseEmployee
 
@@ -669,5 +690,40 @@ class ExcelAjaxController extends AppController {
         return $result;
     }// end getLeaveType
 
+
+    private function uploadFile($file) {
+        if(!isset($_FILES[$file]) || $_FILES[$file]['error'] != 0) {
+            $result = json_encode(array(
+                'code' => 0,
+                'info' => '文件上传错误，错误代码为' . $_FILES[$file]['error']
+            ));
+            return array('code' => 0, 'info' => $result);
+        }
+
+        if(strpos($_FILES[$file]['type'], 'excel') === false &&
+            strpos($_FILES[$file]['type'], 'sheet') === false &&
+            strpos($_FILES[$file]['type'], 'xlsx') === false &&
+            strpos($_FILES[$file]['type'], 'xls') === false
+        ) { //文件类型不对
+            $result = json_encode(array(
+                'code' => 0,
+                'info' => sprintf('文件类型错误[%s], 请上传正确的文件类型', $_FILES[$file]['type'])
+            ));
+            return array('code' => 0, 'info' => $result);
+        }
+        $filename =  sys_get_temp_dir() . DS . basename($_FILES[$file]['name']);
+        //要保证目录可写
+        if( !@move_uploaded_file($_FILES[$file]['tmp_name'], $filename) ) {
+            $result = json_encode(array(
+                'code' => 0,
+                'info' => sprintf('将文件移动到%s时出错，目录可能不可写', $filename)
+            ));
+            return array('code' => 0, 'info' => $result);
+        }
+        else {
+            return array('code' => 1, 'info' => $filename);
+        }
+
+    }//end uploadFile
 
 }

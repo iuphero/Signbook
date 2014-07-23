@@ -7,7 +7,7 @@
 
 <div class="row input-leave">
     <div class="input-leave-left col-sm-5">
-        <div class="box box-red input-month clearfix">
+        <div class="sk-box box box-red input-month clearfix">
             <h4 class="box-header">
                 您要导出几月份的请假数据
             </h4>
@@ -21,16 +21,17 @@
         </div>
     </div>
 
-    <div class="input-leave-right col-sm-5">
+    <div class="page-right input-leave-right col-sm-5">
         <div class="input-leave-tip">
             <div class="alert alert-info" role="alert">
                 没有请假记录的月份请先导入数据
                 <a href="/sign/inputLeave" class="alert-link">导入</a>
             </div>
-
         </div>
+    </div>
 
 </div>
+<!-- end .row -->
 
 
 <div class="modal fade dn" id="leave-modal-box">

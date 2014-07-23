@@ -30,7 +30,7 @@
                                 <a href="#"><i class="glyphicon glyphicon-chevron-right"></i> 设置部门考勤规则</a>
                             </li>
                             <li>
-                                <a href="#"><i class="glyphicon glyphicon-chevron-right"></i> 更新部门与员工</a>
+                                <a href="/set/updateAll"><i class="glyphicon glyphicon-chevron-right"></i> 更新部门与员工</a>
                             </li>
                         </ul>
                     </li>
