@@ -1,5 +1,5 @@
-<?php 
-    
+<?php
+
 App::uses('AppController', 'Controller');
 
 class ShowController extends AppController {
@@ -25,7 +25,7 @@ class ShowController extends AppController {
         $holiday_str = $this->request->data['holiday'];
         $holiday = explode(';',$holiday_str);
 
-        $fileInfo = $this->request->data['signfile'];     
+        $fileInfo = $this->request->data['signfile'];
         $inputFileName = $fileInfo['tmp_name'];
         $objReader = PHPExcel_IOFactory::createReader('Excel2007');
         $objReader = $objReader->load($inputFileName);
@@ -38,7 +38,7 @@ class ShowController extends AppController {
         $this->loadModel('Department');
         $this->loadModel('Employee');
         $this->loadModel('SignRecord');
-        
+
         $department = array();
         $employee = array();
         $records = array();
@@ -143,7 +143,7 @@ class ShowController extends AppController {
         $records = array();
 
         //处理休假数据
-        $fileInfo = $this->request->data['offfile'];     
+        $fileInfo = $this->request->data['offfile'];
         $inputFileName = $fileInfo['tmp_name'];
         $objReader = PHPExcel_IOFactory::createReader('Excel2007');
         $objReader = $objReader->load($inputFileName);
@@ -207,7 +207,7 @@ class ShowController extends AppController {
                     $off_type = 'regular';
                     break;
 
-                default : 
+                default :
                     $off_type = 'wrong';
                     break;
             }
@@ -244,7 +244,7 @@ class ShowController extends AppController {
                         $this->SignRecord->save(array(
                             'state_afternoon' => $off_type
                         ));
-                    }               
+                    }
                 }
 
             }
@@ -318,7 +318,7 @@ class ShowController extends AppController {
                         'SignRecord.date >' => $off_start_date,
                         'SignRecord.date <' => $off_end_date
                     )
-                )); 
+                ));
 
                 foreach($middleDate as $one_date ) {
                     $this->SignRecord->id = $one_date['SignRecord']['id'];
@@ -425,7 +425,7 @@ class ShowController extends AppController {
                         'SignRecord.date >' => $off_start_date,
                         'SignRecord.date <' => $off_end_date
                     )
-                )); 
+                ));
 
                 foreach($middleDate as $one_date ) {
                     $this->SignRecord->id = $one_date['SignRecord']['id'];
@@ -455,7 +455,7 @@ class ShowController extends AppController {
         APP::import('Vender','/excel/Classes/PHPExcel/Worksheet');
         APP::import('Vender','/excel/Classes/PHPExcel/Reader/Excel2007');
         APP::import('Vender','/excel/Classes/PHPExcel/Writer/Excel2007');
-        $signResult = new PHPExcel();   
+        $signResult = new PHPExcel();
         $state = array('√','●','○','☆','△','×','※','◇','◆','▲');
 
         $this->loadModel('Department');
@@ -467,7 +467,7 @@ class ShowController extends AppController {
             $mySheet = new PHPExcel_Worksheet($signResult, $dpt);
             $signResult->addSheet($mySheet);
 
-            $activeSheet = $signResult->getSheetByName($dpt);            
+            $activeSheet = $signResult->getSheetByName($dpt);
 
             $activeSheet->setCellValue('A3','部门 : '.$dpt);
             $activeSheet->setCellValue('E3','√');
@@ -551,7 +551,7 @@ class ShowController extends AppController {
 
             //设置居中
             $activeSheet->getStyle('A1:AS200')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-            
+
             //所有垂直居中
             $activeSheet->getStyle('A1:AS200')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
@@ -573,29 +573,29 @@ class ShowController extends AppController {
             foreach($one_employee as $one_employee_index=>$data) {
                 $date = date('d',strtotime($data['SignRecord']['date']));
                 $day = date('D',strtotime($data['SignRecord']['date']));
-                switch($day) { 
-                    case 'Mon': 
-                        $day = '一'; 
-                        break; 
-                    case 'Tue': 
-                        $day = '二'; 
-                        break; 
-                    case 'Wed': 
-                        $day = '三'; 
-                        break; 
-                    case 'Thu': 
-                        $day = '四'; 
-                        break; 
-                    case 'Fri': 
-                        $day = '五'; 
-                        break; 
-                    case 'Sat': 
-                        $day = '六'; 
-                        break; 
-                    case 'Sun': 
-                        $day = '日'; 
-                        break; 
-                } 
+                switch($day) {
+                    case 'Mon':
+                        $day = '一';
+                        break;
+                    case 'Tue':
+                        $day = '二';
+                        break;
+                    case 'Wed':
+                        $day = '三';
+                        break;
+                    case 'Thu':
+                        $day = '四';
+                        break;
+                    case 'Fri':
+                        $day = '五';
+                        break;
+                    case 'Sat':
+                        $day = '六';
+                        break;
+                    case 'Sun':
+                        $day = '日';
+                        break;
+                }
                 $activeSheet->setCellValueByColumnAndRow($a,5,$day);
                 $activeSheet->setCellValueByColumnAndRow($a,6,$date);
                 $a++;

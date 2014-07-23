@@ -1,6 +1,15 @@
+<?php
+    if($type == 'leave') {
+        $typeText = '请假';
+    }
+    else {
+        $typeText = '考勤';
+    }
+?>
+<input type="hidden" id="page-type" value="<?php echo $type; ?>">
 <section class="content-header">
     <h1>
-        导入请假数据
+        <?php echo '导入'. $typeText. '数据' ?>
         <small class="step">第一步:选择月份</small>
     </h1>
 </section>
@@ -8,7 +17,7 @@
     <div class="input-leave-left col-sm-5">
         <div class="box box-red sk-box input-month clearfix">
             <h4 class="box-header">
-                您要导入几月份的请假数据
+                <?php  echo '您要导入几月份的'. $typeText. '数据';?>
             </h4>
             <div id="datetimepicker" class="input-group date form_date" data-link-field="the-month">
                 <input class="form-control" size="16" type="text" value="" readonly>
@@ -21,7 +30,7 @@
 
         <div class="box input-file sk-box clearfix dn">
             <h4 class="box-header">
-                上传此月请假的Excel表格
+                 <?php  echo '上传此月'. $typeText. '的Excel表格';?>
             </h4>
             <div>
                 <input class="the-file form-control" size="16" type="file" value="">
@@ -47,7 +56,7 @@
     <div class="input-leave-right page-right col-sm-5">
         <div class="input-leave-tip">
             <div class="alert alert-info" role="alert">
-                请在导入/导出请假数据前, 先更新员工和部门信息
+                <?php  echo '请在导入/导出'. $typeText. '数据前, 先更新员工和部门信息';?>
                 <a href="/set/updateAll" class="alert-link">更新</a>
             </div>
 

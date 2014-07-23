@@ -2,8 +2,24 @@ signbook.inputLeave = (function (sk) {
 
     sk.init = function () {
 
+        var type = $('#page-type').val(); //type为leave或sign, 分别对应"请假"或"考勤"
         var monthText = false;
         var month = false;
+
+        if(type == 'leave') { //请假数据导入
+            var parseUrl = '/excelAjax/parseLeave';
+            var checkUrl = '/excelAjax/hasLeaveData';
+            var outputUrl = '/excelAjax/outputLeave/';
+            var filename = 'leave';
+            var typeText = '请假';
+        }
+        else { //考勤数据导入
+            var parseUrl = '/excelAjax/parseSign';
+            var checkUrl = '/excelAjax/hasSignData';
+            var outputUrl = '/excelAjax/outputSign/';
+            var filename = 'sign';
+            var typeText = '考勤';
+        }
 
         $('#datetimepicker').datetimepicker({
             format: 'yyyy-MM',
@@ -14,8 +30,8 @@ signbook.inputLeave = (function (sk) {
         });
 
         $('.the-file').html5Uploader({
-            name: 'leave',
-            postUrl: '/excelAjax/parseLeave',
+            name: filename,
+            postUrl: parseUrl,
             onClientLoadStart: function () {
                 $('.waiting-alert').slideDown();
             },
@@ -23,7 +39,7 @@ signbook.inputLeave = (function (sk) {
                 try{
                     var result = JSON.parse(text);
                 }catch(error){
-                    $('.error-alert').text('可能是程序错误或上传文件不对, 请刷新重试, 上传正确的请假Excel表格').slideDown();
+                    $('.error-alert').text('可能是程序错误或上传文件不对, 请刷新重试, 上传正确的Excel表格').slideDown();
                     $('.waiting-alert').hide();
                     return;
                 }
@@ -33,9 +49,9 @@ signbook.inputLeave = (function (sk) {
                 else {//导入请假数据文件成功
                     $('.error-alert').text('成功导入数据，可以导出Excel文件了').slideDown();
                     $('.input-file').slideUp();
-                    var href = '/excelAjax/outputLeave/' + monthText;
+                    var href = outputUrl + monthText;
                     $('.btn-output-leave').attr('href', href)
-                    .text('导出' + monthText + '月份请假Excel表格').show();
+                    .text('导出' + monthText + '月份' + typeText + 'Excel表格').show();
                 }
                 $('.waiting-alert').hide();
             }
@@ -50,7 +66,7 @@ signbook.inputLeave = (function (sk) {
                 $('#leave-modal-box').modal();
                 return;
             }
-            $.post('/excelAjax/hasLeaveData', {
+            $.post(checkUrl, {
                 'time' : month
             }, function(result) {
                 if(result == 1) {//此月数据已存在, 提示错误
@@ -62,7 +78,8 @@ signbook.inputLeave = (function (sk) {
                     $('.step').text('第二步:上传Excel文件');
                     $('.input-file').slideDown();
                     $('.input-month').hide();
-                    $('.input-file .box-header').text('上传' + monthText + '月份的Excel请假文件');
+                    $('.input-file .box-header').text('上传' + monthText +
+                     '月份的Excel'+ typeText + '文件');
                 }
             });
         });

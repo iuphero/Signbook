@@ -29,6 +29,21 @@ class ExcelAjaxController extends AppController {
     protected $year = false;    //要统计的表格的年份, 两位数字, 2014年就是14
     protected $month = false;   //要统计的表格的月份, 1月1, 12月为12
 
+    public $sign2symbol = array(
+        self::NORMAL => '√',
+        self::HOLIDAY => '●',
+        self::FUNERAL => '○',
+        self::CASUAL => '○',
+        self::SICK => '☆',
+        self::TRAVEL => '△',
+        self::ABSENT => '×',
+        self::EMPTYDAY => '×',
+        self::LATE => '※',
+        self::EARLY => '◇',
+        self::HALFWAY => '◇',
+        self::ANNUAL => '◆',
+        self::PAYBACK => '◆'
+    );
 
     /**
      * 记录考勤表中各项信息在第几列, 从0开始
@@ -69,11 +84,32 @@ class ExcelAjaxController extends AppController {
         $this->autoRender = false;
     }
 
-    public function hasLeaveData() {
-        $this->loadModel('LeaveRecord');
+    public function hasSignData() {
         $time = strtotime( $this->data['time'] );
         $firstDay = date('Y-m-01', $time);
         $lastDay = date('Y-m-t', $time);
+        $this->loadModel('SignRecord');
+        $count = $this->SignRecord->find('count', array(
+            'recursive' => -1,
+            'conditions' => array(
+                'SignRecord.date BETWEEN ? AND ?' => array($firstDay, $lastDay)
+            )
+        ));
+
+        if($count < 100) {//todo, 这个判定不严格, 还找一个更好的方法
+            return 0;
+        }
+        else {
+            return 1;
+        }
+    }
+
+
+    public function hasLeaveData() {
+        $time = strtotime( $this->data['time'] );
+        $firstDay = date('Y-m-01', $time);
+        $lastDay = date('Y-m-t', $time);
+        $this->loadModel('LeaveRecord');
         $count = $this->LeaveRecord->find('count', array(
             'recursive' => -1,
             'conditions' => array(
@@ -89,23 +125,11 @@ class ExcelAjaxController extends AppController {
         }
     }
 
-
-    public function outputLeave($time) {
-
-        // $this->time = '2014-06'; //dummy data
+    public function outputSign($time = '2014-07') {
         $this->time = $time;
+        $holidays = array(5, 6, 12, 13, 19, 20, 26, 27);//dummy data
         $this->loadModel('Department');
-        $employees = $this->Department->query('SELECT epy.id AS id, epy.name AS name, epy.job_id as job_id, dpt1.name AS dpt1_name, dpt1.id as dpt1_id, dpt2.id as dpt2_id, dpt3.id as dpt3_id, dpt2.name AS dpt2_name, dpt3.name AS dpt3_name
-            FROM department AS dpt2
-            LEFT JOIN department AS dpt3 ON dpt2.id = dpt3.parent_id
-            AND dpt3.level =3
-            LEFT JOIN department AS dpt1 ON dpt1.id = dpt2.parent_id
-            LEFT JOIN employee AS epy ON epy.dpt_id
-            IN (
-            dpt1.id, dpt2.id, dpt3.id
-            )
-            GROUP BY epy.id order by dpt1.id,epy.job_id');
-
+        $employees = $this->Department->get_epy2dpt();
         $department = array();
         foreach($employees as $epy){
             $name = $epy['epy']['name'];
@@ -117,6 +141,322 @@ class ExcelAjaxController extends AppController {
             $dpt3_id = $epy['dpt3']['dpt3_id'];
             $epy_id = $epy['epy']['id'];
             $leaves = $this->getLeavesById($epy_id);
+            $signs = $this->getSignsById($epy_id);
+            $department[$dpt1_id]['name'] = $epy['dpt1']['dpt1_name'];
+            $department[$dpt1_id]['dpt2s'][$dpt2_id]['name'] = $epy['dpt2']['dpt2_name'];
+            $department[$dpt1_id]['dpt2s'][$dpt2_id]['employees'][] = array(
+                'name' => $epy['epy']['name'],
+                'job_id' => $epy['epy']['job_id'],
+                'leaves' => $leaves,
+                'signs' => $signs
+            );
+            unset($leaves);
+            unset($signs);
+        }
+        ksort($department);
+        unset($employees);
+        // header("Content-type:text/html;charset=utf8");
+        // debug($department); exit();
+
+        //开始写Excel文件
+        APP::import('Vendor','/excel/Classes/PHPExcel');
+        APP::import('Vendor','/excel/Classes/PHPExcel/Writer/Excel2007');
+        $excel = new PHPExcel();
+        $excel->setActiveSheetIndex(0);
+        $this->sheet = $sheet = $excel->getActiveSheet();
+        $this->setSignHeader();
+        $i = 7;
+        $dayCount = (int)date('t', strtotime($this->time));
+        foreach($department as $dpt) {
+            $dpt1_name = $dpt['name'];
+            foreach($dpt['dpt2s'] as $dpt2) {
+                $dpt2_name = $dpt2['name'];
+                foreach($dpt2['employees'] as $epy) {//开始输出一个员工的记录, 一人两行
+                    $startColAfterDays = $dayCount + 2;
+                    $j = $i + 1;
+                    $sheet->setCellValue('A'. $i, $epy['name']);
+                    $sheet->mergeCells("A{$i}:A{$j}");
+                    $sheet->setCellValue('B'. $i, '上午');
+                    $sheet->setCellValue('B'. $j, '下午');
+                    $signs = $epy['signs'];
+                    $normalCount = 0; //正常天数
+                    $holidayCount = count($holidays);
+                    $travelCount = @$epy['leaves']['travel']['sum'] or 0;
+                    $casualCount = $epy['leaves']['casual'];
+                    $sickCount = $epy['leaves']['sick'];
+                    $annualAndPaybackCount = $epy['leaves']['casual'] +
+                    $epy['leaves']['payback']; //年假和调休天数
+
+                    $absentCount = 0;
+                    $lateCount = 0;
+                    $earlyCount = 0;
+
+                    if(empty($signs)) { //没有考勤记录
+                        for($day = 1, $col = 2; $day <= $dayCount; $day++, $col++) {
+                            if(in_array($day, $holidays)) {
+                                $state_afternoon = $state_forenoon = $this->sign2symbol[self::HOLIDAY];
+                            }
+                            else {
+                                $state_afternoon = $state_forenoon = $this->sign2symbol[self::EMPTYDAY];
+                            }
+                            $sheet->setCellValueByColumnAndRow($col, $i, $state_forenoon);
+                            $sheet->setCellValueByColumnAndRow($col, $j, $state_afternoon);
+                        } //end for
+                    }
+                    else { //有考勤记录
+                        for($day = 1, $col = 2; $day <= $dayCount; $day++, $col++) {
+                            if(in_array($day, $holidays)) {
+                                $state_afternoon = $state_forenoon = $this->sign2symbol[self::HOLIDAY];
+                                $holidayCount ++;
+                            }
+                            else {
+                                $signOfDay = @$signs[$day] or false;
+                                if(empty($signOfDay)) {
+                                    $state_afternoon = $state_forenoon = $this->sign2symbol[self::EMPTYDAY];
+                                }
+                                else {
+                                    if($signOfDay['state_afternoon'] == self::NORMAL ||
+                                        $signOfDay['state_afternoon'] == self::NORMAL) {
+                                        $normalCount ++;
+                                    }
+                                    $state_forenoon = $this->sign2symbol[$signOfDay['state_forenoon']];
+                                    $state_afternoon = $this->sign2symbol[$signOfDay['state_afternoon']];
+                                }
+                            }
+                            $sheet->setCellValueByColumnAndRow($col, $i, $state_forenoon);
+                            $sheet->setCellValueByColumnAndRow($col, $j, $state_afternoon);
+                        } //end for
+                    }
+                    //正常出勤天数
+                    $sheet->setCellValueByColumnAndRow($startColAfterDays, $i, $normalCount);
+                    $sheet->mergeCells($this->cellsToMergeByRowsCol($i, $j, $startColAfterDays));
+                    $startColAfterDays++;
+
+                    //外地出差天数
+                    $sheet->setCellValueByColumnAndRow($startColAfterDays, $i, $travelCount);
+                    $sheet->mergeCells($this->cellsToMergeByRowsCol($i, $j, $startColAfterDays));
+                    $startColAfterDays++;
+
+                    //市内出差天数, 注意目前无法统计市内出差, 市内出差的统计到外地出差内部
+                    $sheet->setCellValueByColumnAndRow($startColAfterDays, $i, 0);
+                    $sheet->mergeCells($this->cellsToMergeByRowsCol($i, $j, $startColAfterDays));
+                    $startColAfterDays++;
+
+                    //休假天数
+                    $sheet->setCellValueByColumnAndRow($startColAfterDays, $i, $holidayCount);
+                    $sheet->mergeCells($this->cellsToMergeByRowsCol($i, $j, $startColAfterDays));
+                    $startColAfterDays++;
+
+                    //事假天数
+                    $sheet->setCellValueByColumnAndRow($startColAfterDays, $i, $casualCount);
+                    $sheet->mergeCells($this->cellsToMergeByRowsCol($i, $j, $startColAfterDays));
+                    $startColAfterDays++;
+
+                    //病假天数
+                    $sheet->setCellValueByColumnAndRow($startColAfterDays, $i, $sickCount);
+                    $sheet->mergeCells($this->cellsToMergeByRowsCol($i, $j, $startColAfterDays));
+                    $startColAfterDays++;
+
+                    //旷工天数
+                    $sheet->setCellValueByColumnAndRow($startColAfterDays, $i, $absentCount);
+                    $sheet->mergeCells($this->cellsToMergeByRowsCol($i, $j, $startColAfterDays));
+                    $startColAfterDays++;
+
+                    //迟到次数
+                    $sheet->setCellValueByColumnAndRow($startColAfterDays, $i, $lateCount);
+                    $sheet->mergeCells($this->cellsToMergeByRowsCol($i, $j, $startColAfterDays));
+                    $startColAfterDays++;
+
+                    //早退次数
+                    $sheet->setCellValueByColumnAndRow($startColAfterDays, $i, $earlyCount);
+                    $sheet->mergeCells($this->cellsToMergeByRowsCol($i, $j, $startColAfterDays));
+                    $startColAfterDays++;
+
+                    //年假调休天数
+                    $sheet->setCellValueByColumnAndRow($startColAfterDays, $i, $annualAndPaybackCount);
+                    $sheet->mergeCells($this->cellsToMergeByRowsCol($i, $j, $startColAfterDays));
+                    $startColAfterDays++;
+
+                    //一级部门
+                    $sheet->setCellValueByColumnAndRow($startColAfterDays, $i, $dpt1_name);
+                    $sheet->mergeCells($this->cellsToMergeByRowsCol($i, $j, $startColAfterDays));
+                    $startColAfterDays++;
+
+                    //二级部门
+                    $sheet->setCellValueByColumnAndRow($startColAfterDays, $i, $dpt2_name);
+                    $sheet->mergeCells($this->cellsToMergeByRowsCol($i, $j, $startColAfterDays));
+                    $startColAfterDays++;
+
+                    //工号
+                    $sheet->setCellValueByColumnAndRow($startColAfterDays, $i, $epy['job_id']);
+                    $sheet->mergeCells($this->cellsToMergeByRowsCol($i, $j, $startColAfterDays));
+                    $startColAfterDays++;
+
+                    //姓名
+                    $sheet->setCellValueByColumnAndRow($startColAfterDays, $i, $epy['name']);
+                    $sheet->mergeCells($this->cellsToMergeByRowsCol($i, $j, $startColAfterDays));
+                    $startColAfterDays++;
+
+                    $i += 2;
+                }//end foreach $dpt2['employees']
+            }//end foreach $dpt['dpt2s']
+        }//end foreach $department
+        $excel->getActiveSheet()->setTitle('出差请假汇总');
+        $excel->setActiveSheetIndex(0);
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename=result.xlsx');
+        header('Cache-Control: max-age=0');
+        $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+        $writer->save('php://output');
+        exit();
+    }
+
+
+    public function setSignHeader() {
+        $sheet = $this->sheet;
+        $sheet->setCellValue('A1', '编制日期'. date('Y/m/d'));
+        $sheet->mergeCells('A1:H1');
+
+        $sheet->setCellValue('A5', '姓名');
+        $sheet->mergeCells('A5:A6');
+
+        $sheet->setCellValue('B5', '星期');
+        $sheet->setCellValue('B6', '日');
+
+
+        $YM = date('Y-m-', strtotime($this->time));
+        $dayCount = (int)date('t', strtotime($this->time));
+        $colCount = 2;
+        for($i = 1; $i <= $dayCount; $i++) {
+            $day = $this->getXQJ($YM. $i);;
+            $sheet->setCellValueByColumnAndRow($colCount, 6, $i);
+            $sheet->setCellValueByColumnAndRow($colCount, 5, $day);
+            $colCount ++;
+        }
+
+        $sheet->setCellValueByColumnAndRow($colCount, 5, '正常出勤');
+        $sheet->setCellValueByColumnAndRow($colCount, 6, '天数');
+        $colCount++;
+        $sheet->setCellValueByColumnAndRow($colCount, 5, '外地出差');
+        $sheet->setCellValueByColumnAndRow($colCount, 6, '天数');
+        $colCount++;
+        $sheet->setCellValueByColumnAndRow($colCount, 5, '市内出差');
+        $sheet->setCellValueByColumnAndRow($colCount, 6, '天数');
+        $colCount++;
+        $sheet->setCellValueByColumnAndRow($colCount, 5, '休假');
+        $sheet->setCellValueByColumnAndRow($colCount, 6, '天数');
+        $colCount++;
+        $sheet->setCellValueByColumnAndRow($colCount, 5, '事假');
+        $sheet->setCellValueByColumnAndRow($colCount, 6, '天数');
+        $colCount++;
+        $sheet->setCellValueByColumnAndRow($colCount, 5, '病假');
+        $sheet->setCellValueByColumnAndRow($colCount, 6, '天数');
+        $colCount++;
+        $sheet->setCellValueByColumnAndRow($colCount, 5, '旷工');
+        $sheet->setCellValueByColumnAndRow($colCount, 6, '天数');
+        $colCount++;
+        $sheet->setCellValueByColumnAndRow($colCount, 5, '迟到');
+        $sheet->setCellValueByColumnAndRow($colCount, 6, '次数');
+        $colCount++;
+        $sheet->setCellValueByColumnAndRow($colCount, 5, '早退');
+        $sheet->setCellValueByColumnAndRow($colCount, 6, '次数');
+        $colCount++;
+        $sheet->setCellValueByColumnAndRow($colCount, 5, '年假/调休');
+        $sheet->setCellValueByColumnAndRow($colCount, 6, '天数');
+        $colCount++;
+
+        $sheet->setCellValueByColumnAndRow($colCount, 5, '一级部门');
+        $sheet->mergeCells($this->cellsToMergeByRowsCol(5, 6, $colCount));
+        $colCount++;
+
+        $sheet->setCellValueByColumnAndRow($colCount, 5, '二级部门');
+        $sheet->mergeCells($this->cellsToMergeByRowsCol(5, 6, $colCount));
+        $colCount++;
+
+        $sheet->setCellValueByColumnAndRow($colCount, 5, '工号');
+        $sheet->mergeCells($this->cellsToMergeByRowsCol(5, 6, $colCount));
+        $colCount++;
+
+        $sheet->setCellValueByColumnAndRow($colCount, 5, '姓名');
+        $sheet->mergeCells($this->cellsToMergeByRowsCol(5, 6, $colCount));
+
+        $sheet->getColumnDimension('C')->setWidth(4);
+        $sheet->getColumnDimension('D')->setWidth(4);
+        $sheet->getColumnDimension('E')->setWidth(4);
+        $sheet->getColumnDimension('F')->setWidth(4);
+        $sheet->getColumnDimension('G')->setWidth(4);
+        $sheet->getColumnDimension('H')->setWidth(4);
+        $sheet->getColumnDimension('I')->setWidth(4);
+        $sheet->getColumnDimension('J')->setWidth(4);
+        $sheet->getColumnDimension('K')->setWidth(4);
+        $sheet->getColumnDimension('L')->setWidth(4);
+        $sheet->getColumnDimension('M')->setWidth(4);
+        $sheet->getColumnDimension('N')->setWidth(4);
+        $sheet->getColumnDimension('O')->setWidth(4);
+        $sheet->getColumnDimension('P')->setWidth(4);
+        $sheet->getColumnDimension('Q')->setWidth(4);
+        $sheet->getColumnDimension('R')->setWidth(4);
+        $sheet->getColumnDimension('S')->setWidth(4);
+        $sheet->getColumnDimension('T')->setWidth(4);
+        $sheet->getColumnDimension('U')->setWidth(4);
+        $sheet->getColumnDimension('V')->setWidth(4);
+        $sheet->getColumnDimension('W')->setWidth(4);
+        $sheet->getColumnDimension('X')->setWidth(4);
+        $sheet->getColumnDimension('Y')->setWidth(4);
+        $sheet->getColumnDimension('Z')->setWidth(4);
+        $sheet->getColumnDimension('AA')->setWidth(4);
+        $sheet->getColumnDimension('AB')->setWidth(4);
+        $sheet->getColumnDimension('AC')->setWidth(4);
+        $sheet->getColumnDimension('AD')->setWidth(4);
+        $sheet->getColumnDimension('AE')->setWidth(4);
+        $sheet->getColumnDimension('AF')->setWidth(4);
+        $sheet->getColumnDimension('AG')->setWidth(4);
+
+        $sheet->getColumnDimension('AQ')->setWidth(12);
+        $sheet->getColumnDimension('AR')->setWidth(12);
+        $sheet->getColumnDimension('AS')->setWidth(12);
+        $sheet->getColumnDimension('AT')->setWidth(12);
+        $sheet->getColumnDimension('AU')->setWidth(12);
+
+    }
+
+    /**
+     * 通过时间获取中文表示的星期几
+     * @param  $date  string 如'2014-9-12'
+     * @return '一' 到 '日'
+     */
+    private function getXQJ($date) {
+        $day = date('D',strtotime($date));
+        $map = array(
+            'Mon' => '一',
+            'Tue' => '二',
+            'Wed' => '三',
+            'Thu' => '四',
+            'Fri' => '五',
+            'Sat' => '六',
+            'Sun' => '日'
+        );
+        return $map[$day];
+    }
+
+    public function outputLeave($time = '2014-07') {
+
+        // $this->time = '2014-06'; //dummy data
+        $this->time = $time;
+        $this->loadModel('Department');
+        $employees = $this->Department->get_epy2dpt();
+        $department = array();
+        foreach($employees as $epy){
+            $name = $epy['epy']['name'];
+            $dpt1_id = $epy['dpt1']['dpt1_id'];
+            $dpt2_id = $epy['dpt2']['dpt2_id'];
+            if(!is_numeric($dpt2_id) || empty($name)) {
+                continue;
+            }
+            $dpt3_id = $epy['dpt3']['dpt3_id'];
+            $epy_id = $epy['epy']['id'];
+            $leaves = $this->getLeavesById($epy_id);
+            $signs = $this->getSignsById($epy_id);
             $department[$dpt1_id]['name'] = $epy['dpt1']['dpt1_name'];
             $department[$dpt1_id]['dpt2s'][$dpt2_id]['name'] = $epy['dpt2']['dpt2_name'];
             $department[$dpt1_id]['dpt2s'][$dpt2_id]['employees'][] = array(
@@ -131,7 +471,7 @@ class ExcelAjaxController extends AppController {
 
         //开始写Excel文件
         APP::import('Vendor','/excel/Classes/PHPExcel');
-        APP::import('Vender','/excel/Classes/PHPExcel/Writer/Excel2007');
+        APP::import('Vendor','/excel/Classes/PHPExcel/Writer/Excel2007');
         $excel = new PHPExcel();
         $excel->setActiveSheetIndex(0);
         $this->sheet = $sheet = $excel->getActiveSheet();
@@ -239,37 +579,178 @@ class ExcelAjaxController extends AppController {
 
     }
 
-    private function setCellFont($cells, $bold = true, $size=10, $color = '000000') {
-        $this->sheet->getStyle($cells)->getFont()
-        ->setBold(true)
-        ->setSize($size)
-        ->getColor()->setRGB($color);
-    }
 
-    private function setCellBackground($cells, $color = 'ffffff') {
-        $this->sheet->getStyle($cells)->getFill()->applyFromArray(array(
-            'type' => PHPExcel_Style_Fill::FILL_SOLID,
-            'startcolor' => array('rgb' => $color)
-        ));
-    }
+    /**
+     * 获取员工某一天的考勤状态
+     * @param  $id    int   员工id
+     * @param  $date  int   日期, 几号, 例如1, 15, 31
+     * @param  $sign_start  string  上班打卡时间
+     * @param  $sign_end    string  下班打卡时间
+     * @param  $is_holiday  boolean 是否为假期
+     * @return array($forenoonState, $afternoonState)    早上的考勤状态, 下午的考勤状态
+     */
+    private function getSignState($id, $date, $sign_start, $sign_end, $is_holiday=false) {
 
-    private function setCellCenter($cells, $ort = 'vertical') {
-        if($ort == 'vertical') {
-            $this->sheet->getStyle($cells)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        if(empty($id)) {
+            return array(self::EMPTYDAY, self::EMPTYDAY);
         }
-        else{
-            $this->sheet->getStyle($cells)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-        }
-    }
 
-    private function setCellBorder($cells) {
-        $this->sheet->getStyle($cells)->getFill()->applyFromArray(array(
-            'borders' => array(
-                'allborders' => array(
-                    'style' => PHPExcel_Style_Border::BORDER_THICK
+        $sign_start_ttp = strtotime($sign_start);
+        $sign_end_ttp = strtotime($sign_end);
+
+        $sign_rule = $this->epy2rule[$id];
+        $flextime = $sign_rule['flextime']; //弹性时间
+        $rule_starttime_ttp = strtotime( $sign_rule['starttime'] ); //规定的上班打卡时间
+        $rule_endtime_ttp = strtotime( $sign_rule['endtime'] ); //规定的下班打卡时间
+
+        $leaveItems = @$this->epy2leave[$id] or false; //获取员工请假记录
+        $hasLeave = !empty($leaveItems);
+        if(empty($sign_start) && empty($sign_end)) { //早上下午都没打卡
+            if($is_holiday) { //是否在假期之内, 在假期内
+                return array(self::HOLIDAY, self::HOLIDAY);
+            }
+            else {//不在假期内, 查看是否在请假范围内
+                if(!$hasLeave) { //没有请假记录
+                    return array(self::EMPTYDAY, self::EMPTYDAY);
+                }
+                $forenoonPoint = sprintf('%s-%s-%s 10:00', $this->year, $this->month, $date);
+                $afternoonPoint = sprintf('%s-%s-%s 15:00', $this->year, $this->month, $date);
+                $forenoonPointTtp = strtotime($forenoonPoint);
+                $afternoonPointTtp = strtotime($afternoonPoint);
+                $forenoonState = self::EMPTYDAY;
+                $afternoonState = self::EMPTYDAY;
+                foreach($leaveItems as $leaveItem) { //是否在请假范围内
+                    $isForenoonInLeave = $forenoonPointTtp > $leaveItem['start_time']
+                                         && $forenoonPointTtp < $leaveItem['end_time'];
+                    $isAfternoonInLeave = $afternoonPointTtp > $leaveItem['start_time']
+                                          && $afternoonPointTtp < $leaveItem['end_time'];
+                    if($isForenoonInLeave) {
+                        $forenoonState = $leaveItem['type'];
+                    }
+                    if($isAfternoonInLeave) {
+                        $afternoonState = $leaveItem['type'];
+                    }
+                    if($isForenoonInLeave || $isAfternoonInLeave) {
+                        break;
+                    }
+                }
+                return array($forenoonState, $afternoonState);
+            }
+        }// end 早上下午都没打卡
+
+        if(empty($sign_start)) {//仅早上没打卡
+            if($is_holiday) { //tmp是否在假期之内, 在假期内
+                return array(self::EMPTYDAY, self::NORMAL);
+            }
+            $forenoonPoint = sprintf('%s-%s-%s 10:00', $this->year, $this->month, $date);
+            $forenoonPointTtp = strtotime($forenoonPoint);
+            $forenoonState = self::EMPTYDAY; //tmp
+            if($hasLeave) {
+                foreach($leaveItems as $leaveItem) { //是否在请假范围内
+                    $isForenoonInLeave = $forenoonPointTtp > $leaveItem['start_time']
+                                         && $forenoonPointTtp < $leaveItem['end_time'];
+                    if($isForenoonInLeave) {
+                        $forenoonState = $leaveItem['type'];
+                        break;
+                    }
+                }
+            }
+            if($sign_end_ttp < $rule_endtime_ttp) { //下班打卡时间过早, 为早退
+                $afternoonState = self::EMPTYDAY;
+            }
+            else {
+                $afternoonState = self::NORMAL;
+            }
+            return array($forenoonState, $afternoonState);
+        }
+
+        if(empty($sign_end)) {//仅下午没打卡
+            if($is_holiday) { //tmp是否在假期之内, 在假期内
+                return array(self::NORMAL, self::EMPTYDAY);
+            }
+            $afternoonPoint = sprintf('%s-%s-%s 15:00', $this->year, $this->month, $date);
+            $afternoonPointTtp = strtotime($afternoonPoint);
+            $afternoonState = self::EMPTYDAY; //tmp
+            if($hasLeave) {
+                foreach($leaveItems as $leaveItem) { //是否在请假范围内
+                    $isAfternoonInLeave = $afternoonPointTtp > $leaveItem['start_time']
+                                         && $afternoonPointTtp < $leaveItem['end_time'];
+                    if($isAfternoonInLeave) {
+                        $forenoonState = $leaveItem['type'];
+                        break;
+                    }
+                }
+            }
+            $edgetime_ttp = $rule_starttime_ttp + $flextime * 60; //规定的上班打卡时间+弹性时间=最迟的上班打卡时间
+            if($sign_start_ttp > $edgetime_ttp) { //上班迟到鸟
+                $forenoonState = self::LATE;
+            }
+            else {
+                $forenoonState = self::NORMAL;
+            }
+            return array($forenoonState, $afternoonState);
+        }
+
+        /**
+         * tmp
+         * 以下处理一天打两次卡的情况
+         * 要考虑有的同事来得晚, 但是也走得比较晚的情况,
+         * 这样不能算迟到. 比如说早上10点来晚上7点走
+         */
+        $between_hours = ($sign_end_ttp - $sign_start_ttp) / 3600;
+        if($between_hours >= 9) {
+            return array(self::NORMAL, self::NORMAL);
+        }
+        $edgetime_ttp = $rule_starttime_ttp + $flextime * 60;
+        if($sign_start_ttp > $edgetime_ttp) { //上班迟到鸟
+            $forenoonState = self::LATE;
+        }
+        else {
+            $forenoonState = self::NORMAL;
+        }
+
+        if($sign_end_ttp < $rule_endtime_ttp) { //早退
+            $afternoonState = self::EARLY;
+        }
+        else {
+            $afternoonState = self::NORMAL;
+        }
+        return array($forenoonState, $afternoonState);
+
+    }// end getSignState
+
+
+
+
+    public function getSignsById($epy_id = 13) {
+        $this->time = '2014-06';
+        $this->loadModel('SignRecord');
+        $firstDay = date('Y-m-01', strtotime($this->time));
+        $lastDay = date('Y-m-t', strtotime($this->time));
+        $records = $this->SignRecord->find('all', array(
+            'fields' => array('DAY(date) as day', 'state_forenoon', 'state_afternoon'),
+            'conditions' => array(
+                'employee_id' => $epy_id,
+                'AND' => array(
+                    'DATE(date) >=' => $firstDay,
+                    'DATE(date) <=' => $lastDay,
                 )
-            )
+            ),
+            'order' => 'date'
         ));
+
+        if(empty($records)) {
+            return false;
+        }
+        else {
+            $result = array();
+            foreach($records as $record) {
+                $key = $record[0]['day'];
+                $result[$key] = $record['SignRecord'];
+            }
+            unset($records);
+            return $result;
+        }
     }
 
     /**
@@ -300,7 +781,7 @@ class ExcelAjaxController extends AppController {
      *       )
      *   )
      */
-    public function getLeavesById($epy_id = 13) {
+    public function getLeavesById($epy_id) {
         $this->loadModel('LeaveRecord');
         $firstDay = date('Y-m-01', strtotime($this->time));
         $lastDay = date('Y-m-t', strtotime($this->time));
@@ -394,17 +875,110 @@ class ExcelAjaxController extends AppController {
     }
 
 
+    public function parseSign() {
+        $holidays = array();
+        $result = $this->uploadFile('sign');
+        if($result['code'] == 0) {
+            return $result['info'];
+        }
+        else {
+            $filename = $result['info'];
+        }
 
-    public function parseLeave() {
-        $filename = $this->uploadFile('leave');
-        //开始使用PHP-Excel分析文件
+        // $filename = '/home/xfight/Download/signbook/考勤数据.xlsx';
+
         APP::import('Vendor','/excel/Classes/PHPExcel');
-        APP::import('Vender','/excel/Classes/PHPExcel/IOFactory');
-        APP::import('Vender','/excel/Classes/PHPExcel/Reader/Excel2007');
+        APP::import('Vendor','/excel/Classes/PHPExcel/IOFactory');
+        APP::import('Vendor','/excel/Classes/PHPExcel/Reader/Excel2007');
         $reader = PHPExcel_IOFactory::createReader('Excel2007');
 
-        // $sheet = $reader->load($_FILES['leave']['tmp_name']))->getsheet(0);
-        // $sheet = $reader->load('/home/xfight/tmp/leave.xlsx')->getsheet(0);
+        $sheet = $reader->load($filename)->getsheet(0);
+        $tmpDate = $sheet->getCellByColumnAndRow($this->signIndex['date'], 2)->getFormattedValue(); // '06-01-14'
+        if($this->year === false) {
+            $this->year = (int)substr($tmpDate, -2);
+        }
+        if($this->month === false) {
+            $this->month = (int)substr($tmpDate, 0, 2);
+        }
+        //todo, 判断年月是否正确
+
+        $highestRow = $sheet->getHighestRow();
+        if($highestRow < 100) {
+            return json_encode(array(
+                'code' => 0,
+                'info' => '您上传的可能不是正确的Excel表格,请选择正确的文件'
+            ));
+        }
+
+        $this->loadModel('Employee');
+        $this->loadModel('Department');
+        $this->loadModel('LeaveRecord');
+        $this->epy2rule = $this->Department->get_epy2rule(); //员工=>考勤规则
+        $this->epy2leave = $this->LeaveRecord->get_epy2leave($this->year, $this->month); //员工=>请假记录
+
+        $result = array();
+
+        //todo, 小于两行提示出错
+        for($i = 2; $i <= $highestRow ; $i++) {
+            $name = $sheet->getCellByColumnAndRow($this->signIndex['epyname'], $i)->getValue();
+            $job_id = $sheet->getCellByColumnAndRow($this->signIndex['job_id'], $i)->getValue();
+            $date = $sheet->getCellByColumnAndRow($this->signIndex['date'], $i)->getFormattedValue(); //'06-01-14'
+            $sign_start = $sheet->getCellByColumnAndRow($this->signIndex['signtime'], $i)->getFormattedValue();
+            $sign_end = $sheet->getCellByColumnAndRow($this->signIndex['leavetime'], $i)->getFormattedValue();
+
+            $tmpDateAry = explode('-', $date);
+            $whichDay = (int)$tmpDateAry[1];
+            $is_holiday = in_array($whichDay, $holidays);
+            $date = $this->year . '-' . $this->month . '-' . $whichDay;
+            $epy_id = (int)$this->Employee->field('id', array('Employee.name' => $name));
+            if($epy_id === false || $epy_id == 0) {//  通过工号找不到员工id时, 可能已经离职
+                continue;
+            }
+            list($state_forenoon,$state_afternoon) = $this->getSignState($epy_id, $whichDay, $sign_start, $sign_end, $is_holiday);
+            $result[] = array(
+                'date' => $date,
+                'employee_id' => $epy_id,
+                'employee_name' => $name,
+                'sign_start' => $sign_start,
+                'sign_end' => $sign_end,
+                'state_forenoon' => $state_forenoon,
+                'state_afternoon' => $state_afternoon
+            );
+        }
+        $this->loadModel('SignRecord');
+        if( $this->SignRecord->saveMany($result) ) {
+            return json_encode(array(
+                'code' => 1
+            ));
+        }
+        else {
+            return json_encode(array(
+                'code' => 0,
+                'info' => '数据库保存出错，请联系程序猿'
+            ));
+        }
+    }
+
+
+
+    public function parseLeave() {
+
+        $result = $this->uploadFile('leave');
+        if($result['code'] == 0) {
+            return $result['info'];
+        }
+        else {
+            $filename = $result['info'];
+        }
+
+        // $filename = '/home/xfight/Download/signbook/请假数据.xlsx';
+        //开始使用PHP-Excel分析文件
+        APP::import('Vendor','/excel/Classes/PHPExcel');
+        APP::import('Vendor','/excel/Classes/PHPExcel/IOFactory');
+        APP::import('Vendor','/excel/Classes/PHPExcel/Reader/Excel2007');
+        $reader = PHPExcel_IOFactory::createReader('Excel2007');
+
+
         $sheet = $reader->load($filename)->getsheet(0);
         $highestRow = $sheet->getHighestRow();
 
@@ -480,7 +1054,7 @@ class ExcelAjaxController extends AppController {
         else {
             return json_encode(array(
                 'code' => 0,
-                'info' => '数据库保存出错，情联系程序猿'
+                'info' => '数据库保存出错，请联系程序猿'
             ));
         }
 
@@ -504,8 +1078,8 @@ class ExcelAjaxController extends AppController {
         }
         // $filename = '/home/xfight/Download/signbook/个人编号.xlsx';
         APP::import('Vendor','/excel/Classes/PHPExcel');
-        APP::import('Vender','/excel/Classes/PHPExcel/IOFactory');
-        APP::import('Vender','/excel/Classes/PHPExcel/Reader/Excel2007');
+        APP::import('Vendor','/excel/Classes/PHPExcel/IOFactory');
+        APP::import('Vendor','/excel/Classes/PHPExcel/Reader/Excel2007');
 
         $reader = PHPExcel_IOFactory::createReader('Excel2007');
         $sheet = $reader->load($filename)->getsheet(1);
@@ -564,7 +1138,7 @@ class ExcelAjaxController extends AppController {
                 else {
                     return json_encode(array(
                         'code' => 0,
-                        'info' => '数据库保存出错，情联系程序猿'
+                        'info' => '数据库保存出错，请联系程序猿'
                     ));
                 }
             }
@@ -585,7 +1159,7 @@ class ExcelAjaxController extends AppController {
                 else {
                     return json_encode(array(
                         'code' => 0,
-                        'info' => '数据库保存出错，情联系程序猿'
+                        'info' => '数据库保存出错，请联系程序猿'
                     ));
                 }
             }
@@ -607,7 +1181,7 @@ class ExcelAjaxController extends AppController {
                 else {
                     return json_encode(array(
                         'code' => 0,
-                        'info' => '数据库保存出错，情联系程序猿'
+                        'info' => '数据库保存出错，请联系程序猿'
                     ));
                 }
             }
@@ -645,7 +1219,7 @@ class ExcelAjaxController extends AppController {
         else {
             return json_encode(array(
                 'code' => 0,
-                'info' => '数据库保存出错，情联系程序猿'
+                'info' => '数据库保存出错，请联系程序猿'
             ));
         }
     }// end parseEmployee
@@ -725,5 +1299,75 @@ class ExcelAjaxController extends AppController {
         }
 
     }//end uploadFile
+
+
+    private function setCellFont($cells, $bold = true, $size=10, $color = '000000') {
+        $this->sheet->getStyle($cells)->getFont()
+        ->setBold(true)
+        ->setSize($size)
+        ->getColor()->setRGB($color);
+    }
+
+    private function setCellBackground($cells, $color = 'ffffff') {
+        $this->sheet->getStyle($cells)->getFill()->applyFromArray(array(
+            'type' => PHPExcel_Style_Fill::FILL_SOLID,
+            'startcolor' => array('rgb' => $color)
+        ));
+    }
+
+    private function setCellCenter($cells, $ort = 'vertical') {
+        if($ort == 'vertical') {
+            $this->sheet->getStyle($cells)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        }
+        else{
+            $this->sheet->getStyle($cells)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+        }
+    }
+
+    private function setCellBorder($cells) {
+        $this->sheet->getStyle($cells)->getFill()->applyFromArray(array(
+            'borders' => array(
+                'allborders' => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THICK
+                )
+            )
+        ));
+    }
+
+
+    /**
+     * 得到要合并的cell表示法, 合并某一行的列
+     * @param  $start int 起始列
+     * @param  $end   int 结束列
+     * @param  $col   int 行
+     * @return $merge cell表示法,如'E3:F3'
+     */
+    private function cellsToMergeByColsRow($start = NULL, $end = NULL, $row = NULL){
+        $merge = 'A1:A1';
+        if($start && $end && $row){
+            $start = PHPExcel_Cell::stringFromColumnIndex($start);
+            $end = PHPExcel_Cell::stringFromColumnIndex($end);
+            $merge = "$start{$row}:$end{$row}";
+
+        }
+        return $merge;
+    }
+
+    /**
+     * 得到要合并的cell表示法, 合并某一列的行
+     * @param  $start int 起始行
+     * @param  $end   int 结束行
+     * @param  $col   int 列
+     * @return $merge cell表示发,如'E3:E7'
+     */
+    private function cellsToMergeByRowsCol($start = NULL, $end = NULL, $col = NULL){
+        $merge = 'A1:A1';
+        if($start && $end && $col){
+            $colName = PHPExcel_Cell::stringFromColumnIndex($col);
+            $merge = "$colName{$start}:$colName{$end}";
+
+        }
+        return $merge;
+    }
 
 }
