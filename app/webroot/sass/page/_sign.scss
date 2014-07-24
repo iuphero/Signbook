@@ -1,15 +1,22 @@
-.input-leave {
-
-    .btn-month, .btn-reset {
+.input {
+    .btn-month, .btn-reset, .btn-days{
         margin-top: 20px;
         float: right;
     }
-
 }
 
-.input-leave-right {
+.input-right {
     .progress-tip {
         margin-top: 20px;
     }
 }
 
+
+.input-holidays {
+    .box-header {
+        margin-bottom: 0;
+    }
+    #the-days {
+        width: 195px;
+    }
+}

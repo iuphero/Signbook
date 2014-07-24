@@ -1,9 +1,11 @@
 <?php
     if($type == 'leave') {
         $typeText = '请假';
+        $resetUrl = '/sign/input/leave';
     }
     else {
         $typeText = '考勤';
+        $resetUrl = '/sign/input/sign';
     }
 ?>
 <input type="hidden" id="page-type" value="<?php echo $type; ?>">
@@ -13,8 +15,8 @@
         <small class="step">第一步:选择月份</small>
     </h1>
 </section>
-<div class="row input-leave">
-    <div class="input-leave-left col-sm-5">
+<div class="row input">
+    <div class="input-left col-sm-5">
         <div class="box box-red sk-box input-month clearfix">
             <h4 class="box-header">
                 <?php  echo '您要导入几月份的'. $typeText. '数据';?>
@@ -28,6 +30,19 @@
             <button type="button" class="btn btn-primary btn-month">确定</button>
         </div>
 
+        <div class="box box-red sk-box input-holidays dn clearfix">
+            <h4 class="box-header">
+                请输入此月的假期(包括周末)
+            </h4>
+            <label class="label-day" for="the-days">
+
+                <span class="label label-info label-normal">使用逗号分割.例如:1,2,9,10,17,18</span>
+            </label><br>
+            <input type="text" id="the-days"  name="the-days" />
+            <button type="button" class="btn btn-primary btn-days">确定</button>
+        </div>
+
+
         <div class="box input-file sk-box clearfix dn">
             <h4 class="box-header">
                  <?php  echo '上传此月'. $typeText. '的Excel表格';?>
@@ -35,7 +50,7 @@
             <div>
                 <input class="the-file form-control" size="16" type="file" value="">
             </div>
-            <a class="btn btn-primary btn-reset" href="/sign/inputLeave">返回重试</a>
+            <a class="btn btn-primary btn-reset" href="<?php echo $resetUrl; ?>">返回重试</a>
         </div>
 
         <div class="waiting-alert sk-alert alert alert-warning  alert-dismissible" role="alert">
@@ -53,7 +68,7 @@
     </div>
     <!-- end .input-leave-left -->
 
-    <div class="input-leave-right page-right col-sm-5">
+    <div class="input-right page-right col-sm-5">
         <div class="input-leave-tip">
             <div class="alert alert-info" role="alert">
                 <?php  echo '请在导入/导出'. $typeText. '数据前, 先更新员工和部门信息';?>
@@ -80,8 +95,9 @@
 
 </div>
 
+<input type="hidden" id="parseUrl">
 
-<div class="modal fade dn" id="leave-modal-box">
+<div class="modal fade dn" id="sign-modal-box">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">

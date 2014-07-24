@@ -19,9 +19,13 @@ class SignController extends AppController {
     }
 
 
-    public function getSign() {
-
+    public function get($type) {
+        if( !in_array($type, array('leave','sign') ) ) {
+            throw new NotFoundException;
+        }
+        $this->set('type', $type);
     }
+
 
     /*
     录入假期信息
@@ -34,7 +38,5 @@ class SignController extends AppController {
         $this->set('type', $type);
     }
 
-    public function getLeave() {
 
-    }
 }

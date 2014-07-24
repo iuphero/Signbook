@@ -1,7 +1,17 @@
-signbook.getLeave = (function (sk) {
+signbook.get = (function (sk) {
 
 
     sk.init = function () {
+        var type = $('#page-type').val(); //type为leave或sign, 分别对应"请假"或"考勤"
+        if(type == 'leave') {
+            var outputUrl = '/excelAjax/outputLeave/';
+            var checkUrl = '/excelAjax/hasLeaveData';
+        }
+        else {
+            var outputUrl = '/excelAjax/outputSign/';
+            var checkUrl = '/excelAjax/hasSignData';
+        }
+
         $('#datetimepicker').datetimepicker({
             format: 'yyyy-MM',
             startView: 'year',
@@ -23,7 +33,7 @@ signbook.getLeave = (function (sk) {
                 'time' : month
             }, function(result) {
                 if(result == 1) {//此月数据已存在, 请求生成Excel文件
-                    window.location.href =  '/excelAjax/outputLeave/' + monthText;
+                    window.location.href =  outputUrl + monthText;
                 }
                 else {//提示无数据
                     $('.modal-title').text('木有数据');
@@ -36,4 +46,4 @@ signbook.getLeave = (function (sk) {
 
 
     return sk;
-}(signbook.getLeave || {}));
+}(signbook.get || {}));

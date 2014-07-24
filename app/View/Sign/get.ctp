@@ -1,15 +1,26 @@
+<?php
+    if($type == 'leave') {
+        $typeText = '请假';
+        $resetUrl = '/sign/get/leave';
+    }
+    else {
+        $typeText = '考勤';
+        $resetUrl = '/sign/get/sign';
+    }
+?>
+<input type="hidden" id="page-type" value="<?php echo $type; ?>">
 <section class="content-header">
     <h1>
-        导出请假数据
+        <?php echo '导出'. $typeText. '数据'; ?>
         <small class="step">选择月份</small>
     </h1>
 </section>
 
-<div class="row input-leave">
-    <div class="input-leave-left col-sm-5">
+<div class="row input">
+    <div class="input--left col-sm-5">
         <div class="sk-box box box-red input-month clearfix">
             <h4 class="box-header">
-                您要导出几月份的请假数据
+                <?php echo '您要导出几月份的'. $typeText. '数据'; ?>
             </h4>
             <div id="datetimepicker" class="input-group date form_date" data-link-field="the-month">
                 <input class="form-control" size="16" type="text" value="" readonly>
@@ -21,10 +32,10 @@
         </div>
     </div>
 
-    <div class="page-right input-leave-right col-sm-5">
+    <div class="page-right input-right col-sm-5">
         <div class="input-leave-tip">
             <div class="alert alert-info" role="alert">
-                没有请假记录的月份请先导入数据
+                <?php echo '没有'. $typeText. '记录的月份请先导入数据'; ?>
                 <a href="/sign/inputLeave" class="alert-link">导入</a>
             </div>
         </div>
@@ -52,10 +63,10 @@
 </div><!-- /.modal -->
 
 <?php
-    echo $this->Html->script('page/getLeave', array('inline' => false));
+    echo $this->Html->script('page/get', array('inline' => false));
     echo $this->Html->scriptStart(array('block' => 'script'));
 ?>
     $(document).ready(function(){
-        signbook.getLeave.init();
+        signbook.get.init();
     });
 <?php echo $this->Html->scriptEnd(); ?>

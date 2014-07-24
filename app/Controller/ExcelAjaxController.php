@@ -127,7 +127,8 @@ class ExcelAjaxController extends AppController {
 
     public function outputSign($time = '2014-06') {
         $this->time = $time;
-        $holidays = array(1,2,7,8,14,15,21,22,28,29);//dummy data
+        // $holidays = array(1,2,7,8,14,15,21,22,28,29);//dummy data
+        $holidays = array();
         $this->loadModel('Department');
         $employees = $this->Department->get_epy2dpt();
         $department = array();
@@ -180,7 +181,7 @@ class ExcelAjaxController extends AppController {
                     $sheet->setCellValue('B'. $j, '下午');
                     $signs = $epy['signs'];
                     $normalCount = 0; //正常天数
-                    $holidayCount = count($holidays);
+                    $holidayCount = 0;
                     $travelCount =  0;
                     $casualCount = 0;
                     $sickCount = 0;
@@ -235,6 +236,9 @@ class ExcelAjaxController extends AppController {
                                     }
                                     if ($raw_forenoon == self::ABSENT|| $raw_afternoon == self::ABSENT) {
                                         $absentCount ++;
+                                    }
+                                    if ($raw_forenoon == self::HOLIDAY|| $raw_afternoon == self::HOLIDAY) {
+                                        $holidayCount ++;
                                     }
                                     $state_forenoon = $this->sign2symbol[$raw_forenoon];
                                     $state_afternoon = $this->sign2symbol[$raw_afternoon];
@@ -893,8 +897,14 @@ class ExcelAjaxController extends AppController {
     }
 
 
-    public function parseSign() {
-        $holidays = array();
+    /**
+     * 解析上传的考勤文件
+     * @param  $month     string 月份,例如'2014-08'
+     * @param  $holidays  string 逗号分割的假期列表,例如'1,2,8,9'
+     * @return
+     */
+    public function parseSign($month, $holidays) {
+        $holidays = split(',', $holidays);
         $result = $this->uploadFile('sign');
         if($result['code'] == 0) {
             return $result['info'];
