@@ -14,7 +14,7 @@
                 <ul class="sidebar-menu">
 
                     <li class="active">
-                            <a href="#">
+                            <a href="/">
                                 <i class="glyphicon glyphicon-home"></i> <span>首页</span>
                             </a>
                     </li>

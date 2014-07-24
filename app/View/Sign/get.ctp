@@ -11,6 +11,7 @@
 <input type="hidden" id="page-type" value="<?php echo $type; ?>">
 <section class="content-header">
     <h1>
+        <i class="glyphicon glyphicon-cloud-download"></i>
         <?php echo '导出'. $typeText. '数据'; ?>
         <small class="step">选择月份</small>
     </h1>
