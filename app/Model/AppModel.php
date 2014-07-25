@@ -31,6 +31,23 @@ App::uses('Model', 'Model');
  */
 class AppModel extends Model {
 
+    /**
+     * 考勤假期类型定义, 与ExcelAjaxController中保持同步
+     */
+    const EMPTYDAY = 0;    //留空
+    const NORMAL = 1;   //正常
+    const LATE = 2;     //迟到
+    const ABSENT = 3;   //旷工
+    const EARLY = 4;    //早退, leave early
+    const HALFWAY = 5;  //中途脱岗
+    const CASUAL = 6;   //事假
+    const TRAVEL = 7;   //出差
+    const ANNUAL = 8;   //年假
+    const SICK = 9;     //病假
+    const FUNERAL = 10; //丧假
+    const PAYBACK = 11; //调休
+    const HOLIDAY = 12; //假期
+
     public $recursive = -1;
 
     public $cacheQueries = true;

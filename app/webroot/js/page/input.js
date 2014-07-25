@@ -8,16 +8,16 @@ signbook.input = (function (sk) {
         var holidays = false;
 
         if(type == 'leave') { //请假数据导入
-            var parseUrl = '/excelAjax/parseLeave';
-            var checkUrl = '/excelAjax/hasLeaveData';
-            var outputUrl = '/excelAjax/outputLeave/';
+            var parseUrl = '/leave/parseLeave';
+            var checkUrl = '/leave/hasLeaveData';
+            var outputUrl = '/leave/outputLeave/';
             var filename = 'leave';
             var typeText = '请假';
         }
         else { //考勤数据导入
-            var parseUrl = '/excelAjax/parseSign/'; //tmp
-            var checkUrl = '/excelAjax/hasSignData';
-            var outputUrl = '/excelAjax/outputSign/';
+            var parseUrl = '/sign/parseSign/';
+            var checkUrl = '/sign/hasSignData';
+            var outputUrl = '/sign/outputSign/';
             var filename = 'sign';
             var typeText = '考勤';
         }
@@ -47,6 +47,7 @@ signbook.input = (function (sk) {
                     $('.input-month').hide();
                     if(type == 'leave') { //假期
                         uploadShow();
+                        console.log(parseUrl);
                     }
                     else {//考勤
                         inputHolidaysShow();

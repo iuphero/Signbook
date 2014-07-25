@@ -132,7 +132,6 @@ class ShowController extends AppController {
                 'state_afternoon' => $state_afternoon
             );
             array_push($records,$record);
-
         }
 
 

@@ -8,7 +8,7 @@ signbook.updateAll = (function (sk) {
 
         $('.the-file').html5Uploader({
             name: 'employee',
-            postUrl: '/excelAjax/parseEmployee',
+            postUrl: '/employee/parseEmployee',
             onClientLoadStart: function () {
                 $('.waiting-alert').slideDown();
             },
@@ -24,7 +24,6 @@ signbook.updateAll = (function (sk) {
                     $('.error-alert').text(result.info + '， 刷新重试').slideDown();
                 }
                 else {//导入请假数据文件成功
-                    console.log('success');
                     $('.error-alert').text('成功导入数据，更新了部门和员工记录').slideDown();
                 }
                 $('.waiting-alert').hide();
