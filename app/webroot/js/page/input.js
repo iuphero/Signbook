@@ -47,7 +47,6 @@ signbook.input = (function (sk) {
                     $('.input-month').hide();
                     if(type == 'leave') { //假期
                         uploadShow();
-                        console.log(parseUrl);
                     }
                     else {//考勤
                         inputHolidaysShow();

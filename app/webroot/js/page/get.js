@@ -4,12 +4,12 @@ signbook.get = (function (sk) {
     sk.init = function () {
         var type = $('#page-type').val(); //type为leave或sign, 分别对应"请假"或"考勤"
         if(type == 'leave') {
-            var outputUrl = '/excelAjax/outputLeave/';
-            var checkUrl = '/excelAjax/hasLeaveData';
+            var outputUrl = '/leave/outputLeave/';
+            var checkUrl = '/leave/hasLeaveData';
         }
         else {
-            var outputUrl = '/excelAjax/outputSign/';
-            var checkUrl = '/excelAjax/hasSignData';
+            var outputUrl = '/sign/outputSign/';
+            var checkUrl = '/sign/hasSignData';
         }
 
         $('#datetimepicker').datetimepicker({
@@ -29,7 +29,7 @@ signbook.get = (function (sk) {
                 $('#leave-modal-box').modal();
                 return;
             }
-            $.post('/excelAjax/hasLeaveData', {
+            $.post(checkUrl, {
                 'time' : month
             }, function(result) {
                 if(result == 1) {//此月数据已存在, 请求生成Excel文件
