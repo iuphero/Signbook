@@ -1,0 +1,9 @@
+app/webroot/debug_kit
+app/webroot/css/global.css
+app/webroot/.sass-cache
+app/View/Test
+test.ctp
+app/Controller/TestController.php
+app/Config/database.php
+app/tmp/
+.*~
