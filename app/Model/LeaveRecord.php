@@ -124,7 +124,7 @@ class LeaveRecord extends AppModel {
 
             if($startDay_ttp < $firstDay_ttp && $endDay_ttp <= $lastDay_ttp) {
                 //跨月请假, 在此月前请假, 结束时间在此月中
-                $diffDay = ($endDay_ttp - $firstDay_ttp) / 86400;
+                $diffDay = ($endDay_ttp - $firstDay_ttp) / 86400 + 1;
             }
             else if($startDay_ttp < $firstDay_ttp && $endDay_ttp > $lastDay_ttp) {
                 //跨月请假, 在此月前请假, 在此月后结束请假, 整个月都在请假
@@ -132,25 +132,26 @@ class LeaveRecord extends AppModel {
             }
             else if($startDay_ttp >= $firstDay_ttp && $endDay_ttp <= $lastDay_ttp) {
                 //请假开始/截止时间都在此月中
-                $diffDay = ($endDay_ttp - $startDay_ttp) / 86400;
+                $diffDay = ($endDay_ttp - $startDay_ttp) / 86400 + 1;
             }
             else if($startDay_ttp >= $firstDay_ttp && $endDay_ttp > $lastDay_ttp) {
                 //在此月请假, 请假截止时间在此月之后
-                $diffDay = ($lastDay_ttp - $startDay_ttp) / 86400;
+                $diffDay = ($lastDay_ttp - $startDay_ttp) / 86400 + 1;
             }
-            $diffDay += 1;
+
 
             switch($type) {
                 case self::CASUAL:
                     $result['casual'] += $diffDay;
                     break;
 
-                case self::SICK:
-                    $result['sick'] += $diffDay;
-                    break;
-
+                //丧假算入事假
                 case self::FUNERAL:
                     $result['casual'] += $diffDay;
+                    break;
+
+                case self::SICK:
+                    $result['sick'] += $diffDay;
                     break;
 
                 case self::ANNUAL:
@@ -161,8 +162,12 @@ class LeaveRecord extends AppModel {
                     $result['payback'] += $diffDay;
                     break;
 
+                //注意:传入的表格中有时候会有多条相同的请假记录(例如有两条一样的请假记录, 但是其中有一条没有目的地信息)
                 case self::TRAVEL:
                     $result['travel']['sum'] += $diffDay;
+                    if(empty($reason)) {
+                        $reason = '【注意,有重复】';
+                    }
                     $result['travel']['records'][] = array(
                         'start_time' => $startDay,
                         'end_time' => $endDay,
@@ -173,6 +178,7 @@ class LeaveRecord extends AppModel {
             }
 
         }// end foreach
+
         // debug($result);
        return $result;
     }

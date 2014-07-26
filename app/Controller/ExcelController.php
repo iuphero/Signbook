@@ -25,6 +25,7 @@ class ExcelController extends AppController {
 
 
     public $reader = false;
+    public $excel = false;
     public $year = false;    //要统计的表格的年份, 两位数字, 2014年就是14
     public $month = false;   //要统计的表格的月份, 1月1, 12月为12
 
@@ -116,6 +117,18 @@ class ExcelController extends AppController {
             'info' => sprintf('数据库保存出错，请联系程序猿[%s]',
                 $error)
         ));
+    }
+
+
+    protected function setWriter() {
+        if ($this->excel === false) {
+            APP::import('Vendor','/excel/Classes/PHPExcel');
+            APP::import('Vendor','/excel/Classes/PHPExcel/Writer/Excel2007');
+            $this->excel = new PHPExcel();
+            $this->excel->setActiveSheetIndex(0);
+            $this->sheet =  $this->excel->getActiveSheet();
+        }
+
     }
 
     protected function setReader($type = 'Excel2007') {

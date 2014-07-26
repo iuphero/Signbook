@@ -26,8 +26,8 @@ class LeaveController extends ExcelController {
      * @return boolean
      */
     public function hasLeaveData() {
-        // $time = strtotime('2014-06'); //dummy data just for test
-        $time = strtotime( $this->data['time'] );
+        $time = strtotime('2014-06'); //dummy data just for test
+        // $time = strtotime( $this->data['time'] );
         $firstDay = date('Y-m-01', $time);
         $lastDay = date('Y-m-t', $time);
         $this->loadModel('LeaveRecord');
@@ -52,7 +52,7 @@ class LeaveController extends ExcelController {
      * @param  $time string 年月时间，例如'2014-07'
      * @return An excel file
      */
-    public function outputLeave($time = '2014-07') {
+    public function outputLeave($time) {
 
         // $this->time = '2014-06'; //dummy data
         $this->time = $time;
@@ -71,7 +71,6 @@ class LeaveController extends ExcelController {
             $dpt3_id = $epy['dpt3']['dpt3_id'];
             $epy_id = $epy['epy']['id'];
             $leaves = $this->LeaveRecord->getLeavesById($epy_id, $time);
-            $signs = $this->SignRecord->getSignsById($epy_id, $time);
             $department[$dpt1_id]['name'] = $epy['dpt1']['dpt1_name'];
             $department[$dpt1_id]['dpt2s'][$dpt2_id]['name'] = $epy['dpt2']['dpt2_name'];
             $department[$dpt1_id]['dpt2s'][$dpt2_id]['employees'][] = array(
@@ -85,11 +84,9 @@ class LeaveController extends ExcelController {
         unset($employees);
 
         //开始写Excel文件
-        APP::import('Vendor','/excel/Classes/PHPExcel');
-        APP::import('Vendor','/excel/Classes/PHPExcel/Writer/Excel2007');
-        $excel = new PHPExcel();
-        $excel->setActiveSheetIndex(0);
-        $this->sheet = $sheet = $excel->getActiveSheet();
+
+        $this->setWriter();
+        $sheet = $this->sheet;
         $this->setLeaveHeader();
         $i = 5; //从A5开始写
         foreach($department as $dpt) {
@@ -106,8 +103,9 @@ class LeaveController extends ExcelController {
                         $sheet->setCellValue('F'. $i, 0);
                         $sheet->setCellValue('G'. $i, 0);
                         $sheet->setCellValue('H'. $i, 0);
-                        $sheet->setCellValue('I' .$i, '无请假记录');
-                        $sheet->mergeCells('I'. $i. ':'. 'K'. $i);
+                        $sheet->setCellValue('I' .$i, 0);
+                        $sheet->setCellValue('J'. $i, ' ');
+                        $sheet->mergeCells('J'. $i. ':'. 'K'. $i);
                     }
                     else {
                         $sheet->setCellValue('E'. $i, $epy['leaves']['casual']); //事假
@@ -115,27 +113,28 @@ class LeaveController extends ExcelController {
                         $sheet->setCellValue('G'. $i, $epy['leaves']['sick']); //年假
                         $sheet->setCellValue('H'. $i, $epy['leaves']['payback']); //调休
                         $leaveText = '';
-                        foreach($epy['leaves']['travel']['records'] as $record) {
-                            $leaveText .= sprintf('%s至%s出差%s; ', $record['start_time'],
-                                $record['end_time'],
-                                substr($record['destination'], 0, 9)
+                        foreach($epy['leaves']['travel']['records'] as $record) { //2014-06-1
+                            $leaveText .= sprintf('%s至%s出差%s; ', substr($record['start_time'], 5),
+                                substr($record['end_time'], 5),
+                                $record['destination']
+                                // substr($record['destination'], 0, 12)
                             );
                         }
-                        $sheet->setCellValue('I'. $i, $leaveText);
-                        $sheet->mergeCells('I'. $i. ':'. 'J'. $i);
-                        $sheet->setCellValue('K'. $i, $epy['leaves']['travel']['sum']);
+                        $sheet->setCellValue('I'. $i, $epy['leaves']['travel']['sum']);
+                        $sheet->setCellValue('J'. $i, $leaveText);
+                        $sheet->mergeCells('J'. $i. ':'. 'K'. $i);
                     }
                     $i++;
                 }
             }
         }
         $this->setCellCenter('A5:K'.$i);
-        $excel->getActiveSheet()->setTitle('出差请假汇总');
-        $excel->setActiveSheetIndex(0);
+        $this->excel->getActiveSheet()->setTitle('出差请假汇总');
+        $this->excel->setActiveSheetIndex(0);
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename=result.xlsx');
+        header('Content-Disposition: attachment;filename=出差请假汇总.xlsx');
         header('Cache-Control: max-age=0');
-        $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+        $writer = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
         $writer->save('php://output');
         exit();
     }
@@ -174,12 +173,12 @@ class LeaveController extends ExcelController {
         $sheet->setCellValue('H3', '调休');
         $sheet->mergeCells('H3:H4');
 
-        $sheet->setCellValue('I3', '出差');
+        $sheet->setCellValue('I3', '出差情况');
         $sheet->mergeCells('I3:K3');
 
-        $sheet->setCellValue('I4', '出发时间');
-        $sheet->setCellValue('J4', '返程时间');
-        $sheet->setCellValue('K4', '出差总天数');
+        $sheet->setCellValue('I4', '出差总天数');
+        $sheet->setCellValue('J4', '出发时间');
+        $sheet->setCellValue('K4', '返程时间');
 
 
         $this->setCellCenter('A1:K4');
@@ -190,11 +189,10 @@ class LeaveController extends ExcelController {
         $sheet->getColumnDimension('B')->setWidth(20);
         $sheet->getColumnDimension('C')->setWidth(10);
         $sheet->getColumnDimension('D')->setWidth(20);
-        $sheet->getColumnDimension('I')->setWidth(20);
-        $sheet->getColumnDimension('J')->setWidth(20);
-        $sheet->getColumnDimension('K')->setWidth(10);
+        $sheet->getColumnDimension('I')->setWidth(10);
+        $sheet->getColumnDimension('J')->setWidth(25);
+        $sheet->getColumnDimension('K')->setWidth(25);
         $this->setCellBorder('A1:K4');
-
     }
 
 
