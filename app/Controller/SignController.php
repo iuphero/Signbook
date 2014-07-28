@@ -302,8 +302,21 @@ class SignController extends ExcelController {
                 }//end foreach $dpt2['employees']
             }//end foreach $dpt['dpt2s']
         }//end foreach $department
+
+        $this->setSignFooter($i+2);
         $this->setCellCenter('A1:AU1000');
         $this->outputExcel('考勤汇总');
+    }
+
+
+    public function setSignFooter($row) {
+        $cells = "A{$row}:AH{$row}";
+        $this->sheet->setCellValue("A{$row}", '√出勤  ●休假  ○事假  ☆病假  △外地出差  ×旷工  ※迟到  ◇早退 ◆年假/调休 ▲市内出差');
+        $this->sheet->mergeCells($cells);
+        $row = $row + 1;
+        $cells = "A{$row}:AH{$row}";
+        $this->sheet->setCellValue("A{$row}", '注：迟到半小时内扣10元，超过半小时扣当天半天的工资。在上级没批准情况下缺席半天或以上当旷工处理。此表由部门考勤员填写，统一报总部人力资源部。');
+        $this->sheet->mergeCells($cells);
     }
 
     /**

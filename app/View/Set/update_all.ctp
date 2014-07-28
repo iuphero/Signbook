@@ -19,9 +19,6 @@
         </div>
 
         <div class="waiting-alert sk-alert alert alert-warning  alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert">
-                <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-            </button>
             <strong>请等待...</strong>正在处理结果中
         </div>
 
