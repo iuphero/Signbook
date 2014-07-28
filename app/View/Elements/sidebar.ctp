@@ -19,7 +19,7 @@
                             </a>
                     </li>
 
-                    <li class="treeview">
+                    <li class="treeview active">
                         <a href="#">
                             <i class="glyphicon glyphicon-user"></i>
                             <span>部门</span>
@@ -35,7 +35,7 @@
                         </ul>
                     </li>
 
-                    <li class="treeview">
+                    <li class="treeview active">
                         <a href="#">
                             <i class="glyphicon glyphicon-tasks"></i>
                             <span>考勤</span>
@@ -47,7 +47,7 @@
                         </ul>
                     </li>
 
-                    <li class="treeview">
+                    <li class="treeview active">
                         <a href="#">
                             <i class="glyphicon glyphicon-check"></i>
                             <span>请假</span>

@@ -6,6 +6,7 @@ signbook.input = (function (sk) {
         var monthText = false;
         var month = false;
         var holidays = false;
+        var holidayUrl = '/sign/saveHolidays';
 
         if(type == 'leave') { //请假数据导入
             var parseUrl = '/leave/parseLeave';
@@ -68,9 +69,19 @@ signbook.input = (function (sk) {
                 }
                 else {
                     if(checkHolidays(days)) {
-                        parseUrl += monthText+ '/' + days;
-                        $('.input-holidays').slideUp();
-                        uploadShow('三');
+                        $.post(holidayUrl, {
+                            'month': monthText,
+                            'holidays': days
+                        }, function(result) {
+                            if(result == 1) {
+                                parseUrl += monthText+ '/' + days;
+                                $('.input-holidays').slideUp();
+                                uploadShow('三');
+                            }
+                            else {
+                                showModel('保存失败', '数据库保存失败, 请联系管理员');
+                            }
+                        });//end post
                     }
                     else {
                         showModel('输入错误', '您输入的假期不正确, 请检查后再试');

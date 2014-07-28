@@ -45,6 +45,33 @@ class SignController extends ExcelController {
         $this->set('type', $type);
     }
 
+
+
+    /**
+     * 存储这个月的假期, 供录入假期数据, 生成考勤表格使用
+     * @param $holidays string 用英文逗号分割的字符串,保存这个月的假期
+     * @param $month string 年月时间
+     */
+    public function saveHolidays() {
+        $holidays = $this->data['holidays'];
+        $month = $this->data['month'];
+        // $holidays = '1,2,7,8,14,15,21,22,28,29';
+        // $month = '2014-06';
+        $month = date('Y-m-1', strtotime($month));
+        $this->loadModel('Holiday');
+        $result = $this->Holiday->save(array(
+            'month' => $month,
+            'holidays' => $holidays
+        ));
+        if($result) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+
+
     /**
      * 判断指定的月份内是否有考勤数据
      * @return boolean
