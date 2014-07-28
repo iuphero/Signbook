@@ -55,10 +55,11 @@ class SignController extends ExcelController {
     public function saveHolidays() {
         $holidays = $this->data['holidays'];
         $month = $this->data['month'];
-        // $holidays = '1,2,7,8,14,15,21,22,28,29';
-        // $month = '2014-06';
         $month = date('Y-m-1', strtotime($month));
         $this->loadModel('Holiday');
+        $this->Holiday->deleteAll(array(
+            'month' => $month
+        ));
         $result = $this->Holiday->save(array(
             'month' => $month,
             'holidays' => $holidays
@@ -104,8 +105,11 @@ class SignController extends ExcelController {
      */
     public function outputSign($time = '2014-06') {
         $this->time = $time;
-        // $holidays = array(1,2,7,8,14,15,21,22,28,29);//dummy data
-        $holidays = array();
+        $this->loadModel('Holiday');
+        $holidays = $this->Holiday->field('holidays', array(
+                'month' => date('Y-m-1', strtotime($time))
+        ));
+        $holidays = explode(',', $holidays);
         $this->loadModel('Department');
         $this->loadModel('LeaveRecord');
         $this->loadModel('SignRecord');

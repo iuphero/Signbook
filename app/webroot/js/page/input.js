@@ -69,7 +69,7 @@ signbook.input = (function (sk) {
                 }
                 else {
                     if(checkHolidays(days)) {
-                        $.post(holidayUrl, {
+                        $.post(holidayUrl, { //记录假期到数据库
                             'month': monthText,
                             'holidays': days
                         }, function(result) {
