@@ -164,9 +164,7 @@ class LeaveRecord extends AppModel {
                 //注意:传入的表格中有时候会有多条相同的请假记录(例如有两条一样的请假记录, 但是其中有一条没有目的地信息)
                 case self::TRAVEL:
                     $result['travel']['sum'] += $diffDay;
-                    if(empty($reason)) {
-                        $reason = '【注意,有重复】';
-                    }
+
                     $result['travel']['records'][] = array(
                         'start_time' => $startDay,
                         'end_time' => $endDay,
@@ -177,6 +175,25 @@ class LeaveRecord extends AppModel {
             }
 
         }// end foreach
+
+        /**
+         * 临时性代码, 在保证传入的出差数据没重复的记录时可删去
+         * 用于过滤多次相同的出差记录
+         */
+        $records = $result['travel']['records'];
+        $sum = $result['travel']['sum'];
+        $uRecords = array();
+        $uSum = 0;
+        foreach ($records as $record) {
+            $key = $record['start_time'] . $record['end_time'];
+            $uRecords[$key] = $record;
+        }
+        unset($records);
+        foreach ($uRecords as $key => $record) {
+            $uSum += $record['diffDay'];
+        }
+        $result['travel']['records'] = $uRecords;
+        $result['travel']['sum'] = $uSum;
 
         // debug($result);
        return $result;
