@@ -1,6 +1,5 @@
 <?php
 
-
 class LeaveRecord extends AppModel {
 
     public $name = 'LeaveRecord';

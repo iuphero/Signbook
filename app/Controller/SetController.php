@@ -1,4 +1,4 @@
-<?
+<?php
 App::uses('Controller', 'Controller');
 
 class SetController extends AppController {

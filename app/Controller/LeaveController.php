@@ -1,4 +1,4 @@
-<?
+<?php
 App::uses('ExcelController', 'Controller');
 
 class LeaveController extends ExcelController {
@@ -26,8 +26,8 @@ class LeaveController extends ExcelController {
      * @return boolean
      */
     public function hasLeaveData() {
-        $time = strtotime('2014-06'); //dummy data just for test
-        // $time = strtotime( $this->data['time'] );
+        // $time = strtotime('2014-06'); //dummy data just for test
+        $time = strtotime( $this->data['time'] );
         $firstDay = date('Y-m-01', $time);
         $lastDay = date('Y-m-t', $time);
         $this->loadModel('LeaveRecord');
@@ -84,7 +84,6 @@ class LeaveController extends ExcelController {
         unset($employees);
 
         //开始写Excel文件
-
         $this->setWriter();
         $sheet = $this->sheet;
         $this->setLeaveHeader();
@@ -129,14 +128,7 @@ class LeaveController extends ExcelController {
             }
         }
         $this->setCellCenter('A5:K'.$i);
-        $this->excel->getActiveSheet()->setTitle('出差请假汇总');
-        $this->excel->setActiveSheetIndex(0);
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename=出差请假汇总.xlsx');
-        header('Cache-Control: max-age=0');
-        $writer = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
-        $writer->save('php://output');
-        exit();
+        $this->outputExcel('出差请假汇总');
     }
 
 

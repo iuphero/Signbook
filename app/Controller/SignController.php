@@ -1,4 +1,4 @@
-<?
+<?php
 App::uses('ExcelController', 'Controller');
 
 class SignController extends ExcelController {
@@ -112,11 +112,8 @@ class SignController extends ExcelController {
         // debug($department); exit();
 
         //开始写Excel文件
-        APP::import('Vendor','/excel/Classes/PHPExcel');
-        APP::import('Vendor','/excel/Classes/PHPExcel/Writer/Excel2007');
-        $excel = new PHPExcel();
-        $excel->setActiveSheetIndex(0);
-        $this->sheet = $sheet = $excel->getActiveSheet();
+        $this->setWriter();
+        $sheet = $this->sheet;
         $this->setSignHeader();
         $i = 7;
         $dayCount = (int)date('t', strtotime($this->time));
@@ -275,14 +272,7 @@ class SignController extends ExcelController {
             }//end foreach $dpt['dpt2s']
         }//end foreach $department
         $this->setCellCenter('A1:AU1000');
-        $excel->getActiveSheet()->setTitle('出差请假汇总');
-        $excel->setActiveSheetIndex(0);
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename=result.xlsx');
-        header('Cache-Control: max-age=0');
-        $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
-        $writer->save('php://output');
-        exit();
+        $this->outputExcel('考勤汇总');
     }
 
     /**
@@ -576,7 +566,7 @@ class SignController extends ExcelController {
      * @return
      */
     public function parseSign($month, $holidays) {
-
+        file_put_contents('/home/xfight/tmp/holidays', print_r($holidays, 1));
         $result = $this->uploadFile('sign');
         if($result['code'] == 0) {
             return $result['info'];
@@ -585,7 +575,6 @@ class SignController extends ExcelController {
             $filename = $result['info'];
         }
 
-        // $filename = '/home/xfight/Download/signbook/考勤数据.xlsx';
         $holidays = split(',', $holidays);
         $reader = $this->setReader('Excel2007');
         $this->sheet = $sheet = $this->isRightExcel($filename);

@@ -37,7 +37,7 @@
             </h4>
             <label class="label-day" for="the-days">
 
-                <span class="label label-info label-normal">使用逗号分割.例如:1,2,9,10,17,18</span>
+                <span class="label label-info label-normal">使用英文的逗号分割.例如:1,2,9,10,17,18</span>
             </label><br>
             <input type="text" id="the-days"  name="the-days" />
             <button type="button" class="btn btn-primary btn-days">确定</button>
@@ -55,14 +55,11 @@
         </div>
 
         <div class="waiting-alert sk-alert alert alert-warning  alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert">
-                <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-            </button>
             <strong>请等待...</strong>正在处理结果中
         </div>
 
         <div class="error-alert sk-alert alert alert-warning alert-dismissible" role="alert">
-             有错误
+            有错误
         </div>
 
         <a href="#" class="btn btn-success btn-output-leave dn">导出Excel表格</a>

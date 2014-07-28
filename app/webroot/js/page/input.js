@@ -88,7 +88,7 @@ signbook.input = (function (sk) {
                     if(isNaN(ele)) {
                         return false;
                     }
-                    if(ele <= 0 || ele >= 31) {
+                    if(ele <= 0 || ele > 31) {
                         return false;
                     }
                 }

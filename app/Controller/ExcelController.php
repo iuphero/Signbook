@@ -1,4 +1,4 @@
-<?
+<?php
 App::uses('AppController', 'Controller');
 
 /**
@@ -138,6 +138,18 @@ class ExcelController extends AppController {
             APP::import('Vendor','/excel/Classes/PHPExcel/Reader/Excel2007');
             $this->reader = PHPExcel_IOFactory::createReader($type);
         }
+    }
+
+
+    protected function outputExcel($title, $type='Excel2007') {
+        $this->excel->getActiveSheet()->setTitle($title);
+        $this->excel->setActiveSheetIndex(0);
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename='.$title.'.xlsx');
+        header('Cache-Control: max-age=0');
+        $writer = PHPExcel_IOFactory::createWriter($this->excel, $type);
+        $writer->save('php://output');
+        exit();
     }
 
     /**
