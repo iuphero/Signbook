@@ -35,16 +35,8 @@ class PagesController extends AppController {
  *
  * @var array
  */
-	public $uses = array();
-
-	public $components = array("Session");
-
-
 	public function index() {
 
 	}
 
-    public function test() {
-
-    }
 }

@@ -37,6 +37,18 @@
 
                     <li class="treeview active">
                         <a href="#">
+                            <i class="glyphicon glyphicon-check"></i>
+                            <span>请假</span>
+                            <i class="glyphicon glyphicon-chevron-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="/sign/input/leave"><i class="glyphicon glyphicon-chevron-right"></i> 录入请假数据</a></li>
+                            <li><a href="/sign/get/leave"><i class="glyphicon glyphicon-chevron-right"></i> 导出请假表格</a></li>
+                        </ul>
+                    </li>
+
+                     <li class="treeview active">
+                        <a href="#">
                             <i class="glyphicon glyphicon-tasks"></i>
                             <span>考勤</span>
                             <i class="glyphicon glyphicon-chevron-left pull-right"></i>
@@ -47,17 +59,6 @@
                         </ul>
                     </li>
 
-                    <li class="treeview active">
-                        <a href="#">
-                            <i class="glyphicon glyphicon-check"></i>
-                            <span>请假</span>
-                            <i class="glyphicon glyphicon-chevron-left pull-right"></i>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li><a href="/sign/input/leave"><i class="glyphicon glyphicon-chevron-right"></i> 录入请假数据</a></li>
-                            <li><a href="/sign/get/leave"><i class="glyphicon glyphicon-chevron-right"></i> 导出请假表格</a></li>
-                        </ul>
-                    </li>
                 </ul>
             </aside>
             <!-- end left-side -->
