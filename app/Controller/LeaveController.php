@@ -108,8 +108,8 @@ class LeaveController extends ExcelController {
                     }
                     else {
                         $sheet->setCellValue('E'. $i, $epy['leaves']['casual']); //事假
-                        $sheet->setCellValue('F'. $i, $epy['leaves']['annual']); //病假
-                        $sheet->setCellValue('G'. $i, $epy['leaves']['sick']); //年假
+                        $sheet->setCellValue('F'. $i, $epy['leaves']['sick']); //病假
+                        $sheet->setCellValue('G'. $i, $epy['leaves']['annual']); //年假
                         $sheet->setCellValue('H'. $i, $epy['leaves']['payback']); //调休
                         $leaveText = '';
                         foreach($epy['leaves']['travel']['records'] as $record) { //2014-06-1
