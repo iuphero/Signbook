@@ -84,7 +84,7 @@ class EmployeeController extends ExcelController {
         $this->Department->deleteAll(array('1=1'));
         //todo,先从数据库构造数据,出错时恢复,这里用不到事务
 
-        for($i = 2; $i < $rowCount; $i++) {
+        for($i = 2; $i <= $rowCount; $i++) {
             $jobID = trim( $sheet->getCellByColumnAndRow($this->employeeIndex['job_id'], $i)->getValue() );
             $name = trim( $sheet->getCellByColumnAndRow($this->employeeIndex['name'], $i)->getValue() );
             $dptV1 = trim( $sheet->getCellByColumnAndRow($this->employeeIndex['dptV1'], $i)->getValue() );

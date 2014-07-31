@@ -130,6 +130,7 @@ signbook.input = (function (sk) {
                 },
                 onSuccess : function (e, xhr, text){
                     try{
+                        console.log(text);
                         var result = JSON.parse(text);
                     }catch(error){
                         $('.error-alert').text('可能是程序错误或上传文件不对, 请刷新重试, 上传正确的Excel表格').slideDown();

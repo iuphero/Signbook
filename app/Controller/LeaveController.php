@@ -251,7 +251,7 @@ class LeaveController extends ExcelController {
         }
 
         $result = array();
-        for($i = 2; $i< $highestRow; $i++) {
+        for($i = 2; $i <= $highestRow; $i++) {
             $name = trim($sheet->getCellByColumnAndRow($this->leaveIndex['name'], $i)->getValue());
             $job_id = trim($sheet->getCellByColumnAndRow($this->leaveIndex['job_id'], $i)->getValue());
 

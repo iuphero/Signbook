@@ -610,7 +610,6 @@ class SignController extends ExcelController {
      * @return
      */
     public function parseSign($month, $holidays) {
-        file_put_contents('/home/xfight/tmp/holidays', print_r($holidays, 1));
         $result = $this->uploadFile('sign');
         if($result['code'] == 0) {
             return $result['info'];
